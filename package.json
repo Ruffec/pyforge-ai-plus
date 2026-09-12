@@ -19,6 +19,7 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc -b",
     "prepare": "husky",
+    "tauri": "tauri",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
     "tauri:build:no-bundle": "tauri build --no-bundle",
