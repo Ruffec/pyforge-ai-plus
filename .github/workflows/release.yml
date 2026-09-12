@@ -118,6 +118,9 @@ jobs:
           releaseBody: 'See the assets below to download and install PyForge AI.'
           releaseDraft: true
           prerelease: false
+          # 注入签名私钥后自动生成 .sig 产物，并生成/合并上传 latest.json
+          # （多平台矩阵下各 job 会将本平台 entry 合并进 release 上已有的 latest.json）
+          includeUpdaterJson: true
           args: ${{ matrix.args }}
 
       - name: Sign Linux packages (optional)
@@ -147,38 +150,3 @@ jobs:
           files: src-tauri/target/release/bundle/*.asc
           tag_name: ${{ github.ref_name }}
           fail_on_unmatched_files: false
-
-  publish-updater-json:
-    name: Publish updater JSON
-    runs-on: ubuntu-latest
-    needs: build-tauri
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Generate updater JSON
-        env:
-          VERSION: ${{ github.ref_name }}
-        run: |
-          VERSION_STR="${VERSION#v}"
-          cat > pyforge-ai-updates.json <<EOF
-          {
-            "version": "${VERSION_STR}",
-            "notes": "PyForge AI ${VERSION} release.",
-            "pub_date": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-            "signature": "<PLACEHOLDER_SIGNATURE>",
-            "url": "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/PyForge_AI_${VERSION_STR}_x64-setup.exe"
-          }
-          EOF
-
-      - name: Upload updater JSON to release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: pyforge-ai-updates.json
-          tag_name: ${{ github.ref_name }}
-          body: |
-            Updater metadata JSON has been attached to this release.
-
-            ⚠️ Before publishing, replace `<PLACEHOLDER_SIGNATURE>` in `pyforge-ai-updates.json`
-            with the actual minisign signature from the signed installer asset, then re-upload
-            the file to your actual update server (or update the release asset).

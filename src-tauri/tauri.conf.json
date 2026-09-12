@@ -38,7 +38,7 @@
       "dialog": true,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDgxNENBQUFCRjMwMEI4MkQKUldRdHVBRHpxNnBNZ1gzNkJHUzlZQWFsc3NqdDVLTXdScksrakI4WVI0cFZzK01KNlhoT3NMSTgK",
       "endpoints": [
-        "https://github.com/Ruffec/pyforge-ai-plus/releases/latest/download/pyforge-ai-updates.json"
+        "https://github.com/Ruffec/pyforge-ai-plus/releases/latest/download/latest.json"
       ]
     }
   }
