@@ -9,6 +9,7 @@ src-tauri/target
 
 # Build outputs
 dist
+*.tsbuildinfo
 
 # Environment & secrets
 .env
