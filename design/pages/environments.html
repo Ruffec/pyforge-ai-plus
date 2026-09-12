@@ -1,0 +1,1550 @@
+<!doctype html>
+<html lang="zh" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>虚拟环境管理</title>
+    <style id="theme-vars">
+      /* ==========================================================================
+   PyForge AI — Brand Design Tokens
+   Dark Developer Theme · Teal-Cyan Primary · AI-Forward
+   ========================================================================== */
+
+      /* --------------------------------------------------------------------------
+   Brand Prefix: pf
+   Default = Light Mode · .dark = Dark Mode (primary design)
+   -------------------------------------------------------------------------- */
+      :root {
+        /* ---- Primary Scale (Teal-Cyan) ---- */
+        --pf-primary-50: #ecfdfb;
+        --pf-primary-100: #cffeed;
+        --pf-primary-200: #9ff8dd;
+        --pf-primary-300: #5fecce;
+        --pf-primary-400: #2dd4bf;
+        --pf-primary-500: #14b8a6;
+        --pf-primary-600: #0d9488;
+        --pf-primary-700: #0f766e;
+        --pf-primary-800: #115e56;
+        --pf-primary-900: #134e48;
+
+        /* ---- Neutral Scale ---- */
+        --pf-neutral-50: #f6f8fa;
+        --pf-neutral-100: #e6edf3;
+        --pf-neutral-200: #c9d1d9;
+        --pf-neutral-300: #8b949e;
+        --pf-neutral-400: #6e7681;
+        --pf-neutral-500: #484f58;
+        --pf-neutral-600: #30363d;
+        --pf-neutral-700: #21262d;
+        --pf-neutral-800: #161b22;
+        --pf-neutral-900: #0d1117;
+        --pf-neutral-950: #0a0e14;
+
+        /* ---- Semantic Aliases (Light Mode Default) ---- */
+        --pf-background: #ffffff;
+        --pf-foreground: #0d1117;
+        --pf-card: #f6f8fa;
+        --pf-card-foreground: #0d1117;
+        --pf-popover: #ffffff;
+        --pf-popover-foreground: #0d1117;
+        --pf-primary: #0d9488;
+        --pf-primary-foreground: #ffffff;
+        --pf-muted: #f6f8fa;
+        --pf-muted-foreground: #6e7681;
+        --pf-border: #d0d7de;
+        --pf-input: #d0d7de;
+        --pf-ring: #0d9488;
+
+        /* ---- Radius Scale ---- */
+        --pf-radius-small: 4px;
+        --pf-radius-medium: 8px;
+        --pf-radius-large: 12px;
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-full: 9999px;
+
+        /* ---- State Colors ---- */
+        --state-success: #1a7f37;
+        --state-warning: #9a6700;
+        --state-error: #cf222e;
+        --state-info: #0969da;
+
+        /* ---- Typography ---- */
+        --pf-font-sans:
+          'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        --pf-font-mono:
+          'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', Consolas, monospace;
+
+        /* ---- Surface Depth ---- */
+        --pf-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+        --pf-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --pf-shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.06);
+
+        /* ---- Sidebar ---- */
+        --pf-sidebar-bg: #f6f8fa;
+        --pf-sidebar-item: #6e7681;
+        --pf-sidebar-item-active: #0d9488;
+        --pf-sidebar-item-hover: #e6edf3;
+      }
+
+      /* --------------------------------------------------------------------------
+   Dark Mode (Primary Design)
+   -------------------------------------------------------------------------- */
+      :root.dark {
+        --pf-background: #0a0e14;
+        --pf-foreground: #e6edf3;
+        --pf-card: #0d1117;
+        --pf-card-foreground: #e6edf3;
+        --pf-popover: #161b22;
+        --pf-popover-foreground: #e6edf3;
+        --pf-primary: #2dd4bf;
+        --pf-primary-foreground: #0a0e14;
+        --pf-muted: #161b22;
+        --pf-muted-foreground: #8b949e;
+        --pf-border: #21262d;
+        --pf-input: #21262d;
+        --pf-ring: #2dd4bf;
+
+        --state-success: #3fb950;
+        --state-warning: #d29922;
+        --state-error: #f85149;
+        --state-info: #58a6ff;
+
+        --pf-sidebar-bg: #0a0e14;
+        --pf-sidebar-item: #8b949e;
+        --pf-sidebar-item-active: #2dd4bf;
+        --pf-sidebar-item-hover: #161b22;
+
+        --pf-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+        --pf-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --pf-shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.06);
+      }
+
+      /* --------------------------------------------------------------------------
+   Typography Classes
+   -------------------------------------------------------------------------- */
+      .pf-text-display {
+        font-family: var(--pf-font-sans);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+      }
+
+      .pf-text-heading {
+        font-family: var(--pf-font-sans);
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        line-height: 1.3;
+      }
+
+      .pf-text-body {
+        font-family: var(--pf-font-sans);
+        font-weight: 400;
+        line-height: 1.6;
+      }
+
+      .pf-text-mono {
+        font-family: var(--pf-font-mono);
+        font-weight: 400;
+        letter-spacing: -0.02em;
+      }
+
+      .pf-text-label {
+        font-family: var(--pf-font-sans);
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+      @theme inline {
+        --color-background: var(--pf-background);
+        --color-foreground: var(--pf-foreground);
+        --color-card: var(--pf-card);
+        --color-card-foreground: var(--pf-card-foreground);
+        --color-popover: var(--pf-popover);
+        --color-popover-foreground: var(--pf-popover-foreground);
+        --color-primary: var(--pf-primary);
+        --color-primary-foreground: var(--pf-primary-foreground);
+        --color-muted: var(--pf-muted);
+        --color-muted-foreground: var(--pf-muted-foreground);
+        --color-border: var(--pf-border);
+        --color-input: var(--pf-input);
+        --color-ring: var(--pf-ring);
+        --radius-sm: var(--pf-radius-small);
+        --radius-md: var(--pf-radius-medium);
+        --radius-lg: var(--pf-radius-large);
+      }
+      @layer base {
+        body {
+          background: var(--pf-background);
+          color: var(--pf-foreground);
+        }
+        td,
+        th {
+          @apply break-words;
+          word-break: break-all;
+          word-break: auto-phrase;
+        }
+        th {
+          @apply whitespace-nowrap;
+        }
+      }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background {
+        background-color: var(--pf-background);
+      }
+      .text-background {
+        color: var(--pf-background);
+      }
+      .border-background {
+        border-color: var(--pf-background);
+      }
+      .ring-background {
+        --tw-ring-color: var(--pf-background);
+      }
+      .bg-foreground {
+        background-color: var(--pf-foreground);
+      }
+      .text-foreground {
+        color: var(--pf-foreground);
+      }
+      .border-foreground {
+        border-color: var(--pf-foreground);
+      }
+      .ring-foreground {
+        --tw-ring-color: var(--pf-foreground);
+      }
+      .bg-card {
+        background-color: var(--pf-card);
+      }
+      .text-card {
+        color: var(--pf-card);
+      }
+      .border-card {
+        border-color: var(--pf-card);
+      }
+      .ring-card {
+        --tw-ring-color: var(--pf-card);
+      }
+      .bg-card-foreground {
+        background-color: var(--pf-card-foreground);
+      }
+      .text-card-foreground {
+        color: var(--pf-card-foreground);
+      }
+      .border-card-foreground {
+        border-color: var(--pf-card-foreground);
+      }
+      .ring-card-foreground {
+        --tw-ring-color: var(--pf-card-foreground);
+      }
+      .bg-popover {
+        background-color: var(--pf-popover);
+      }
+      .text-popover {
+        color: var(--pf-popover);
+      }
+      .border-popover {
+        border-color: var(--pf-popover);
+      }
+      .ring-popover {
+        --tw-ring-color: var(--pf-popover);
+      }
+      .bg-popover-foreground {
+        background-color: var(--pf-popover-foreground);
+      }
+      .text-popover-foreground {
+        color: var(--pf-popover-foreground);
+      }
+      .border-popover-foreground {
+        border-color: var(--pf-popover-foreground);
+      }
+      .ring-popover-foreground {
+        --tw-ring-color: var(--pf-popover-foreground);
+      }
+      .bg-primary {
+        background-color: var(--pf-primary);
+      }
+      .text-primary {
+        color: var(--pf-primary);
+      }
+      .border-primary {
+        border-color: var(--pf-primary);
+      }
+      .ring-primary {
+        --tw-ring-color: var(--pf-primary);
+      }
+      .bg-primary-foreground {
+        background-color: var(--pf-primary-foreground);
+      }
+      .text-primary-foreground {
+        color: var(--pf-primary-foreground);
+      }
+      .border-primary-foreground {
+        border-color: var(--pf-primary-foreground);
+      }
+      .ring-primary-foreground {
+        --tw-ring-color: var(--pf-primary-foreground);
+      }
+      .bg-muted {
+        background-color: var(--pf-muted);
+      }
+      .text-muted {
+        color: var(--pf-muted);
+      }
+      .border-muted {
+        border-color: var(--pf-muted);
+      }
+      .ring-muted {
+        --tw-ring-color: var(--pf-muted);
+      }
+      .bg-muted-foreground {
+        background-color: var(--pf-muted-foreground);
+      }
+      .text-muted-foreground {
+        color: var(--pf-muted-foreground);
+      }
+      .border-muted-foreground {
+        border-color: var(--pf-muted-foreground);
+      }
+      .ring-muted-foreground {
+        --tw-ring-color: var(--pf-muted-foreground);
+      }
+      .bg-border {
+        background-color: var(--pf-border);
+      }
+      .text-border {
+        color: var(--pf-border);
+      }
+      .border-border {
+        border-color: var(--pf-border);
+      }
+      .ring-border {
+        --tw-ring-color: var(--pf-border);
+      }
+      .bg-input {
+        background-color: var(--pf-input);
+      }
+      .text-input {
+        color: var(--pf-input);
+      }
+      .border-input {
+        border-color: var(--pf-input);
+      }
+      .ring-input {
+        --tw-ring-color: var(--pf-input);
+      }
+      .bg-ring {
+        background-color: var(--pf-ring);
+      }
+      .text-ring {
+        color: var(--pf-ring);
+      }
+      .border-ring {
+        border-color: var(--pf-ring);
+      }
+      .ring-ring {
+        --tw-ring-color: var(--pf-ring);
+      }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+  </head>
+  <body class="font-sans antialiased">
+    <style id="critical-layout">
+      /* ===== Shell: sidebar + main flex ===== */
+      .pf-shell {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
+      .pf-sidebar {
+        width: 240px;
+        flex: 0 0 240px;
+        display: flex;
+        flex-direction: column;
+        background-color: var(--pf-sidebar-bg);
+        border-right: 1px solid var(--pf-border);
+      }
+      .pf-main-col {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 0%;
+        min-width: 0;
+      }
+      .pf-topbar {
+        height: 56px;
+        flex: 0 0 56px;
+        display: flex;
+        align-items: center;
+        background-color: var(--pf-background);
+        border-bottom: 1px solid var(--pf-border);
+        padding: 0 24px;
+        gap: 16px;
+      }
+      .pf-main {
+        flex: 1 1 0%;
+        overflow-y: auto;
+        padding: 24px;
+        background-color: var(--pf-background);
+      }
+
+      /* ===== Card grid (3 columns) ===== */
+      .pf-env-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+      @media (max-width: 1280px) {
+        .pf-env-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      @media (max-width: 860px) {
+        .pf-env-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* ===== Form grid (2 columns) ===== */
+      .pf-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+      @media (max-width: 760px) {
+        .pf-form-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* ===== Sidebar nav ===== */
+      .pf-nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 16px;
+        border-radius: var(--pf-radius-medium);
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--pf-sidebar-item);
+        cursor: pointer;
+        position: relative;
+        transition:
+          background-color 0.15s ease,
+          color 0.15s ease;
+      }
+      .pf-nav-item:hover {
+        background-color: var(--pf-sidebar-item-hover);
+        color: var(--pf-foreground);
+      }
+      .pf-nav-item.is-active {
+        color: var(--pf-sidebar-item-active);
+        background-color: var(--pf-sidebar-item-hover);
+      }
+      .pf-nav-item.is-active::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 6px;
+        bottom: 6px;
+        width: 2px;
+        border-radius: 2px;
+        background-color: var(--pf-sidebar-item-active);
+      }
+      .pf-nav-item [data-lucide] {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+      }
+
+      /* ===== Environment card ===== */
+      .pf-env-card {
+        background-color: var(--pf-card);
+        border: 1px solid var(--pf-border);
+        border-radius: var(--pf-radius-medium);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        transition:
+          border-color 0.15s ease,
+          box-shadow 0.15s ease;
+      }
+      .pf-env-card:hover {
+        border-color: var(--pf-primary);
+        box-shadow: var(--pf-shadow-md);
+      }
+
+      /* ===== Status dot ===== */
+      .pf-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: var(--radius-full);
+        display: inline-block;
+        flex-shrink: 0;
+      }
+
+      /* ===== Badge ===== */
+      .pf-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        font-weight: 500;
+        padding: 2px 10px;
+        border-radius: var(--radius-full);
+        border: 1px solid var(--pf-border);
+      }
+
+      /* ===== Progress bar ===== */
+      .pf-progress-track {
+        height: 6px;
+        border-radius: var(--radius-full);
+        background-color: var(--pf-muted);
+        overflow: hidden;
+      }
+      .pf-progress-fill {
+        height: 100%;
+        border-radius: var(--radius-full);
+        transition: width 0.2s ease;
+      }
+
+      /* ===== Filter pill ===== */
+      .pf-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        font-weight: 500;
+        padding: 4px 12px;
+        border-radius: var(--radius-full);
+        border: 1px solid var(--pf-border);
+        color: var(--pf-muted-foreground);
+        background-color: transparent;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .pf-pill:hover {
+        color: var(--pf-foreground);
+        border-color: var(--pf-muted-foreground);
+      }
+      .pf-pill.is-active {
+        color: var(--pf-primary);
+        border-color: var(--pf-primary);
+      }
+
+      /* ===== Action text button ===== */
+      .pf-text-btn {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--pf-muted-foreground);
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: var(--pf-radius-small);
+        transition:
+          color 0.15s ease,
+          background-color 0.15s ease;
+      }
+      .pf-text-btn:hover {
+        color: var(--pf-foreground);
+        background-color: var(--pf-muted);
+      }
+      .pf-text-btn.is-primary {
+        color: var(--pf-primary);
+      }
+      .pf-text-btn.is-primary:hover {
+        color: var(--pf-primary);
+        background-color: var(--pf-muted);
+      }
+      .pf-text-btn.is-danger:hover {
+        color: var(--state-error);
+      }
+      .pf-text-btn:disabled {
+        color: var(--pf-border);
+        cursor: not-allowed;
+      }
+      .pf-text-btn:disabled:hover {
+        color: var(--pf-border);
+        background: transparent;
+      }
+
+      /* ===== CTA button ===== */
+      .pf-btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 8px 16px;
+        border-radius: var(--pf-radius-medium);
+        background-color: var(--pf-primary);
+        color: var(--pf-primary-foreground);
+        border: none;
+        cursor: pointer;
+        transition: opacity 0.15s ease;
+      }
+      .pf-btn-primary:hover {
+        opacity: 0.9;
+      }
+      .pf-btn-outline {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        padding: 8px 16px;
+        border-radius: var(--pf-radius-medium);
+        background-color: transparent;
+        color: var(--pf-foreground);
+        border: 1px solid var(--pf-border);
+        cursor: pointer;
+        transition:
+          border-color 0.15s ease,
+          background-color 0.15s ease;
+      }
+      .pf-btn-outline:hover {
+        border-color: var(--pf-muted-foreground);
+        background-color: var(--pf-muted);
+      }
+
+      /* ===== Input ===== */
+      .pf-input {
+        width: 100%;
+        background-color: var(--pf-muted);
+        border: 1px solid var(--pf-border);
+        border-radius: var(--pf-radius-medium);
+        padding: 8px 12px;
+        font-size: 13px;
+        color: var(--pf-foreground);
+        transition: border-color 0.15s ease;
+      }
+      .pf-input::placeholder {
+        color: var(--pf-muted-foreground);
+      }
+      .pf-input:focus {
+        outline: none;
+        border-color: var(--pf-primary);
+      }
+      .pf-input.mono {
+        font-family: var(--pf-font-mono);
+      }
+
+      /* ===== Toggle switch ===== */
+      .pf-toggle {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        cursor: pointer;
+      }
+      .pf-toggle input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .pf-toggle-track {
+        width: 36px;
+        height: 20px;
+        border-radius: var(--radius-full);
+        background-color: var(--pf-border);
+        position: relative;
+        transition: background-color 0.15s ease;
+      }
+      .pf-toggle-thumb {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 16px;
+        height: 16px;
+        border-radius: var(--radius-full);
+        background-color: var(--pf-foreground);
+        transition: transform 0.15s ease;
+      }
+      .pf-toggle input:checked + .pf-toggle-track {
+        background-color: var(--pf-primary);
+      }
+      .pf-toggle input:checked + .pf-toggle-track .pf-toggle-thumb {
+        transform: translateX(16px);
+        background-color: var(--pf-primary-foreground);
+      }
+
+      /* ===== View toggle ===== */
+      .pf-view-toggle {
+        display: inline-flex;
+        border: 1px solid var(--pf-border);
+        border-radius: var(--pf-radius-medium);
+        overflow: hidden;
+      }
+      .pf-view-toggle button {
+        padding: 8px 10px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        color: var(--pf-muted-foreground);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .pf-view-toggle button.is-active {
+        background-color: var(--pf-muted);
+        color: var(--pf-primary);
+      }
+      .pf-view-toggle button [data-lucide] {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* ===== Search ===== */
+      .pf-search {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: 320px;
+        padding: 7px 12px;
+        background-color: var(--pf-muted);
+        border: 1px solid var(--pf-border);
+        border-radius: var(--pf-radius-medium);
+        color: var(--pf-muted-foreground);
+      }
+      .pf-search input {
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--pf-foreground);
+        font-size: 13px;
+        flex: 1;
+      }
+      .pf-search input::placeholder {
+        color: var(--pf-muted-foreground);
+      }
+      .pf-search [data-lucide] {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+      }
+
+      /* ===== Truncate ===== */
+      .pf-truncate {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      /* ===== Icon sizing ===== */
+      [data-lucide] {
+        stroke-width: 2;
+      }
+    </style>
+    <div class="pf-shell" data-viewport-mode="app-shell">
+      <!-- ===== Sidebar ===== -->
+      <aside class="pf-sidebar">
+        <!-- Logo -->
+        <div
+          class="flex items-center gap-3 px-4"
+          style="height: 56px; border-bottom: 1px solid var(--pf-border)"
+        >
+          <div
+            class="flex items-center justify-center"
+            style="
+              width: 32px;
+              height: 32px;
+              border-radius: var(--pf-radius-medium);
+              background-color: var(--pf-primary);
+            "
+          >
+            <i
+              data-lucide="terminal"
+              style="width: 18px; height: 18px; color: var(--pf-primary-foreground)"
+            ></i>
+          </div>
+          <div class="flex flex-col">
+            <span class="pf-text-heading" style="font-size: 15px; color: var(--pf-foreground)"
+              >PyForge AI</span
+            >
+            <span class="pf-text-mono" style="font-size: 11px; color: var(--pf-muted-foreground)"
+              >v2.4.0</span
+            >
+          </div>
+        </div>
+
+        <!-- Nav -->
+        <nav class="flex flex-col gap-1 px-3 py-4 flex-1 overflow-y-auto no-scrollbar">
+          <div
+            class="pf-text-label"
+            style="font-size: 10px; color: var(--pf-muted-foreground); padding: 0 16px 8px"
+          >
+            导航
+          </div>
+          <a class="pf-nav-item" data-dom-id="nav-dashboard" href="#">
+            <i data-lucide="layout-dashboard"></i>
+            <span>控制台</span>
+          </a>
+          <a class="pf-nav-item" data-dom-id="nav-python-versions" href="#">
+            <i data-lucide="boxes"></i>
+            <span>Python 版本</span>
+          </a>
+          <a class="pf-nav-item is-active" data-dom-id="nav-environments" href="#">
+            <i data-lucide="layers"></i>
+            <span>虚拟环境</span>
+          </a>
+          <a class="pf-nav-item" data-dom-id="nav-packages" href="#">
+            <i data-lucide="package"></i>
+            <span>包与镜像源</span>
+          </a>
+          <a class="pf-nav-item" data-dom-id="nav-ai-deploy" href="#">
+            <i data-lucide="sparkles"></i>
+            <span>AI 智能部署</span>
+          </a>
+          <a class="pf-nav-item" data-dom-id="nav-settings" href="#">
+            <i data-lucide="settings"></i>
+            <span>设置</span>
+          </a>
+        </nav>
+
+        <!-- Bottom: AI Assistant + User profile -->
+        <div
+          class="px-3 pb-4 flex flex-col gap-3"
+          style="border-top: 1px solid var(--pf-border); padding-top: 16px"
+        >
+          <button
+            class="flex items-center gap-2 justify-center w-full"
+            style="
+              padding: 10px 16px;
+              border-radius: var(--pf-radius-medium);
+              border: none;
+              cursor: pointer;
+              background: linear-gradient(135deg, var(--pf-primary), var(--pf-primary-600));
+              color: var(--pf-primary-foreground);
+              font-size: 13px;
+              font-weight: 600;
+            "
+          >
+            <i data-lucide="sparkles" style="width: 16px; height: 16px"></i>
+            <span>AI 助手</span>
+          </button>
+          <div
+            class="flex items-center gap-3"
+            style="
+              padding: 8px 8px;
+              border-radius: var(--pf-radius-medium);
+              background-color: var(--pf-sidebar-item-hover);
+            "
+          >
+            <div
+              class="flex items-center justify-center"
+              style="
+                width: 32px;
+                height: 32px;
+                border-radius: var(--radius-full);
+                background-color: var(--pf-muted);
+                border: 1px solid var(--pf-border);
+              "
+            >
+              <i
+                data-lucide="user"
+                style="width: 16px; height: 16px; color: var(--pf-muted-foreground)"
+              ></i>
+            </div>
+            <div class="flex flex-col" style="min-width: 0">
+              <span class="pf-text-heading" style="font-size: 13px; color: var(--pf-foreground)"
+                >Developer</span
+              >
+              <span style="font-size: 11px; color: var(--pf-muted-foreground)">Pro User</span>
+            </div>
+            <i
+              data-lucide="chevrons-up-down"
+              style="
+                width: 14px;
+                height: 14px;
+                color: var(--pf-muted-foreground);
+                margin-left: auto;
+              "
+            ></i>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ===== Main column ===== -->
+      <div class="pf-main-col">
+        <!-- Top Bar -->
+        <header class="pf-topbar">
+          <span
+            class="pf-text-heading"
+            style="font-size: 18px; font-weight: 600; color: var(--pf-foreground)"
+            >虚拟环境管理</span
+          >
+          <div class="flex-1 flex justify-center">
+            <div class="pf-search">
+              <i data-lucide="search"></i>
+              <input type="text" placeholder="搜索环境..." />
+              <kbd
+                style="
+                  font-family: var(--pf-font-mono);
+                  font-size: 11px;
+                  color: var(--pf-muted-foreground);
+                  border: 1px solid var(--pf-border);
+                  border-radius: var(--pf-radius-small);
+                  padding: 1px 6px;
+                "
+                >/</kbd
+              >
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+              <span class="pf-dot" style="background-color: var(--state-success)"></span>
+              <span style="font-size: 12px; color: var(--pf-muted-foreground)">系统正常</span>
+            </div>
+            <button
+              style="
+                background: transparent;
+                border: none;
+                cursor: pointer;
+                color: var(--pf-muted-foreground);
+                position: relative;
+              "
+              title="通知"
+            >
+              <i data-lucide="bell" style="width: 18px; height: 18px"></i>
+              <span
+                style="
+                  position: absolute;
+                  top: -2px;
+                  right: -2px;
+                  width: 6px;
+                  height: 6px;
+                  border-radius: var(--radius-full);
+                  background-color: var(--pf-primary);
+                  border: 1px solid var(--pf-background);
+                "
+              ></span>
+            </button>
+            <button class="pf-btn-primary">
+              <i data-lucide="rocket" style="width: 16px; height: 16px"></i>
+              <span>快速部署</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- Main content -->
+        <main class="pf-main overflow-y-auto" data-scroll-region="primary">
+          <!-- 1. Action Bar -->
+          <section class="flex items-center justify-between" style="margin-bottom: 20px">
+            <div class="flex items-baseline gap-3">
+              <h1
+                class="pf-text-display"
+                style="font-size: 20px; font-weight: 700; color: var(--pf-foreground)"
+              >
+                虚拟环境
+              </h1>
+              <span style="font-size: 14px; color: var(--pf-muted-foreground)">7 个环境</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <button class="pf-btn-primary">
+                <i data-lucide="plus" style="width: 16px; height: 16px"></i>
+                <span>创建环境</span>
+              </button>
+              <button class="pf-btn-outline">
+                <i data-lucide="upload" style="width: 16px; height: 16px"></i>
+                <span>导入环境</span>
+              </button>
+              <div class="pf-view-toggle">
+                <button class="is-active" title="网格视图">
+                  <i data-lucide="layout-grid"></i>
+                </button>
+                <button title="列表视图"><i data-lucide="list"></i></button>
+              </div>
+            </div>
+          </section>
+
+          <!-- 2. Filter Bar -->
+          <section class="flex items-center justify-between" style="margin-bottom: 20px">
+            <div class="flex items-center gap-2 flex-wrap">
+              <button class="pf-pill is-active">全部</button>
+              <button class="pf-pill">活跃 <span style="opacity: 0.7">2</span></button>
+              <button class="pf-pill">空闲 <span style="opacity: 0.7">3</span></button>
+              <button class="pf-pill">需更新 <span style="opacity: 0.7">1</span></button>
+              <button class="pf-pill">已损坏 <span style="opacity: 0.7">1</span></button>
+            </div>
+            <button class="pf-btn-outline" style="padding: 6px 12px">
+              <span>按名称排序</span>
+              <i data-lucide="chevron-down" style="width: 14px; height: 14px"></i>
+            </button>
+          </section>
+
+          <!-- 3. Environment Card Grid -->
+          <section class="pf-env-grid" style="margin-bottom: 32px">
+            <!-- Card 1: my-project -->
+            <article class="pf-env-card">
+              <div class="flex items-start justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="pf-dot" style="background-color: var(--state-success)"></span>
+                  <span
+                    class="pf-badge"
+                    style="color: var(--state-success); border-color: var(--state-success)"
+                  >
+                    <span
+                      class="pf-dot"
+                      style="background-color: var(--state-success); width: 6px; height: 6px"
+                    ></span>
+                    活跃
+                  </span>
+                </div>
+                <i
+                  data-lucide="rocket"
+                  style="width: 16px; height: 16px; color: var(--pf-muted-foreground)"
+                ></i>
+              </div>
+              <div class="flex flex-col gap-1">
+                <h3
+                  class="pf-text-mono"
+                  style="font-size: 16px; font-weight: 600; color: var(--pf-foreground)"
+                >
+                  my-project
+                </h3>
+                <div
+                  class="flex items-center gap-2"
+                  style="font-size: 13px; color: var(--pf-muted-foreground)"
+                >
+                  <span class="pf-text-mono">Python 3.12.4</span>
+                  <span>·</span>
+                  <span>42 个包</span>
+                </div>
+              </div>
+              <div
+                class="pf-text-mono pf-truncate"
+                style="font-size: 12px; color: var(--pf-muted-foreground)"
+              >
+                ~/.pyforge/envs/my-project
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <div
+                  class="flex justify-between"
+                  style="font-size: 11px; color: var(--pf-muted-foreground)"
+                >
+                  <span>磁盘使用</span>
+                  <span class="pf-text-mono">1.2 GB / 5 GB</span>
+                </div>
+                <div class="pf-progress-track">
+                  <div
+                    class="pf-progress-fill"
+                    style="width: 24%; background-color: var(--pf-primary)"
+                  ></div>
+                </div>
+              </div>
+              <div
+                class="flex items-center gap-1"
+                style="border-top: 1px solid var(--pf-border); padding-top: 12px; margin-top: 4px"
+              >
+                <button class="pf-text-btn is-primary">激活</button>
+                <span style="color: var(--pf-border)">|</span>
+                <button class="pf-text-btn">克隆</button>
+                <button class="pf-text-btn">导出</button>
+                <button class="pf-text-btn is-danger" style="margin-left: auto">删除</button>
+              </div>
+            </article>
+
+            <!-- Card 2: data-science -->
+            <article class="pf-env-card">
+              <div class="flex items-start justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="pf-dot" style="background-color: var(--pf-muted-foreground)"></span>
+                  <span
+                    class="pf-badge"
+                    style="color: var(--pf-muted-foreground); border-color: var(--pf-border)"
+                  >
+                    <span
+                      class="pf-dot"
+                      style="background-color: var(--pf-muted-foreground); width: 6px; height: 6px"
+                    ></span>
+                    空闲
+                  </span>
+                </div>
+                <i
+                  data-lucide="database"
+                  style="width: 16px; height: 16px; color: var(--pf-muted-foreground)"
+                ></i>
+              </div>
+              <div class="flex flex-col gap-1">
+                <h3
+                  class="pf-text-mono"
+                  style="font-size: 16px; font-weight: 600; color: var(--pf-foreground)"
+                >
+                  data-science
+                </h3>
+                <div
+                  class="flex items-center gap-2"
+                  style="font-size: 13px; color: var(--pf-muted-foreground)"
+                >
+                  <span class="pf-text-mono">Python 3.11.6</span>
+                  <span>·</span>
+                  <span>128 个包</span>
+                </div>
+              </div>
+              <div
+                class="pf-text-mono pf-truncate"
+                style="font-size: 12px; color: var(--pf-muted-foreground)"
+              >
+                ~/.pyforge/envs/data-science
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <div
+                  class="flex justify-between"
+                  style="font-size: 11px; color: var(--pf-muted-foreground)"
+                >
+                  <span>磁盘使用</span>
+                  <span class="pf-text-mono">3.8 GB / 5 GB</span>
+                </div>
+                <div class="pf-progress-track">
+                  <div
+                    class="pf-progress-fill"
+                    style="width: 76%; background-color: var(--pf-primary)"
+                  ></div>
+                </div>
+              </div>
+              <div
+                class="flex items-center gap-1"
+                style="border-top: 1px solid var(--pf-border); padding-top: 12px; margin-top: 4px"
+              >
+                <button class="pf-text-btn is-primary">激活</button>
+                <span style="color: var(--pf-border)">|</span>
+                <button class="pf-text-btn">克隆</button>
+                <button class="pf-text-btn">导出</button>
+                <button class="pf-text-btn is-danger" style="margin-left: auto">删除</button>
+              </div>
+            </article>
+
+            <!-- Card 3: web-api -->
+            <article class="pf-env-card">
+              <div class="flex items-start justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="pf-dot" style="background-color: var(--state-success)"></span>
+                  <span
+                    class="pf-badge"
+                    style="color: var(--state-success); border-color: var(--state-success)"
+                  >
+                    <span
+                      class="pf-dot"
+                      style="background-color: var(--state-success); width: 6px; height: 6px"
+                    ></span>
+                    活跃
+                  </span>
+                </div>
+                <i
+                  data-lucide="play"
+                  style="width: 16px; height: 16px; color: var(--pf-muted-foreground)"
+                ></i>
+              </div>
+              <div class="flex flex-col gap-1">
+                <h3
+                  class="pf-text-mono"
+                  style="font-size: 16px; font-weight: 600; color: var(--pf-foreground)"
+                >
+                  web-api
+                </h3>
+                <div
+                  class="flex items-center gap-2"
+                  style="font-size: 13px; color: var(--pf-muted-foreground)"
+                >
+                  <span class="pf-text-mono">Python 3.12.4</span>
+                  <span>·</span>
+                  <span>67 个包</span>
+                </div>
+              </div>
+              <div
+                class="pf-text-mono pf-truncate"
+                style="font-size: 12px; color: var(--pf-muted-foreground)"
+              >
+                ~/.pyforge/envs/web-api
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <div
+                  class="flex justify-between"
+                  style="font-size: 11px; color: var(--pf-muted-foreground)"
+                >
+                  <span>磁盘使用</span>
+                  <span class="pf-text-mono">890 MB / 5 GB</span>
+                </div>
+                <div class="pf-progress-track">
+                  <div
+                    class="pf-progress-fill"
+                    style="width: 18%; background-color: var(--pf-primary)"
+                  ></div>
+                </div>
+              </div>
+              <div
+                class="flex items-center gap-1"
+                style="border-top: 1px solid var(--pf-border); padding-top: 12px; margin-top: 4px"
+              >
+                <button class="pf-text-btn is-primary" disabled>激活</button>
+                <span style="color: var(--pf-border)">|</span>
+                <button class="pf-text-btn">克隆</button>
+                <button class="pf-text-btn">导出</button>
+                <button class="pf-text-btn is-danger" style="margin-left: auto">删除</button>
+              </div>
+            </article>
+
+            <!-- Card 4: ml-experiments -->
+            <article class="pf-env-card">
+              <div class="flex items-start justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="pf-dot" style="background-color: var(--state-warning)"></span>
+                  <span
+                    class="pf-badge"
+                    style="color: var(--state-warning); border-color: var(--state-warning)"
+                  >
+                    <span
+                      class="pf-dot"
+                      style="background-color: var(--state-warning); width: 6px; height: 6px"
+                    ></span>
+                    需更新
+                  </span>
+                </div>
+                <i
+                  data-lucide="flask-conical"
+                  style="width: 16px; height: 16px; color: var(--pf-muted-foreground)"
+                ></i>
+              </div>
+              <div class="flex flex-col gap-1">
+                <h3
+                  class="pf-text-mono"
+                  style="font-size: 16px; font-weight: 600; color: var(--pf-foreground)"
+                >
+                  ml-experiments
+                </h3>
+                <div
+                  class="flex items-center gap-2"
+                  style="font-size: 13px; color: var(--pf-muted-foreground)"
+                >
+                  <span class="pf-text-mono">Python 3.10.13</span>
+                  <span>·</span>
+                  <span>89 个包</span>
+                </div>
+              </div>
+              <div
+                class="pf-text-mono pf-truncate"
+                style="font-size: 12px; color: var(--pf-muted-foreground)"
+              >
+                ~/.pyforge/envs/ml-experiments
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <div
+                  class="flex justify-between"
+                  style="font-size: 11px; color: var(--pf-muted-foreground)"
+                >
+                  <span>磁盘使用</span>
+                  <span class="pf-text-mono">4.2 GB / 5 GB</span>
+                </div>
+                <div class="pf-progress-track">
+                  <div
+                    class="pf-progress-fill"
+                    style="width: 84%; background-color: var(--state-warning)"
+                  ></div>
+                </div>
+              </div>
+              <div
+                class="flex items-center gap-1"
+                style="border-top: 1px solid var(--pf-border); padding-top: 12px; margin-top: 4px"
+              >
+                <button class="pf-text-btn is-primary">更新</button>
+                <span style="color: var(--pf-border)">|</span>
+                <button class="pf-text-btn">克隆</button>
+                <button class="pf-text-btn">导出</button>
+                <button class="pf-text-btn is-danger" style="margin-left: auto">删除</button>
+              </div>
+            </article>
+
+            <!-- Card 5: scripts -->
+            <article class="pf-env-card">
+              <div class="flex items-start justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="pf-dot" style="background-color: var(--pf-muted-foreground)"></span>
+                  <span
+                    class="pf-badge"
+                    style="color: var(--pf-muted-foreground); border-color: var(--pf-border)"
+                  >
+                    <span
+                      class="pf-dot"
+                      style="background-color: var(--pf-muted-foreground); width: 6px; height: 6px"
+                    ></span>
+                    空闲
+                  </span>
+                </div>
+                <i
+                  data-lucide="file-code"
+                  style="width: 16px; height: 16px; color: var(--pf-muted-foreground)"
+                ></i>
+              </div>
+              <div class="flex flex-col gap-1">
+                <h3
+                  class="pf-text-mono"
+                  style="font-size: 16px; font-weight: 600; color: var(--pf-foreground)"
+                >
+                  scripts
+                </h3>
+                <div
+                  class="flex items-center gap-2"
+                  style="font-size: 13px; color: var(--pf-muted-foreground)"
+                >
+                  <span class="pf-text-mono">Python 3.9.18</span>
+                  <span>·</span>
+                  <span>12 个包</span>
+                </div>
+              </div>
+              <div
+                class="pf-text-mono pf-truncate"
+                style="font-size: 12px; color: var(--pf-muted-foreground)"
+              >
+                ~/.pyforge/envs/scripts
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <div
+                  class="flex justify-between"
+                  style="font-size: 11px; color: var(--pf-muted-foreground)"
+                >
+                  <span>磁盘使用</span>
+                  <span class="pf-text-mono">156 MB / 5 GB</span>
+                </div>
+                <div class="pf-progress-track">
+                  <div
+                    class="pf-progress-fill"
+                    style="width: 3%; background-color: var(--pf-primary)"
+                  ></div>
+                </div>
+              </div>
+              <div
+                class="flex items-center gap-1"
+                style="border-top: 1px solid var(--pf-border); padding-top: 12px; margin-top: 4px"
+              >
+                <button class="pf-text-btn is-primary">激活</button>
+                <span style="color: var(--pf-border)">|</span>
+                <button class="pf-text-btn">克隆</button>
+                <button class="pf-text-btn">导出</button>
+                <button class="pf-text-btn is-danger" style="margin-left: auto">删除</button>
+              </div>
+            </article>
+
+            <!-- Card 6: api-staging -->
+            <article class="pf-env-card">
+              <div class="flex items-start justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="pf-dot" style="background-color: var(--state-error)"></span>
+                  <span
+                    class="pf-badge"
+                    style="color: var(--state-error); border-color: var(--state-error)"
+                  >
+                    <span
+                      class="pf-dot"
+                      style="background-color: var(--state-error); width: 6px; height: 6px"
+                    ></span>
+                    已损坏
+                  </span>
+                </div>
+                <i
+                  data-lucide="alert-triangle"
+                  style="width: 16px; height: 16px; color: var(--state-error)"
+                ></i>
+              </div>
+              <div class="flex flex-col gap-1">
+                <h3
+                  class="pf-text-mono"
+                  style="font-size: 16px; font-weight: 600; color: var(--pf-foreground)"
+                >
+                  api-staging
+                </h3>
+                <div
+                  class="flex items-center gap-2"
+                  style="font-size: 13px; color: var(--pf-muted-foreground)"
+                >
+                  <span class="pf-text-mono">Python 3.12.0</span>
+                  <span>·</span>
+                  <span>0 个包</span>
+                </div>
+              </div>
+              <div
+                class="flex items-center gap-2"
+                style="
+                  font-size: 12px;
+                  color: var(--state-error);
+                  background-color: var(--pf-muted);
+                  padding: 6px 10px;
+                  border-radius: var(--pf-radius-small);
+                "
+              >
+                <i data-lucide="alert-circle" style="width: 13px; height: 13px"></i>
+                <span>环境配置损坏，建议重建</span>
+              </div>
+              <div
+                class="flex items-center gap-1"
+                style="border-top: 1px solid var(--pf-border); padding-top: 12px; margin-top: auto"
+              >
+                <button class="pf-text-btn is-primary">修复</button>
+                <span style="color: var(--pf-border)">|</span>
+                <button class="pf-text-btn">重建</button>
+                <button
+                  class="pf-text-btn is-danger"
+                  style="margin-left: auto; color: var(--state-error)"
+                >
+                  删除
+                </button>
+              </div>
+            </article>
+          </section>
+
+          <!-- 4. Create Environment Form -->
+          <section class="pf-env-card" style="padding: 24px; margin-bottom: 24px">
+            <div class="flex items-center gap-2" style="margin-bottom: 20px">
+              <i
+                data-lucide="plus-circle"
+                style="width: 18px; height: 18px; color: var(--pf-primary)"
+              ></i>
+              <h2
+                class="pf-text-heading"
+                style="font-size: 16px; font-weight: 600; color: var(--pf-foreground)"
+              >
+                创建新环境
+              </h2>
+            </div>
+
+            <div class="pf-form-grid" style="margin-bottom: 20px">
+              <!-- Field 1: 环境名称 -->
+              <div class="flex flex-col gap-1.5">
+                <label style="font-size: 12px; font-weight: 500; color: var(--pf-muted-foreground)"
+                  >环境名称</label
+                >
+                <input type="text" class="pf-input mono" placeholder="my-new-env" />
+              </div>
+              <!-- Field 2: Python 版本 -->
+              <div class="flex flex-col gap-1.5">
+                <label style="font-size: 12px; font-weight: 500; color: var(--pf-muted-foreground)"
+                  >Python 版本</label
+                >
+                <div style="position: relative">
+                  <select
+                    class="pf-input mono"
+                    style="appearance: none; padding-right: 36px; cursor: pointer"
+                  >
+                    <option>Python 3.12.4</option>
+                    <option>Python 3.11.6</option>
+                    <option>Python 3.10.13</option>
+                    <option>Python 3.9.18</option>
+                  </select>
+                  <i
+                    data-lucide="chevron-down"
+                    style="
+                      position: absolute;
+                      right: 12px;
+                      top: 50%;
+                      transform: translateY(-50%);
+                      width: 16px;
+                      height: 16px;
+                      color: var(--pf-muted-foreground);
+                      pointer-events: none;
+                    "
+                  ></i>
+                </div>
+              </div>
+              <!-- Field 3: 存储路径 -->
+              <div class="flex flex-col gap-1.5">
+                <label style="font-size: 12px; font-weight: 500; color: var(--pf-muted-foreground)"
+                  >存储路径</label
+                >
+                <input type="text" class="pf-input mono" placeholder="~/.pyforge/envs/" />
+              </div>
+              <!-- Field 4: 基础包 -->
+              <div class="flex flex-col gap-1.5">
+                <label style="font-size: 12px; font-weight: 500; color: var(--pf-muted-foreground)"
+                  >基础包</label
+                >
+                <input type="text" class="pf-input mono" placeholder="numpy, pandas, requests" />
+              </div>
+            </div>
+
+            <!-- Toggle row -->
+            <div
+              class="flex items-center gap-8 flex-wrap"
+              style="
+                margin-bottom: 24px;
+                padding: 16px;
+                background-color: var(--pf-muted);
+                border-radius: var(--pf-radius-medium);
+                border: 1px solid var(--pf-border);
+              "
+            >
+              <label class="pf-toggle" style="gap: 10px">
+                <input type="checkbox" />
+                <span class="pf-toggle-track"><span class="pf-toggle-thumb"></span></span>
+                <span style="font-size: 13px; color: var(--pf-foreground)"
+                  >从 requirements.txt 导入</span
+                >
+              </label>
+              <label class="pf-toggle" style="gap: 10px">
+                <input type="checkbox" checked />
+                <span class="pf-toggle-track"><span class="pf-toggle-thumb"></span></span>
+                <span style="font-size: 13px; color: var(--pf-foreground)">安装后激活</span>
+              </label>
+              <label class="pf-toggle" style="gap: 10px">
+                <input type="checkbox" checked />
+                <span class="pf-toggle-track"><span class="pf-toggle-thumb"></span></span>
+                <span style="font-size: 13px; color: var(--pf-foreground)">配置镜像源</span>
+              </label>
+            </div>
+
+            <!-- Bottom actions -->
+            <div class="flex items-center justify-end gap-3">
+              <button class="pf-text-btn" style="font-size: 13px; padding: 8px 16px">取消</button>
+              <button class="pf-btn-primary">
+                <i data-lucide="plus" style="width: 16px; height: 16px"></i>
+                <span>创建环境</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- 5. Footer -->
+          <footer
+            class="flex items-center justify-between"
+            style="padding-top: 20px; border-top: 1px solid var(--pf-border)"
+          >
+            <span class="pf-text-mono" style="font-size: 12px; color: var(--pf-muted-foreground)"
+              >PyForge AI v2.4.0 · 构建 2024.08.07</span
+            >
+            <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+              >© 2024 PyForge AI</span
+            >
+          </footer>
+        </main>
+      </div>
+    </div>
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

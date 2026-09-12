@@ -1,0 +1,1967 @@
+<!doctype html>
+<html lang="zh" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>平台差异化适配 - PyForge AI</title>
+    <style id="theme-vars">
+      /* ==========================================================================
+   PyForge AI — Brand Design Tokens
+   Dark Developer Theme · Teal-Cyan Primary · AI-Forward
+   ========================================================================== */
+
+      /* --------------------------------------------------------------------------
+   Brand Prefix: pf
+   Default = Light Mode · .dark = Dark Mode (primary design)
+   -------------------------------------------------------------------------- */
+      :root {
+        /* ---- Primary Scale (Teal-Cyan) ---- */
+        --pf-primary-50: #ecfdfb;
+        --pf-primary-100: #cffeed;
+        --pf-primary-200: #9ff8dd;
+        --pf-primary-300: #5fecce;
+        --pf-primary-400: #2dd4bf;
+        --pf-primary-500: #14b8a6;
+        --pf-primary-600: #0d9488;
+        --pf-primary-700: #0f766e;
+        --pf-primary-800: #115e56;
+        --pf-primary-900: #134e48;
+
+        /* ---- Neutral Scale ---- */
+        --pf-neutral-50: #f6f8fa;
+        --pf-neutral-100: #e6edf3;
+        --pf-neutral-200: #c9d1d9;
+        --pf-neutral-300: #8b949e;
+        --pf-neutral-400: #6e7681;
+        --pf-neutral-500: #484f58;
+        --pf-neutral-600: #30363d;
+        --pf-neutral-700: #21262d;
+        --pf-neutral-800: #161b22;
+        --pf-neutral-900: #0d1117;
+        --pf-neutral-950: #0a0e14;
+
+        /* ---- Semantic Aliases (Light Mode Default) ---- */
+        --pf-background: #ffffff;
+        --pf-foreground: #0d1117;
+        --pf-card: #f6f8fa;
+        --pf-card-foreground: #0d1117;
+        --pf-popover: #ffffff;
+        --pf-popover-foreground: #0d1117;
+        --pf-primary: #0d9488;
+        --pf-primary-foreground: #ffffff;
+        --pf-muted: #f6f8fa;
+        --pf-muted-foreground: #6e7681;
+        --pf-border: #d0d7de;
+        --pf-input: #d0d7de;
+        --pf-ring: #0d9488;
+
+        /* ---- Radius Scale ---- */
+        --pf-radius-small: 4px;
+        --pf-radius-medium: 8px;
+        --pf-radius-large: 12px;
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-full: 9999px;
+
+        /* ---- State Colors ---- */
+        --state-success: #1a7f37;
+        --state-warning: #9a6700;
+        --state-error: #cf222e;
+        --state-info: #0969da;
+
+        /* ---- Typography ---- */
+        --pf-font-sans:
+          'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        --pf-font-mono:
+          'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', Consolas, monospace;
+
+        /* ---- Surface Depth ---- */
+        --pf-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+        --pf-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --pf-shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.05);
+
+        /* ---- Sidebar ---- */
+        --pf-sidebar-bg: #f6f8fa;
+        --pf-sidebar-item: #6e7681;
+        --pf-sidebar-item-active: #0d9488;
+        --pf-sidebar-item-hover: #e6edf3;
+      }
+
+      /* --------------------------------------------------------------------------
+   Dark Mode (Primary Design)
+   -------------------------------------------------------------------------- */
+      :root.dark {
+        --pf-background: #0a0e14;
+        --pf-foreground: #e6edf3;
+        --pf-card: #0d1117;
+        --pf-card-foreground: #e6edf3;
+        --pf-popover: #161b22;
+        --pf-popover-foreground: #e6edf3;
+        --pf-primary: #2dd4bf;
+        --pf-primary-foreground: #0a0e14;
+        --pf-muted: #161b22;
+        --pf-muted-foreground: #8b949e;
+        --pf-border: #21262d;
+        --pf-input: #21262d;
+        --pf-ring: #2dd4bf;
+
+        --state-success: #3fb950;
+        --state-warning: #d29922;
+        --state-error: #f85149;
+        --state-info: #58a6ff;
+
+        --pf-sidebar-bg: #0a0e14;
+        --pf-sidebar-item: #8b949e;
+        --pf-sidebar-item-active: #2dd4bf;
+        --pf-sidebar-item-hover: #161b22;
+
+        --pf-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+        --pf-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --pf-shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.05);
+      }
+
+      /* --------------------------------------------------------------------------
+   Typography Classes
+   -------------------------------------------------------------------------- */
+      .pf-text-display {
+        font-family: var(--pf-font-sans);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+      }
+
+      .pf-text-heading {
+        font-family: var(--pf-font-sans);
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        line-height: 1.3;
+      }
+
+      .pf-text-body {
+        font-family: var(--pf-font-sans);
+        font-weight: 400;
+        line-height: 1.6;
+      }
+
+      .pf-text-mono {
+        font-family: var(--pf-font-mono);
+        font-weight: 400;
+        letter-spacing: -0.02em;
+      }
+
+      .pf-text-label {
+        font-family: var(--pf-font-sans);
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+      @theme inline {
+        --color-background: var(--pf-background);
+        --color-foreground: var(--pf-foreground);
+        --color-card: var(--pf-card);
+        --color-card-foreground: var(--pf-card-foreground);
+        --color-popover: var(--pf-popover);
+        --color-popover-foreground: var(--pf-popover-foreground);
+        --color-primary: var(--pf-primary);
+        --color-primary-foreground: var(--pf-primary-foreground);
+        --color-muted: var(--pf-muted);
+        --color-muted-foreground: var(--pf-muted-foreground);
+        --color-border: var(--pf-border);
+        --color-input: var(--pf-input);
+        --color-ring: var(--pf-ring);
+        --radius-sm: var(--pf-radius-small);
+        --radius-md: var(--pf-radius-medium);
+        --radius-lg: var(--pf-radius-large);
+      }
+      @layer base {
+        body {
+          background: var(--pf-background);
+          color: var(--pf-foreground);
+        }
+        td,
+        th {
+          @apply break-words;
+          word-break: break-all;
+          word-break: auto-phrase;
+        }
+        th {
+          @apply whitespace-nowrap;
+        }
+      }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background {
+        background-color: var(--pf-background);
+      }
+      .text-background {
+        color: var(--pf-background);
+      }
+      .border-background {
+        border-color: var(--pf-background);
+      }
+      .ring-background {
+        --tw-ring-color: var(--pf-background);
+      }
+      .bg-foreground {
+        background-color: var(--pf-foreground);
+      }
+      .text-foreground {
+        color: var(--pf-foreground);
+      }
+      .border-foreground {
+        border-color: var(--pf-foreground);
+      }
+      .ring-foreground {
+        --tw-ring-color: var(--pf-foreground);
+      }
+      .bg-card {
+        background-color: var(--pf-card);
+      }
+      .text-card {
+        color: var(--pf-card);
+      }
+      .border-card {
+        border-color: var(--pf-card);
+      }
+      .ring-card {
+        --tw-ring-color: var(--pf-card);
+      }
+      .bg-card-foreground {
+        background-color: var(--pf-card-foreground);
+      }
+      .text-card-foreground {
+        color: var(--pf-card-foreground);
+      }
+      .border-card-foreground {
+        border-color: var(--pf-card-foreground);
+      }
+      .ring-card-foreground {
+        --tw-ring-color: var(--pf-card-foreground);
+      }
+      .bg-popover {
+        background-color: var(--pf-popover);
+      }
+      .text-popover {
+        color: var(--pf-popover);
+      }
+      .border-popover {
+        border-color: var(--pf-popover);
+      }
+      .ring-popover {
+        --tw-ring-color: var(--pf-popover);
+      }
+      .bg-popover-foreground {
+        background-color: var(--pf-popover-foreground);
+      }
+      .text-popover-foreground {
+        color: var(--pf-popover-foreground);
+      }
+      .border-popover-foreground {
+        border-color: var(--pf-popover-foreground);
+      }
+      .ring-popover-foreground {
+        --tw-ring-color: var(--pf-popover-foreground);
+      }
+      .bg-primary {
+        background-color: var(--pf-primary);
+      }
+      .text-primary {
+        color: var(--pf-primary);
+      }
+      .border-primary {
+        border-color: var(--pf-primary);
+      }
+      .ring-primary {
+        --tw-ring-color: var(--pf-primary);
+      }
+      .bg-primary-foreground {
+        background-color: var(--pf-primary-foreground);
+      }
+      .text-primary-foreground {
+        color: var(--pf-primary-foreground);
+      }
+      .border-primary-foreground {
+        border-color: var(--pf-primary-foreground);
+      }
+      .ring-primary-foreground {
+        --tw-ring-color: var(--pf-primary-foreground);
+      }
+      .bg-muted {
+        background-color: var(--pf-muted);
+      }
+      .text-muted {
+        color: var(--pf-muted);
+      }
+      .border-muted {
+        border-color: var(--pf-muted);
+      }
+      .ring-muted {
+        --tw-ring-color: var(--pf-muted);
+      }
+      .bg-muted-foreground {
+        background-color: var(--pf-muted-foreground);
+      }
+      .text-muted-foreground {
+        color: var(--pf-muted-foreground);
+      }
+      .border-muted-foreground {
+        border-color: var(--pf-muted-foreground);
+      }
+      .ring-muted-foreground {
+        --tw-ring-color: var(--pf-muted-foreground);
+      }
+      .bg-border {
+        background-color: var(--pf-border);
+      }
+      .text-border {
+        color: var(--pf-border);
+      }
+      .border-border {
+        border-color: var(--pf-border);
+      }
+      .ring-border {
+        --tw-ring-color: var(--pf-border);
+      }
+      .bg-input {
+        background-color: var(--pf-input);
+      }
+      .text-input {
+        color: var(--pf-input);
+      }
+      .border-input {
+        border-color: var(--pf-input);
+      }
+      .ring-input {
+        --tw-ring-color: var(--pf-input);
+      }
+      .bg-ring {
+        background-color: var(--pf-ring);
+      }
+      .text-ring {
+        color: var(--pf-ring);
+      }
+      .border-ring {
+        border-color: var(--pf-ring);
+      }
+      .ring-ring {
+        --tw-ring-color: var(--pf-ring);
+      }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+    <style id="critical-layout">
+      /* ===== App shell: sidebar + main (100dvh with vh fallback) ===== */
+      .app-shell {
+        display: flex;
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+      }
+      .app-sidebar {
+        width: 240px;
+        flex-shrink: 0;
+        background: var(--pf-sidebar-bg);
+        border-right: 1px solid var(--pf-border);
+        display: flex;
+        flex-direction: column;
+      }
+      .app-main {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+      .app-topbar {
+        height: 56px;
+        flex-shrink: 0;
+        border-bottom: 1px solid var(--pf-border);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .app-content {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        padding: 24px;
+      }
+
+      /* ===== Sidebar nav ===== */
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 9px 12px;
+        border-radius: 8px;
+        font-size: 14px;
+        color: var(--pf-sidebar-item);
+        cursor: pointer;
+        transition:
+          background 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+          color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        text-decoration: none;
+        will-change: transform;
+      }
+      .nav-item:hover {
+        background: var(--pf-sidebar-item-hover);
+        color: var(--pf-foreground);
+      }
+      .nav-item.active {
+        color: var(--pf-sidebar-item-active);
+        background: var(--pf-sidebar-item-hover);
+        font-weight: 500;
+      }
+      .nav-item.active::before {
+        content: '';
+        position: absolute;
+        left: -12px;
+        top: 7px;
+        bottom: 7px;
+        width: 2px;
+        border-radius: 2px;
+        background: var(--pf-primary);
+      }
+
+      /* ===== Settings layout ===== */
+      .settings-layout {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 24px;
+        align-items: flex-start;
+      }
+      .settings-tabnav {
+        width: 220px;
+      }
+      .settings-content {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      /* ===== Vertical tab nav ===== */
+      .tab-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        color: var(--pf-muted-foreground);
+        cursor: pointer;
+        transition:
+          background 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+          color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform;
+      }
+      .tab-item:hover {
+        background: var(--pf-sidebar-item-hover);
+        color: var(--pf-foreground);
+      }
+      .tab-item.active {
+        background: color-mix(in srgb, var(--pf-primary) 14%, transparent);
+        color: var(--pf-primary);
+        font-weight: 600;
+      }
+
+      /* ===== Section description ===== */
+      .section-desc {
+        font-size: 12px;
+        color: var(--pf-muted-foreground);
+        margin: 4px 0 16px 0;
+        line-height: 1.5;
+      }
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 4px;
+      }
+      .section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--pf-foreground);
+      }
+
+      /* ===== Buttons ===== */
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 36px;
+        padding: 0 20px;
+        border-radius: 8px;
+        background: var(--pf-primary);
+        color: var(--pf-primary-foreground);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        transition: opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform;
+      }
+      .btn-primary:hover {
+        opacity: 0.9;
+      }
+      .btn-primary:active {
+        transform: scale(0.98);
+      }
+      .btn-outline {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 36px;
+        padding: 0 16px;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--pf-foreground);
+        font-size: 13px;
+        cursor: pointer;
+        border: 1px solid var(--pf-border);
+        transition: border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform;
+      }
+      .btn-outline:hover {
+        border-color: var(--pf-primary);
+      }
+
+      /* ===== AI gradient button ===== */
+      .ai-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        height: 36px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, var(--pf-primary-400), var(--pf-primary-600));
+        color: var(--pf-primary-foreground);
+        font-size: 13px;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition: opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform;
+      }
+      .ai-btn:hover {
+        opacity: 0.92;
+      }
+
+      /* ===== Shortcut / kbd badge ===== */
+      .kbd-badge {
+        background: var(--pf-muted);
+        border: 1px solid var(--pf-border);
+        border-radius: 4px;
+        padding: 2px 8px;
+        font-family: var(--pf-font-mono);
+        font-size: 12px;
+        color: var(--pf-foreground);
+        white-space: nowrap;
+      }
+
+      /* ===== Platform icon badge ===== */
+      .platform-icon-badge {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--pf-muted);
+        border: 1px solid var(--pf-border);
+        flex-shrink: 0;
+      }
+      .platform-icon-badge.lg {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+      }
+
+      /* ===== Status badge ===== */
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 9999px;
+        flex-shrink: 0;
+      }
+      .status-badge.success {
+        background: color-mix(in srgb, var(--state-success) 16%, transparent);
+        color: var(--state-success);
+      }
+
+      /* ===== Default badge ===== */
+      .default-badge {
+        display: inline-flex;
+        align-items: center;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 9999px;
+        background: color-mix(in srgb, var(--pf-primary) 16%, transparent);
+        color: var(--pf-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      /* ===== Page header banner ===== */
+      .page-banner {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        background: color-mix(in srgb, var(--pf-primary) 6%, var(--pf-card));
+        border: 1px solid color-mix(in srgb, var(--pf-primary) 26%, transparent);
+        border-radius: 12px;
+      }
+
+      /* ===== Platform comparison table ===== */
+      .comparison-wrap {
+        border: 1px solid var(--pf-border);
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--pf-card);
+      }
+      .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+      }
+      .comparison-table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background: var(--pf-muted);
+        border: 1px solid var(--pf-border);
+        padding: 14px 16px;
+        text-align: left;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--pf-foreground);
+        vertical-align: middle;
+      }
+      .comparison-table thead th.col-feature {
+        width: 180px;
+      }
+      .comparison-table thead th.col-default {
+        background: color-mix(in srgb, var(--pf-primary) 10%, var(--pf-muted));
+      }
+      .comparison-table tbody td {
+        border: 1px solid var(--pf-border);
+        padding: 12px 16px;
+        font-size: 13px;
+        color: var(--pf-foreground);
+        vertical-align: middle;
+        word-break: break-word;
+      }
+      .comparison-table tbody td.cell-feature {
+        font-weight: 600;
+        color: var(--pf-foreground);
+        background: var(--pf-muted);
+      }
+      .comparison-table tbody td.cell-mono {
+        font-family: var(--pf-font-mono);
+        font-size: 12.5px;
+      }
+      .comparison-table tbody td.cell-default {
+        background: color-mix(in srgb, var(--pf-primary) 4%, transparent);
+      }
+      .comparison-table tbody tr:hover td {
+        background: color-mix(in srgb, var(--pf-primary) 3%, transparent);
+      }
+      .comparison-table tbody tr:hover td.cell-feature {
+        background: color-mix(in srgb, var(--pf-primary) 8%, var(--pf-muted));
+      }
+      .comparison-table tbody tr:hover td.cell-default {
+        background: color-mix(in srgb, var(--pf-primary) 7%, transparent);
+      }
+      .col-head-inner {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .col-head-tag {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--pf-muted-foreground);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      /* ===== Platform-exclusive feature cards ===== */
+      .feature-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 16px;
+      }
+      .feature-card {
+        background: var(--pf-card);
+        border: 1px solid var(--pf-border);
+        border-radius: 12px;
+        padding: 20px;
+        contain: layout style paint;
+        transition:
+          border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+          transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform;
+      }
+      .feature-card:hover {
+        border-color: var(--pf-muted-foreground);
+      }
+      .feature-card.is-default {
+        border-color: color-mix(in srgb, var(--pf-primary) 50%, transparent);
+        background: color-mix(in srgb, var(--pf-primary) 4%, var(--pf-card));
+      }
+      .feature-card-head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .feature-card-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--pf-foreground);
+      }
+      .feature-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .feature-list-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 13px;
+        color: var(--pf-foreground);
+        line-height: 1.5;
+      }
+      .feature-list-item .check-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        border-radius: 9999px;
+        background: color-mix(in srgb, var(--pf-primary) 16%, transparent);
+        color: var(--pf-primary);
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      .feature-list-item .feat-text {
+        min-width: 0;
+      }
+      .feature-list-item .feat-desc {
+        display: block;
+        font-size: 11.5px;
+        color: var(--pf-muted-foreground);
+        margin-top: 2px;
+      }
+
+      /* ===== Auto-detection flow ===== */
+      .detection-flow {
+        display: flex;
+        align-items: stretch;
+        gap: 0;
+        overflow-x: auto;
+      }
+      .flow-step {
+        flex: 1 1 0;
+        min-width: 160px;
+        background: var(--pf-card);
+        border: 1px solid var(--pf-border);
+        border-radius: 10px;
+        padding: 14px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        contain: layout style paint;
+        transition: border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform;
+      }
+      .flow-step:hover {
+        border-color: var(--pf-primary);
+      }
+      .flow-step-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .flow-step-num {
+        width: 24px;
+        height: 24px;
+        border-radius: 9999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: color-mix(in srgb, var(--pf-primary) 16%, transparent);
+        color: var(--pf-primary);
+        font-size: 12px;
+        font-weight: 700;
+        font-family: var(--pf-font-mono);
+        flex-shrink: 0;
+      }
+      .flow-step-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--pf-foreground);
+      }
+      .flow-step-desc {
+        font-size: 11.5px;
+        color: var(--pf-muted-foreground);
+        line-height: 1.5;
+      }
+      .flow-step-code {
+        font-family: var(--pf-font-mono);
+        font-size: 11px;
+        color: var(--pf-primary);
+        background: color-mix(in srgb, var(--pf-primary) 8%, transparent);
+        border-radius: 4px;
+        padding: 2px 6px;
+        align-self: flex-start;
+      }
+      .flow-arrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        flex-shrink: 0;
+        color: var(--pf-muted-foreground);
+      }
+
+      /* ===== Platform switcher cards ===== */
+      .platform-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      .platform-card {
+        position: relative;
+        border: 1px solid var(--pf-border);
+        border-radius: 12px;
+        padding: 16px;
+        cursor: pointer;
+        background: var(--pf-card);
+        transition:
+          border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+          background 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+          transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform;
+        contain: layout style paint;
+      }
+      .platform-card:hover {
+        border-color: var(--pf-muted-foreground);
+      }
+      .platform-card.selected {
+        border-color: var(--pf-primary);
+        background: color-mix(in srgb, var(--pf-primary) 10%, var(--pf-card));
+      }
+      .platform-card.selected .platform-icon-badge {
+        background: color-mix(in srgb, var(--pf-primary) 18%, transparent);
+        border-color: color-mix(in srgb, var(--pf-primary) 40%, transparent);
+      }
+      .select-radio {
+        width: 18px;
+        height: 18px;
+        border-radius: 9999px;
+        border: 1.5px solid var(--pf-border);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: transparent;
+      }
+      .select-radio.on {
+        background: var(--pf-primary);
+        border-color: var(--pf-primary);
+        color: var(--pf-primary-foreground);
+      }
+
+      /* ===== Lucide sizing helper ===== */
+      [data-lucide] {
+        display: inline-block;
+        vertical-align: middle;
+        flex-shrink: 0;
+      }
+
+      /* ===== Responsive: stack settings layout under 1024px ===== */
+      @media (max-width: 1024px) {
+        .settings-layout {
+          grid-template-columns: 1fr;
+        }
+        .settings-tabnav {
+          width: 100%;
+        }
+        .platform-cards {
+          grid-template-columns: 1fr;
+        }
+        .detection-flow {
+          flex-direction: column;
+        }
+        .flow-arrow {
+          width: 100%;
+          height: 28px;
+          transform: rotate(90deg);
+        }
+      }
+
+      /* ===== Reduced motion: disable animations ===== */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          will-change: auto !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="font-sans antialiased">
+    <div class="app-shell" data-viewport-mode="app-shell">
+      <!-- ============ SIDEBAR ============ -->
+      <aside class="app-sidebar">
+        <!-- Logo -->
+        <div
+          class="flex items-center gap-2.5 px-4"
+          style="height: 56px; border-bottom: 1px solid var(--pf-border)"
+        >
+          <div
+            class="flex items-center justify-center"
+            style="
+              width: 30px;
+              height: 30px;
+              border-radius: 8px;
+              background: linear-gradient(135deg, var(--pf-primary-400), var(--pf-primary-600));
+            "
+          >
+            <i
+              data-lucide="flame"
+              width="16"
+              height="16"
+              style="color: var(--pf-primary-foreground)"
+            ></i>
+          </div>
+          <div class="flex flex-col leading-tight">
+            <span style="font-size: 14px; font-weight: 600; color: var(--pf-foreground)"
+              >PyForge AI</span
+            >
+            <span
+              style="
+                font-size: 11px;
+                color: var(--pf-muted-foreground);
+                font-family: var(--pf-font-mono);
+              "
+              >v2.4.0</span
+            >
+          </div>
+        </div>
+
+        <!-- Nav -->
+        <nav class="flex-1 flex flex-col gap-1" style="padding: 12px">
+          <a class="nav-item" data-dom-id="nav-dashboard"
+            ><i data-lucide="layout-dashboard" width="18" height="18"></i><span>控制台</span></a
+          >
+          <a class="nav-item" data-dom-id="nav-python-versions"
+            ><i data-lucide="boxes" width="18" height="18"></i><span>Python 版本</span></a
+          >
+          <a class="nav-item" data-dom-id="nav-environments"
+            ><i data-lucide="layers" width="18" height="18"></i><span>虚拟环境</span></a
+          >
+          <a class="nav-item" data-dom-id="nav-packages"
+            ><i data-lucide="package" width="18" height="18"></i><span>包与镜像源</span></a
+          >
+          <a class="nav-item" data-dom-id="nav-ai-deploy"
+            ><i data-lucide="sparkles" width="18" height="18"></i><span>AI 智能部署</span></a
+          >
+          <a class="nav-item active" data-dom-id="nav-settings"
+            ><i data-lucide="settings" width="18" height="18"></i><span>设置</span></a
+          >
+        </nav>
+
+        <!-- Bottom: AI button + profile -->
+        <div style="padding: 12px; border-top: 1px solid var(--pf-border)">
+          <button class="ai-btn">
+            <i data-lucide="sparkles" width="15" height="15"></i>
+            <span>AI 助手</span>
+          </button>
+          <div
+            class="flex items-center gap-2.5"
+            style="margin-top: 12px; padding: 6px 4px; border-radius: 8px"
+          >
+            <div
+              class="flex items-center justify-center"
+              style="
+                width: 30px;
+                height: 30px;
+                border-radius: 9999px;
+                background: var(--pf-muted);
+                border: 1px solid var(--pf-border);
+                font-size: 12px;
+                font-weight: 600;
+                color: var(--pf-primary);
+              "
+            >
+              DY
+            </div>
+            <div class="flex flex-col leading-tight" style="min-width: 0">
+              <span style="font-size: 13px; color: var(--pf-foreground)">Dev User</span>
+              <span style="font-size: 11px; color: var(--pf-muted-foreground)">dev@pyforge.ai</span>
+            </div>
+            <i
+              data-lucide="chevron-up"
+              width="14"
+              height="14"
+              style="color: var(--pf-muted-foreground); margin-left: auto"
+            ></i>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ============ MAIN ============ -->
+      <div class="app-main">
+        <!-- ===== Top Bar ===== -->
+        <header class="app-topbar px-6">
+          <h1
+            style="
+              font-size: 18px;
+              font-weight: 600;
+              color: var(--pf-foreground);
+              white-space: nowrap;
+            "
+          >
+            平台差异化适配
+          </h1>
+
+          <!-- Center search -->
+          <div class="flex-1 flex justify-center">
+            <div
+              class="flex items-center gap-2"
+              style="
+                width: 100%;
+                max-width: 380px;
+                height: 32px;
+                background: var(--pf-muted);
+                border: 1px solid var(--pf-border);
+                border-radius: 8px;
+                padding: 0 12px;
+              "
+            >
+              <i
+                data-lucide="search"
+                width="14"
+                height="14"
+                style="color: var(--pf-muted-foreground)"
+              ></i>
+              <input
+                type="text"
+                placeholder="搜索平台差异..."
+                style="
+                  background: transparent;
+                  border: none;
+                  outline: none;
+                  font-size: 13px;
+                  color: var(--pf-foreground);
+                  width: 100%;
+                "
+              />
+              <span class="kbd-badge" style="font-size: 11px; padding: 1px 6px">Ctrl K</span>
+            </div>
+          </div>
+
+          <!-- Right actions -->
+          <div class="flex items-center gap-4">
+            <!-- Platform indicator -->
+            <div
+              class="flex items-center gap-2"
+              style="
+                padding: 4px 10px;
+                border-radius: 8px;
+                background: var(--pf-muted);
+                border: 1px solid var(--pf-border);
+              "
+              title="当前平台"
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                style="color: var(--state-info)"
+                aria-hidden="true"
+              >
+                <path
+                  d="M3 5.6 10.4 4.5V11.3H3V5.6Zm0 12.8 7.4 1.1V12.7H3v5.7ZM11.4 4.35 21 3V11.3H11.4V4.35Zm0 15.3L21 21V12.7H11.4v6.95Z"
+                />
+              </svg>
+              <span style="font-size: 12px; font-weight: 500; color: var(--pf-foreground)"
+                >Windows 11</span
+              >
+            </div>
+            <div class="flex items-center gap-1.5" title="服务在线">
+              <span
+                style="
+                  width: 8px;
+                  height: 8px;
+                  border-radius: 9999px;
+                  background: var(--state-success);
+                  box-shadow: 0 0 0 3px color-mix(in srgb, var(--state-success) 20%, transparent);
+                "
+              ></span>
+            </div>
+            <button
+              class="flex items-center justify-center"
+              style="
+                width: 32px;
+                height: 32px;
+                border-radius: 8px;
+                color: var(--pf-muted-foreground);
+                background: transparent;
+                border: none;
+                cursor: pointer;
+              "
+              title="通知"
+            >
+              <i data-lucide="bell" width="18" height="18"></i>
+            </button>
+            <button
+              class="flex items-center gap-1.5"
+              style="
+                height: 32px;
+                padding: 0 14px;
+                border-radius: 8px;
+                background: var(--pf-primary);
+                color: var(--pf-primary-foreground);
+                font-size: 13px;
+                font-weight: 500;
+                border: none;
+                cursor: pointer;
+              "
+            >
+              <i data-lucide="rocket" width="14" height="14"></i>
+              <span>快速部署</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- ===== Content ===== -->
+        <main class="app-content overflow-y-auto" data-scroll-region="primary">
+          <div class="settings-layout">
+            <!-- ===== Left: Settings Tab Nav ===== -->
+            <div class="settings-tabnav">
+              <div
+                style="
+                  background: var(--pf-card);
+                  border: 1px solid var(--pf-border);
+                  border-radius: 12px;
+                  padding: 12px;
+                "
+              >
+                <div class="tab-item active" data-dom-id="tab-platform-diff">
+                  <i data-lucide="sliders-horizontal" width="18" height="18"></i
+                  ><span>平台差异化适配</span>
+                </div>
+                <div class="tab-item" data-dom-id="tab-platform-mgmt">
+                  <i data-lucide="monitor-smartphone" width="18" height="18"></i
+                  ><span>平台管理</span>
+                </div>
+                <div class="tab-item" data-dom-id="tab-general">
+                  <i data-lucide="settings" width="18" height="18"></i><span>通用</span>
+                </div>
+                <div class="tab-item" data-dom-id="tab-appearance">
+                  <i data-lucide="palette" width="18" height="18"></i><span>外观</span>
+                </div>
+                <div class="tab-item" data-dom-id="tab-paths">
+                  <i data-lucide="folder" width="18" height="18"></i><span>路径</span>
+                </div>
+                <div class="tab-item" data-dom-id="tab-terminal">
+                  <i data-lucide="terminal" width="18" height="18"></i><span>终端</span>
+                </div>
+                <div class="tab-item" data-dom-id="tab-about">
+                  <i data-lucide="info" width="18" height="18"></i><span>关于</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ===== Right: Settings Content ===== -->
+            <div class="settings-content">
+              <!-- ============ 1. Page Header ============ -->
+              <section
+                style="
+                  background: var(--pf-card);
+                  border: 1px solid var(--pf-border);
+                  border-radius: 12px;
+                  padding: 24px;
+                "
+              >
+                <div class="section-header">
+                  <i
+                    data-lucide="sliders-horizontal"
+                    width="18"
+                    height="18"
+                    style="color: var(--pf-primary)"
+                  ></i>
+                  <h2 class="section-title">平台差异化适配</h2>
+                </div>
+                <p class="section-desc">
+                  自动检测系统平台并适配差异化功能，默认 Windows，支持 macOS 与 Linux
+                </p>
+
+                <!-- Platform auto-detection banner -->
+                <div class="page-banner" data-dom-id="detect-banner">
+                  <div class="platform-icon-badge lg" style="color: var(--state-info)">
+                    <svg
+                      width="26"
+                      height="26"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M3 5.6 10.4 4.5V11.3H3V5.6Zm0 12.8 7.4 1.1V12.7H3v5.7ZM11.4 4.35 21 3V11.3H11.4V4.35Zm0 15.3L21 21V12.7H11.4v6.95Z"
+                      />
+                    </svg>
+                  </div>
+                  <div class="flex flex-col" style="gap: 3px; min-width: 0">
+                    <span style="font-size: 15px; font-weight: 600; color: var(--pf-foreground)"
+                      >已检测: Windows 11 (x64)</span
+                    >
+                    <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                      >应用启动时自动识别操作系统并切换平台配置</span
+                    >
+                  </div>
+                  <span class="status-badge success" style="margin-left: auto">
+                    <i data-lucide="check-circle-2" width="13" height="13"></i>
+                    已检测
+                  </span>
+                  <button
+                    class="btn-outline"
+                    data-dom-id="platform-redetect"
+                    style="height: 32px; padding: 0 14px; font-size: 12px"
+                  >
+                    <i data-lucide="refresh-cw" width="13" height="13"></i>
+                    <span>重新检测</span>
+                  </button>
+                </div>
+              </section>
+
+              <!-- ============ 2. Platform Comparison Matrix ============ -->
+              <section
+                style="
+                  background: var(--pf-card);
+                  border: 1px solid var(--pf-border);
+                  border-radius: 12px;
+                  padding: 24px;
+                "
+              >
+                <div class="section-header">
+                  <i
+                    data-lucide="columns-3"
+                    width="18"
+                    height="18"
+                    style="color: var(--pf-primary)"
+                  ></i>
+                  <h2 class="section-title">平台对比矩阵</h2>
+                </div>
+                <p class="section-desc">
+                  三平台差异化功能对照表，Windows 列高亮表示默认平台。路径与命令使用等宽字体呈现。
+                </p>
+
+                <div class="comparison-wrap" data-dom-id="platform-comparison-table">
+                  <table class="comparison-table">
+                    <thead>
+                      <tr>
+                        <th class="col-feature">差异化功能</th>
+                        <th class="col-default">
+                          <div class="col-head-inner">
+                            <span
+                              class="platform-icon-badge"
+                              style="
+                                width: 26px;
+                                height: 26px;
+                                border-radius: 6px;
+                                color: var(--state-info);
+                              "
+                            >
+                              <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  d="M3 5.6 10.4 4.5V11.3H3V5.6Zm0 12.8 7.4 1.1V12.7H3v5.7ZM11.4 4.35 21 3V11.3H11.4V4.35Zm0 15.3L21 21V12.7H11.4v6.95Z"
+                                />
+                              </svg>
+                            </span>
+                            <div class="flex flex-col leading-tight">
+                              <span style="font-size: 13px">Windows</span>
+                              <span class="col-head-tag" style="color: var(--pf-primary)"
+                                >默认</span
+                              >
+                            </div>
+                          </div>
+                        </th>
+                        <th>
+                          <div class="col-head-inner">
+                            <span
+                              class="platform-icon-badge"
+                              style="
+                                width: 26px;
+                                height: 26px;
+                                border-radius: 6px;
+                                color: var(--pf-foreground);
+                              "
+                            >
+                              <svg
+                                width="15"
+                                height="15"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  d="M17.05 12.04c-.03-2.55 2.08-3.77 2.18-3.83-1.19-1.74-3.04-1.98-3.7-2-1.57-.16-3.07.93-3.87.93-.8 0-2.02-.91-3.32-.89-1.71.03-3.29.99-4.17 2.52-1.78 3.08-.45 7.64 1.28 10.14.84 1.22 1.84 2.6 3.16 2.55 1.27-.05 1.75-.82 3.28-.82 1.52 0 1.96.82 3.31.8 1.37-.03 2.23-1.25 3.06-2.48.96-1.42 1.36-2.78 1.38-2.85-.03-.01-2.66-1.02-2.69-4.04M14.63 4.77c.7-.85 1.17-2.02 1.04-3.19-1.01.04-2.23.67-2.95 1.51-.65.75-1.21 1.94-1.06 3.09 1.12.09 2.27-.57 2.97-1.41"
+                                />
+                              </svg>
+                            </span>
+                            <div class="flex flex-col leading-tight">
+                              <span style="font-size: 13px">macOS</span>
+                              <span class="col-head-tag">Apple Silicon</span>
+                            </div>
+                          </div>
+                        </th>
+                        <th>
+                          <div class="col-head-inner">
+                            <span
+                              class="platform-icon-badge"
+                              style="
+                                width: 26px;
+                                height: 26px;
+                                border-radius: 6px;
+                                color: var(--pf-foreground);
+                              "
+                            >
+                              <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  d="M12 2.4c-1.5 0-2.7 1.2-2.7 2.7 0 .6.2 1.1.5 1.6-1.8 1-3.1 3.1-3.1 5.6 0 1.7.6 3.2 1.4 4.4-.8.6-1.4 1.6-1.4 2.7 0 .3 0 .6.1.9-.5.2-.8.7-.8 1.3 0 .8.6 1.4 1.4 1.4h9.2c.8 0 1.4-.6 1.4-1.4 0-.6-.3-1.1-.8-1.3.1-.3.1-.6.1-.9 0-1.1-.6-2.1-1.4-2.7.8-1.2 1.4-2.7 1.4-4.4 0-2.5-1.3-4.6-3.1-5.6.3-.5.5-1 .5-1.6 0-1.5-1.2-2.7-2.7-2.7Z"
+                                />
+                                <circle cx="10.6" cy="6.4" r=".8" fill="#0a0e14" />
+                                <circle cx="13.4" cy="6.4" r=".8" fill="#0a0e14" />
+                              </svg>
+                            </span>
+                            <div class="flex flex-col leading-tight">
+                              <span style="font-size: 13px">Linux</span>
+                              <span class="col-head-tag">多发行版</span>
+                            </div>
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="cell-feature">包管理器</td>
+                        <td class="cell-mono cell-default">winget / Chocolatey</td>
+                        <td class="cell-mono">Homebrew (brew)</td>
+                        <td class="cell-mono">apt / yum / pacman</td>
+                      </tr>
+                      <tr>
+                        <td class="cell-feature">默认 Shell</td>
+                        <td class="cell-mono cell-default">PowerShell 7.4</td>
+                        <td class="cell-mono">zsh (default)</td>
+                        <td class="cell-mono">bash / zsh</td>
+                      </tr>
+                      <tr>
+                        <td class="cell-feature">Python 路径</td>
+                        <td class="cell-mono cell-default">C:\Python312\</td>
+                        <td class="cell-mono">/usr/local/bin/python3</td>
+                        <td class="cell-mono">/usr/bin/python3</td>
+                      </tr>
+                      <tr>
+                        <td class="cell-feature">虚拟环境路径</td>
+                        <td class="cell-mono cell-default">C:\Users\{user}\Envs\</td>
+                        <td class="cell-mono">~/.local/share/virtualenvs/</td>
+                        <td class="cell-mono">~/.virtualenvs/</td>
+                      </tr>
+                      <tr>
+                        <td class="cell-feature">pip 缓存路径</td>
+                        <td class="cell-mono cell-default">%LocalAppData%\pip\Cache</td>
+                        <td class="cell-mono">~/Library/Caches/pip</td>
+                        <td class="cell-mono">~/.cache/pip</td>
+                      </tr>
+                      <tr>
+                        <td class="cell-feature">路径分隔符</td>
+                        <td class="cell-mono cell-default">; (分号)</td>
+                        <td class="cell-mono">: (冒号)</td>
+                        <td class="cell-mono">: (冒号)</td>
+                      </tr>
+                      <tr>
+                        <td class="cell-feature">目录分隔符</td>
+                        <td class="cell-mono cell-default">\ (反斜杠)</td>
+                        <td class="cell-mono">/ (正斜杠)</td>
+                        <td class="cell-mono">/ (正斜杠)</td>
+                      </tr>
+                      <tr>
+                        <td class="cell-feature">换行符</td>
+                        <td class="cell-mono cell-default">CRLF</td>
+                        <td class="cell-mono">LF</td>
+                        <td class="cell-mono">LF</td>
+                      </tr>
+                      <tr>
+                        <td class="cell-feature">脚本类型</td>
+                        <td class="cell-mono cell-default">.ps1 / .bat</td>
+                        <td class="cell-mono">.sh / .zsh</td>
+                        <td class="cell-mono">.sh / .bash</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+
+              <!-- ============ 3. Platform-Exclusive Features ============ -->
+              <section
+                style="
+                  background: var(--pf-card);
+                  border: 1px solid var(--pf-border);
+                  border-radius: 12px;
+                  padding: 24px;
+                "
+              >
+                <div class="section-header">
+                  <i
+                    data-lucide="toggle-right"
+                    width="18"
+                    height="18"
+                    style="color: var(--pf-primary)"
+                  ></i>
+                  <h2 class="section-title">平台专属功能</h2>
+                </div>
+                <p class="section-desc">各平台独有的集成与检测能力，Windows 卡片标记为默认平台。</p>
+
+                <div class="feature-cards-grid" data-dom-id="platform-exclusive-features">
+                  <!-- Windows -->
+                  <div class="feature-card is-default">
+                    <div class="feature-card-head">
+                      <div class="platform-icon-badge" style="color: var(--state-info)">
+                        <svg
+                          width="22"
+                          height="22"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M3 5.6 10.4 4.5V11.3H3V5.6Zm0 12.8 7.4 1.1V12.7H3v5.7ZM11.4 4.35 21 3V11.3H11.4V4.35Zm0 15.3L21 21V12.7H11.4v6.95Z"
+                          />
+                        </svg>
+                      </div>
+                      <div class="flex items-center" style="gap: 8px">
+                        <span class="feature-card-title">Windows 专属</span>
+                        <span class="default-badge">默认</span>
+                      </div>
+                    </div>
+                    <div class="feature-list">
+                      <div class="feature-list-item">
+                        <span class="check-icon"
+                          ><i data-lucide="check" width="12" height="12"></i
+                        ></span>
+                        <span class="feat-text"
+                          >WSL2 集成<span class="feat-desc"
+                            >Windows Subsystem for Linux 2</span
+                          ></span
+                        >
+                      </div>
+                      <div class="feature-list-item">
+                        <span class="check-icon"
+                          ><i data-lucide="check" width="12" height="12"></i
+                        ></span>
+                        <span class="feat-text"
+                          >PowerShell 脚本生成<span class="feat-desc"
+                            >自动生成 .ps1 安装脚本</span
+                          ></span
+                        >
+                      </div>
+                      <div class="feature-list-item">
+                        <span class="check-icon"
+                          ><i data-lucide="check" width="12" height="12"></i
+                        ></span>
+                        <span class="feat-text"
+                          >Windows Terminal 集成<span class="feat-desc"
+                            >添加到 Terminal 配置文件</span
+                          ></span
+                        >
+                      </div>
+                      <div class="feature-list-item">
+                        <span class="check-icon"
+                          ><i data-lucide="check" width="12" height="12"></i
+                        ></span>
+                        <span class="feat-text"
+                          >Visual Studio Build Tools 检测<span class="feat-desc"
+                            >自动检测 C++ 编译工具链</span
+                          ></span
+                        >
+                      </div>
+                      <div class="feature-list-item">
+                        <span class="check-icon"
+                          ><i data-lucide="check" width="12" height="12"></i
+                        ></span>
+                        <span class="feat-text"
+                          >Windows Defender 白名单<span class="feat-desc"
+                            >自动添加 Python 路径到排除列表</span
+                          ></span
+                        >
+                      </div>
+                      <div class="feature-list-item">
+                        <span class="check-icon"
+                          ><i data-lucide="check" width="12" height="12"></i
+                        ></span>
+                        <span class="feat-text"
+                          >注册表路径管理<span class="feat-desc">系统注册表读写与配置</span></span
+                        >
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- macOS -->
+                  <div class="feature-card">
+                    <div class="feature-card-head">
+                      <div class="platform-icon-badge" style="color: var(--pf-foreground)">
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M17.05 12.04c-.03-2.55 2.08-3.77 2.18-3.83-1.19-1.74-3.04-1.98-3.7-2-1.57-.16-3.07.93-3.87.93-.8 0-2.02-.91-3.32-.89-1.71.03-3.29.99-4.17 2.52-1.78 3.08-.45 7.64 1.28 10.14.84 1.22 1.84 2.6 3.16 2.55 1.27-.05 1.75-.82 3.28-.82 1.52 0 1.96.82 3.31.8 1.37-.03 2.23-1.25 3.06-2.48.96-1.42 1.36-2.78 1.38-2.85-.03-.01-2.66-1.02-2.69-4.04M14.63 4.77c.7-.85 1.17-2.02 1.04-3.19-1.01.04-2.23.67-2.95 1.51-.65.75-1.21 1.94-1.06 3.09 1.12.09 2.27-.57 2.97-1.41"
+                          />
+                        </svg>
+                      </div>
+                      <span class="feature-card-title">macOS 专属</span>
+                    </div>
+                    <div class="feature-list">
+                      <div class="feature-list-item">
+                        <span class="check-icon"
+                          ><i data-lucide="check" width="12" height="12"></i
+                        ></span>
+                        <span class="feat-text"
+                          >Homebrew 集成<span class="feat-desc">自动 brew install 依赖</span></span
+                        >
+                      </div>
+                      <div class="feature-list-item">
+                        <span class="check-icon"
+                          ><i data-lucide="check" width="12" height="12"></i
+                        ></span>
+                        <span class="feat-text"
+                          >pyenv 路径管理<span class="feat-desc">多版本 Python 切换</span></span
+                        >
+                      </div>
+                      <div class="feature-list-item">
+                        <span class="check-icon"
+                          ><i data-lucide="check" width="12" height="12"></i
+                        ></span>
+                        <span class="feat-text"
+                          >.zshrc / .bash_profile 配置<span class="feat-desc"
+                            >自动写入 Shell 配置</span
+                          ></span
+                        >
+                      </div>
+                      <div class="feature-list-item">
+                        <span class="check-icon"
+                          ><i data-lucide="check" width="12" height="12"></i
+                        ></span>
+                        <span class="feat-text"
+                          >Apple Silicon (arm64) 适配<span class="feat-desc"
+                            >原生 arm64 二进制支持</span
+                          ></span
+                        >
+                      </div>
+                      <div class="feature-list-item">
+                        <span class="check-icon"
+                          ><i data-lucide="check" width="12" height="12"></i
+                        ></span>
+                        <span class="feat-text"
+                          >Keychain 证书管理<span class="feat-desc">系统钥匙串集成</span></span
+                        >
+                      </div>
+                      <div class="feature-list-item">
+                        <span class="check-icon"
+                          ><i data-lucide="check" width="12" height="12"></i
+                        ></span>
+                        <span class="feat-text"
+                          >Homebrew Services 集成<span class="feat-desc"
+                            >brew services 后台管理</span
+                          ></span
+                        >
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Linux -->
+                  <div class="feature-card">
+                    <div class="feature-card-head">
+                      <div class="platform-icon-badge" style="color: var(--pf-foreground)">
+                        <svg
+                          width="22"
+                          height="22"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M12 2.4c-1.5 0-2.7 1.2-2.7 2.7 0 .6.2 1.1.5 1.6-1.8 1-3.1 3.1-3.1 5.6 0 1.7.6 3.2 1.4 4.4-.8.6-1.4 1.6-1.4 2.7 0 .3 0 .6.1.9-.5.2-.8.7-.8 1.3 0 .8.6 1.4 1.4 1.4h9.2c.8 0 1.4-.6 1.4-1.4 0-.6-.3-1.1-.8-1.3.1-.3.1-.6.1-.9 0-1.1-.6-2.1-1.4-2.7.8-1.2 1.4-2.7 1.4-4.4 0-2.5-1.3-4.6-3.1-5.6.3-.5.5-1 .5-1.6 0-1.5-1.2-2.7-2.7-2.7Z"
+                          />
+                          <circle cx="10.6" cy="6.4" r=".8" fill="#0a0e14" />
+                          <circle cx="13.4" cy="6.4" r=".8" fill="#0a0e14" />
+                        </svg>
+                      </div>
+                      <span class="feature-card-title">Linux 专属</span>
+                    </div>
+                    <div class="feature-list">
+                      <div class="feature-list-item">
+                        <span class="check-icon"
+                          ><i data-lucide="check" width="12" height="12"></i
+                        ></span>
+                        <span class="feat-text"
+                          >apt/yum/pacman 自动检测<span class="feat-desc"
+                            >识别发行版包管理器</span
+                          ></span
+                        >
+                      </div>
+                      <div class="feature-list-item">
+                        <span class="check-icon"
+                          ><i data-lucide="check" width="12" height="12"></i
+                        ></span>
+                        <span class="feat-text"
+                          >systemd service 生成<span class="feat-desc">系统服务单元文件</span></span
+                        >
+                      </div>
+                      <div class="feature-list-item">
+                        <span class="check-icon"
+                          ><i data-lucide="check" width="12" height="12"></i
+                        ></span>
+                        <span class="feat-text"
+                          >.bashrc / .zshrc 配置<span class="feat-desc"
+                            >自动写入 Shell 配置</span
+                          ></span
+                        >
+                      </div>
+                      <div class="feature-list-item">
+                        <span class="check-icon"
+                          ><i data-lucide="check" width="12" height="12"></i
+                        ></span>
+                        <span class="feat-text"
+                          >多发行版适配<span class="feat-desc"
+                            >Ubuntu / Debian / Fedora / Arch</span
+                          ></span
+                        >
+                      </div>
+                      <div class="feature-list-item">
+                        <span class="check-icon"
+                          ><i data-lucide="check" width="12" height="12"></i
+                        ></span>
+                        <span class="feat-text"
+                          >权限管理 (sudo)<span class="feat-desc">提权操作与权限校验</span></span
+                        >
+                      </div>
+                      <div class="feature-list-item">
+                        <span class="check-icon"
+                          ><i data-lucide="check" width="12" height="12"></i
+                        ></span>
+                        <span class="feat-text"
+                          >snap/flatpak 支持<span class="feat-desc">通用包格式集成</span></span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- ============ 4. Auto-Detection Logic ============ -->
+              <section
+                style="
+                  background: var(--pf-card);
+                  border: 1px solid var(--pf-border);
+                  border-radius: 12px;
+                  padding: 24px;
+                "
+              >
+                <div class="section-header">
+                  <i
+                    data-lucide="radar"
+                    width="18"
+                    height="18"
+                    style="color: var(--pf-primary)"
+                  ></i>
+                  <h2 class="section-title">自动检测流程</h2>
+                </div>
+                <p class="section-desc">
+                  应用启动时按以下顺序检测平台环境，并据此加载对应平台配置。
+                </p>
+
+                <div class="detection-flow" data-dom-id="detection-flow">
+                  <div class="flow-step">
+                    <div class="flow-step-head">
+                      <span class="flow-step-num">1</span>
+                      <span class="flow-step-title">检测操作系统</span>
+                    </div>
+                    <span class="flow-step-desc">OS 检测</span>
+                    <span class="flow-step-code">platform.system()</span>
+                    <span class="flow-step-desc">识别当前操作系统类型</span>
+                  </div>
+                  <div class="flow-arrow">
+                    <i data-lucide="chevron-right" width="18" height="18"></i>
+                  </div>
+                  <div class="flow-step">
+                    <div class="flow-step-head">
+                      <span class="flow-step-num">2</span>
+                      <span class="flow-step-title">检测系统架构</span>
+                    </div>
+                    <span class="flow-step-desc">CPU 架构识别</span>
+                    <span class="flow-step-code">x64 / arm64 / armv7l</span>
+                    <span class="flow-step-desc">匹配对应架构二进制</span>
+                  </div>
+                  <div class="flow-arrow">
+                    <i data-lucide="chevron-right" width="18" height="18"></i>
+                  </div>
+                  <div class="flow-step">
+                    <div class="flow-step-head">
+                      <span class="flow-step-num">3</span>
+                      <span class="flow-step-title">检测包管理器</span>
+                    </div>
+                    <span class="flow-step-desc">按平台匹配</span>
+                    <span class="flow-step-code">winget / brew / apt</span>
+                    <span class="flow-step-desc"
+                      >Windows: winget; macOS: brew; Linux: apt/yum/pacman</span
+                    >
+                  </div>
+                  <div class="flow-arrow">
+                    <i data-lucide="chevron-right" width="18" height="18"></i>
+                  </div>
+                  <div class="flow-step">
+                    <div class="flow-step-head">
+                      <span class="flow-step-num">4</span>
+                      <span class="flow-step-title">检测 Shell 环境</span>
+                    </div>
+                    <span class="flow-step-desc">默认 Shell 识别</span>
+                    <span class="flow-step-code">PowerShell / zsh / bash</span>
+                    <span class="flow-step-desc">确定脚本类型与配置文件</span>
+                  </div>
+                  <div class="flow-arrow">
+                    <i data-lucide="chevron-right" width="18" height="18"></i>
+                  </div>
+                  <div class="flow-step">
+                    <div class="flow-step-head">
+                      <span class="flow-step-num">5</span>
+                      <span class="flow-step-title">加载平台配置</span>
+                    </div>
+                    <span class="flow-step-desc">自动切换</span>
+                    <span class="flow-step-code">paths / scripts / separators</span>
+                    <span class="flow-step-desc">切换路径、脚本类型、分隔符</span>
+                  </div>
+                </div>
+              </section>
+
+              <!-- ============ 5. Platform Switcher ============ -->
+              <section
+                style="
+                  background: var(--pf-card);
+                  border: 1px solid var(--pf-border);
+                  border-radius: 12px;
+                  padding: 24px;
+                "
+              >
+                <div class="section-header">
+                  <i
+                    data-lucide="toggle-left"
+                    width="18"
+                    height="18"
+                    style="color: var(--pf-primary)"
+                  ></i>
+                  <h2 class="section-title">平台切换</h2>
+                </div>
+                <p class="section-desc">
+                  选择目标平台以切换路径、脚本与终端配置，Windows 为默认平台。
+                </p>
+
+                <div class="platform-cards" data-dom-id="platform-switcher">
+                  <!-- Windows (selected) -->
+                  <div
+                    class="platform-card selected"
+                    role="button"
+                    tabindex="0"
+                    aria-pressed="true"
+                    data-dom-id="switch-windows"
+                  >
+                    <div class="flex items-start justify-between">
+                      <div class="platform-icon-badge" style="color: var(--state-info)">
+                        <svg
+                          width="22"
+                          height="22"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M3 5.6 10.4 4.5V11.3H3V5.6Zm0 12.8 7.4 1.1V12.7H3v5.7ZM11.4 4.35 21 3V11.3H11.4V4.35Zm0 15.3L21 21V12.7H11.4v6.95Z"
+                          />
+                        </svg>
+                      </div>
+                      <span class="select-radio on"
+                        ><i data-lucide="check" width="12" height="12"></i
+                      ></span>
+                    </div>
+                    <div class="flex items-center" style="gap: 8px; margin-top: 14px">
+                      <span style="font-size: 14px; font-weight: 600; color: var(--pf-foreground)"
+                        >Windows</span
+                      >
+                      <span class="default-badge">默认</span>
+                    </div>
+                    <div
+                      style="font-size: 12px; color: var(--pf-muted-foreground); margin-top: 5px"
+                    >
+                      推荐平台 · 完整功能支持
+                    </div>
+                  </div>
+
+                  <!-- macOS -->
+                  <div
+                    class="platform-card"
+                    role="button"
+                    tabindex="0"
+                    aria-pressed="false"
+                    data-dom-id="switch-macos"
+                  >
+                    <div class="flex items-start justify-between">
+                      <div class="platform-icon-badge" style="color: var(--pf-foreground)">
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M17.05 12.04c-.03-2.55 2.08-3.77 2.18-3.83-1.19-1.74-3.04-1.98-3.7-2-1.57-.16-3.07.93-3.87.93-.8 0-2.02-.91-3.32-.89-1.71.03-3.29.99-4.17 2.52-1.78 3.08-.45 7.64 1.28 10.14.84 1.22 1.84 2.6 3.16 2.55 1.27-.05 1.75-.82 3.28-.82 1.52 0 1.96.82 3.31.8 1.37-.03 2.23-1.25 3.06-2.48.96-1.42 1.36-2.78 1.38-2.85-.03-.01-2.66-1.02-2.69-4.04M14.63 4.77c.7-.85 1.17-2.02 1.04-3.19-1.01.04-2.23.67-2.95 1.51-.65.75-1.21 1.94-1.06 3.09 1.12.09 2.27-.57 2.97-1.41"
+                          />
+                        </svg>
+                      </div>
+                      <span class="select-radio"></span>
+                    </div>
+                    <div class="flex items-center" style="gap: 8px; margin-top: 14px">
+                      <span style="font-size: 14px; font-weight: 600; color: var(--pf-foreground)"
+                        >macOS</span
+                      >
+                    </div>
+                    <div
+                      style="font-size: 12px; color: var(--pf-muted-foreground); margin-top: 5px"
+                    >
+                      Apple Silicon / Intel · 完整功能支持
+                    </div>
+                  </div>
+
+                  <!-- Linux -->
+                  <div
+                    class="platform-card"
+                    role="button"
+                    tabindex="0"
+                    aria-pressed="false"
+                    data-dom-id="switch-linux"
+                  >
+                    <div class="flex items-start justify-between">
+                      <div class="platform-icon-badge" style="color: var(--pf-foreground)">
+                        <svg
+                          width="22"
+                          height="22"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M12 2.4c-1.5 0-2.7 1.2-2.7 2.7 0 .6.2 1.1.5 1.6-1.8 1-3.1 3.1-3.1 5.6 0 1.7.6 3.2 1.4 4.4-.8.6-1.4 1.6-1.4 2.7 0 .3 0 .6.1.9-.5.2-.8.7-.8 1.3 0 .8.6 1.4 1.4 1.4h9.2c.8 0 1.4-.6 1.4-1.4 0-.6-.3-1.1-.8-1.3.1-.3.1-.6.1-.9 0-1.1-.6-2.1-1.4-2.7.8-1.2 1.4-2.7 1.4-4.4 0-2.5-1.3-4.6-3.1-5.6.3-.5.5-1 .5-1.6 0-1.5-1.2-2.7-2.7-2.7Z"
+                          />
+                          <circle cx="10.6" cy="6.4" r=".8" fill="#0a0e14" />
+                          <circle cx="13.4" cy="6.4" r=".8" fill="#0a0e14" />
+                        </svg>
+                      </div>
+                      <span class="select-radio"></span>
+                    </div>
+                    <div class="flex items-center" style="gap: 8px; margin-top: 14px">
+                      <span style="font-size: 14px; font-weight: 600; color: var(--pf-foreground)"
+                        >Linux</span
+                      >
+                    </div>
+                    <div
+                      style="font-size: 12px; color: var(--pf-muted-foreground); margin-top: 5px"
+                    >
+                      Ubuntu / Debian / Fedora · 完整功能支持
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <footer
+            class="flex items-center justify-between"
+            style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--pf-border)"
+          >
+            <span
+              style="
+                font-size: 12px;
+                color: var(--pf-muted-foreground);
+                font-family: var(--pf-font-mono);
+              "
+              >PyForge AI v2.4.0 · 构建 2024.08.07</span
+            >
+            <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+              >© 2024 PyForge AI</span
+            >
+          </footer>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

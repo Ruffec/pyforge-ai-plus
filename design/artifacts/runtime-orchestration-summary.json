@@ -1,0 +1,1785 @@
+{
+  "schemaVersion": "1.0",
+  "skillProvenance": {
+    "name": "solo-design",
+    "version": "2026.07.22.00.00.00",
+    "release": "prompt-base-cloud-ssot-migration",
+    "version_source": "skill-release-manifest.json",
+    "schema_version": "1.0",
+    "read_status": "loaded"
+  },
+  "project": {
+    "operation": "edit",
+    "resolvedLane": "existing_edit_add_comparison",
+    "sourceProjectLaneHeritage": {
+      "originalLane": "complex_html_page",
+      "originalOperation": "create",
+      "inheritedStyleAnchors": true
+    },
+    "intentProfile": {
+      "caseFamily": "free_exploration",
+      "sourceType": "text-requirement",
+      "complexity": "multi-page",
+      "graphicStrategy": "none"
+    },
+    "selectedIntentWorkflowRead": true,
+    "contextRequirementsLoaded": [
+      {
+        "path": "shared-runtime/runtime-boundaries/lane-runtime-contracts.md",
+        "readStatus": "loaded",
+        "bodyRead": true
+      },
+      {
+        "path": "shared-runtime/agent-dispatch-runtime/lane-dispatch-index.md",
+        "readStatus": "loaded",
+        "bodyRead": true
+      },
+      {
+        "path": "shared-runtime/agent-dispatch-runtime/shared-page-rendering-kernel.md",
+        "readStatus": "loaded",
+        "bodyRead": true
+      },
+      {
+        "path": "delivery-quality/page-rendering-quality-gate.md",
+        "readStatus": "loaded",
+        "bodyRead": true
+      },
+      {
+        "path": "delivery-quality/design-artifact-validation.md",
+        "readStatus": "loaded",
+        "bodyRead": true
+      },
+      {
+        "path": "delivery-quality/delivery-evidence-contract.md",
+        "readStatus": "loaded",
+        "bodyRead": true
+      },
+      {
+        "path": "visual-experience/visual-experience-guidelines.md",
+        "readStatus": "loaded",
+        "bodyRead": true
+      },
+      {
+        "path": "visual-experience/visual-checkpoint-protocol.md",
+        "readStatus": "loaded",
+        "bodyRead": true
+      },
+      {
+        "path": "intent-workflows/intent-project-mutation/INTENT_WORKFLOW.md",
+        "readStatus": "loaded",
+        "bodyRead": true
+      },
+      {
+        "path": "intent-workflows/intent-project-mutation/comparison-page-contract.md",
+        "readStatus": "loaded",
+        "bodyRead": true
+      },
+      {
+        "path": "intent-workflows/intent-project-mutation/existing-edit-page-runtime.md",
+        "readStatus": "loaded",
+        "bodyRead": true
+      },
+      {
+        "path": "intent-workflows/intent-project-mutation/existing-edit-dispatch-contract.md",
+        "readStatus": "loaded",
+        "bodyRead": true
+      }
+    ],
+    "contextReadScope": [
+      "intent-workflows/intent-project-complex-build/start-complex-project-build.md",
+      "intent-workflows/intent-project-complex-build/00-requirement-and-style-intake.md",
+      "intent-workflows/intent-project-complex-build/complex-page-dispatch-contract.md",
+      "intent-workflows/intent-project-complex-build/complex-page-runtime.md",
+      "intent-workflows/intent-project-complex-build/orchestration-summary-fields.md",
+      "shared-runtime/design-artifact-formats/design-project-file-format.md",
+      "shared-runtime/orchestration-summary-contract/orchestration-summary-contract.md"
+    ],
+    "readScopeLedger": [
+      {
+        "phase": "intake",
+        "files": 7,
+        "status": "complete"
+      },
+      {
+        "actor": "page-sub-agent",
+        "lane": "complex_html_page",
+        "path": "intent-workflows/intent-project-complex-build/complex-page-runtime.md",
+        "reason": "page runtime guide",
+        "scopeClass": "page-runtime",
+        "declaredBeforeRead": true,
+        "recordedAt": "2026-08-07T01:44:37.949Z",
+        "nodeId": "page-dashboard",
+        "htmlSrc": "design/pages/dashboard.html"
+      },
+      {
+        "actor": "page-sub-agent",
+        "lane": "complex_html_page",
+        "path": "intent-workflows/intent-project-complex-build/complex-page-dispatch-contract.md",
+        "reason": "dispatch contract",
+        "scopeClass": "dispatch-contract",
+        "declaredBeforeRead": true,
+        "recordedAt": "2026-08-07T01:44:37.949Z",
+        "nodeId": "page-dashboard",
+        "htmlSrc": "design/pages/dashboard.html"
+      }
+    ],
+    "validationRunDiscipline": {
+      "maxFullValidationRuns": 2,
+      "softWarningsTriggerRepair": false,
+      "blockingRepairMode": "targeted-once"
+    },
+    "lowValueCallWatchdog": {
+      "applies": true,
+      "noProgressSignals": ["no_tool_call", "no_artifact_diff", "no_structured_decision"],
+      "noProgressNextAction": "enter_readiness_or_blocked_summary",
+      "lastProgressAt": "intake-complete"
+    },
+    "deviceType": "desktop",
+    "styleDefinitionBrief": "暗色开发者桌面应用，Teal-Cyan 主色，Inter + JetBrains Mono，终端美学 + AI 智能体系，数据密集但层次分明",
+    "designRead": "desktop-developer-tool / python-developers / professional-dark-tech / information-dense / avoid-generic-cards-and-neon-gradients",
+    "designDials": {
+      "layoutVariance": 3,
+      "motionIntensity": 3,
+      "visualDensity": 4
+    },
+    "styleContinuityAnchors": {
+      "colorSystem": "dark-bg #0a0e14, card #0d1117, primary #2dd4bf teal-cyan, border #21262d",
+      "typographySystem": "Inter for UI, JetBrains Mono for code/terminal, 3 weights max per page",
+      "radiusScale": "4px / 8px / 12px / 9999px — no rounded-2xl/3xl",
+      "surfaceDepthModel": "border-led static surfaces, shadow alpha <= 0.05, only floating layers get deeper elevation",
+      "navigationShell": "left sidebar 240px + top bar 56px, dark sidebar bg, teal active nav item"
+    },
+    "sharedProjectShellContract": {
+      "applies": true,
+      "type": "desktop-app-shell",
+      "navigationShell": {
+        "sidebar": {
+          "width": "240px",
+          "bg": "var(--pf-sidebar-bg)",
+          "borderRight": "1px solid var(--pf-border)",
+          "logoArea": "PyForge AI logo + version badge",
+          "navItems": [
+            {
+              "key": "dashboard",
+              "label": "控制台",
+              "icon": "layout-dashboard",
+              "domId": "nav-dashboard"
+            },
+            {
+              "key": "python-versions",
+              "label": "Python 版本",
+              "icon": "boxes",
+              "domId": "nav-python-versions"
+            },
+            {
+              "key": "environments",
+              "label": "虚拟环境",
+              "icon": "layers",
+              "domId": "nav-environments"
+            },
+            {
+              "key": "packages",
+              "label": "包与镜像源",
+              "icon": "package",
+              "domId": "nav-packages"
+            },
+            {
+              "key": "ai-deploy",
+              "label": "AI 智能部署",
+              "icon": "sparkles",
+              "domId": "nav-ai-deploy"
+            },
+            {
+              "key": "settings",
+              "label": "设置",
+              "icon": "settings",
+              "domId": "nav-settings"
+            }
+          ],
+          "bottomArea": "AI Assistant button + user profile"
+        },
+        "topbar": {
+          "height": "56px",
+          "bg": "var(--pf-background)",
+          "borderBottom": "1px solid var(--pf-border)",
+          "leftContent": "page title + breadcrumb",
+          "centerContent": "search bar",
+          "rightContent": "system status + notifications + quick deploy button"
+        },
+        "mainContent": {
+          "padding": "24px",
+          "bg": "var(--pf-background)",
+          "overflow": "auto"
+        }
+      },
+      "radiusScale": {
+        "sm": "4px",
+        "md": "8px",
+        "lg": "12px",
+        "full": "9999px"
+      },
+      "surfaceDepthModel": "border-led; shadow alpha <= 0.05 for static; deeper only for modals/popovers/dropdowns",
+      "ctaStyle": "primary button bg var(--pf-primary), text var(--pf-primary-foreground), radius 8px; secondary button border var(--pf-border) bg transparent"
+    },
+    "cssPreflightEvidence": {
+      "command": "node apply-html-head-contract.mjs colors_and_type.css design/preflight/preflight.html --title=Preflight --lang=zh --prefix=pf",
+      "exitCode": 0,
+      "themeVarsPresent": true,
+      "semanticTokenFallbackPresent": true,
+      "tailwindCdnPresent": true,
+      "lucideScriptPresent": true,
+      "atThemeInlinePresent": true,
+      "status": "passed"
+    },
+    "generationTree": {
+      "root": {
+        "nodeId": "root",
+        "type": "root",
+        "status": "generated",
+        "children": [
+          {
+            "nodeId": "page-dashboard",
+            "type": "leaf",
+            "status": "pending",
+            "outputFile": "design/pages/dashboard.html"
+          },
+          {
+            "nodeId": "page-python-versions",
+            "type": "leaf",
+            "status": "pending",
+            "outputFile": "design/pages/python-versions.html"
+          },
+          {
+            "nodeId": "page-environments",
+            "type": "leaf",
+            "status": "pending",
+            "outputFile": "design/pages/environments.html"
+          },
+          {
+            "nodeId": "page-packages",
+            "type": "leaf",
+            "status": "pending",
+            "outputFile": "design/pages/packages.html"
+          },
+          {
+            "nodeId": "page-ai-deploy",
+            "type": "leaf",
+            "status": "pending",
+            "outputFile": "design/pages/ai-deploy.html"
+          },
+          {
+            "nodeId": "page-settings",
+            "type": "leaf",
+            "status": "pending",
+            "outputFile": "design/pages/settings.html"
+          }
+        ]
+      }
+    },
+    "dispatchPreflightManifest": [
+      {
+        "recorded_at": "2026-08-07T01:44:37.949Z",
+        "generatedBy": "build-page-dispatch-manifest.mjs",
+        "packetType": "ComplexPagePacket",
+        "laneContract": {
+          "resolvedLane": "complex_html_page",
+          "packetType": "ComplexPagePacket",
+          "pageRuntimeGuide": "intent-workflows/intent-project-complex-build/complex-page-runtime.md",
+          "dispatchContract": "intent-workflows/intent-project-complex-build/complex-page-dispatch-contract.md"
+        },
+        "taskLinePresent": true,
+        "outputPathPresent": true,
+        "sharedTemplate": "intent-workflows/intent-project-complex-build/complex-page-runtime.md",
+        "nodeId": "page-dashboard",
+        "htmlSrc": "design/pages/dashboard.html",
+        "supplementaryReads": [],
+        "allowedWritePaths": ["design/pages/dashboard.html", "assets/"],
+        "forbiddenWriteRoots": [
+          "*.design",
+          "runtime-orchestration-summary.json",
+          "validation-report.json",
+          "finish-readiness-report.json",
+          "restore-contract-report.json",
+          "page-generation-summary.json"
+        ],
+        "toolPolicy": {
+          "todoWriteAllowed": false,
+          "validationScriptsAllowed": false,
+          "previewAllowed": false,
+          "helperScriptsAllowed": false,
+          "designFileWriteAllowed": false,
+          "allowedWritePaths": ["design/pages/dashboard.html", "assets/"]
+        },
+        "skillRuntime": {
+          "skillDir": "/data/user/builtin/design/default/skills/solo-design",
+          "deterministicToolDir": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling",
+          "toolPaths": {
+            "applyHtmlHeadContract": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs",
+            "recordDispatchCompletion": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs",
+            "buildPageDispatchManifest": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/build-page-dispatch-manifest.mjs",
+            "validateDesignWorkspace": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-design-workspace.mjs",
+            "validateFinishReadiness": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-finish-readiness.mjs",
+            "validateRestoreContract": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-restore-contract.mjs"
+          },
+          "requiredForPageSubAgent": ["applyHtmlHeadContract", "recordDispatchCompletion"],
+          "pathInjection": "absolute",
+          "pathContract": "Do not use {SKILL_DIR} placeholders inside Page Sub-Agent packets; use toolPaths.* absolute paths.",
+          "commandTemplates": {
+            "recordDispatchCompletion": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs' '/workspace/pyforge-ai' --node-id='page-dashboard' --html-src='pages/dashboard.html' --status=completed --changed-files=<comma-separated-project-relative-files> --trace-digest=<main-agent-runtime-trace-digest> --tool-ledger-json=<tool-ledger-json-or-file>"
+          }
+        },
+        "cssFilePath": "/workspace/pyforge-ai/design/colors_and_type.css",
+        "htmlFilePath": "/workspace/pyforge-ai/design/pages/dashboard.html",
+        "brandPrefix": "pf",
+        "aestheticsMode": "free-explore",
+        "toolDisciplineBlockPresent": true,
+        "fillHtmlHeadCommand": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs' '/workspace/pyforge-ai/design/colors_and_type.css' '/workspace/pyforge-ai/design/pages/dashboard.html' --title='控制台' --lang='zh-CN' --prefix='pf'",
+        "headFillMode": "skeleton-first",
+        "viewportMode": "app-shell",
+        "completionSchemaExpected": "full",
+        "restoreFields": null,
+        "restoreContractStatus": null,
+        "restoreCompactPacket": null,
+        "deterministicCommands": null,
+        "sourceAuthorityLock": null,
+        "preDispatchFileHashes": {
+          "pyforge-ai.design": "1d8c19411df48c90c15f750f95e930db93fe55ae14b888e43f615f5edb1897dc"
+        },
+        "contextPreflight": {
+          "workflowPath": "intent-workflows/intent-project-complex-build/INTENT_WORKFLOW.md",
+          "requiredContextFiles": [
+            "shared-runtime/runtime-boundaries/lane-runtime-contracts.md",
+            "shared-runtime/agent-dispatch-runtime/lane-dispatch-index.md",
+            "shared-runtime/agent-dispatch-runtime/shared-page-rendering-kernel.md",
+            "delivery-quality/page-rendering-quality-gate.md",
+            "delivery-quality/design-artifact-validation.md",
+            "delivery-quality/delivery-evidence-contract.md",
+            "visual-experience/visual-experience-guidelines.md",
+            "visual-experience/visual-checkpoint-protocol.md"
+          ],
+          "optionalContextFiles": [],
+          "passed": true
+        },
+        "pageSliceOnly": true,
+        "requiredFieldsPresent": true,
+        "missingFields": [],
+        "fillHtmlHeadCommandValid": true,
+        "mobileNavigation": {
+          "required": false,
+          "appliesToThisPage": false,
+          "canonicalHtmlIncluded": false,
+          "missingFields": []
+        },
+        "persistedToSummary": true,
+        "taskQueryAudited": false,
+        "proofSource": "summary-only",
+        "largeWorkflowFilesInTaskQuery": null
+      },
+      {
+        "recorded_at": "2026-08-07T01:44:37.949Z",
+        "generatedBy": "build-page-dispatch-manifest.mjs",
+        "packetType": "ComplexPagePacket",
+        "laneContract": {
+          "resolvedLane": "complex_html_page",
+          "packetType": "ComplexPagePacket",
+          "pageRuntimeGuide": "intent-workflows/intent-project-complex-build/complex-page-runtime.md",
+          "dispatchContract": "intent-workflows/intent-project-complex-build/complex-page-dispatch-contract.md"
+        },
+        "taskLinePresent": true,
+        "outputPathPresent": true,
+        "sharedTemplate": "intent-workflows/intent-project-complex-build/complex-page-runtime.md",
+        "nodeId": "page-python-versions",
+        "htmlSrc": "design/pages/python-versions.html",
+        "supplementaryReads": [],
+        "allowedWritePaths": ["design/pages/python-versions.html", "assets/"],
+        "forbiddenWriteRoots": [
+          "*.design",
+          "runtime-orchestration-summary.json",
+          "validation-report.json",
+          "finish-readiness-report.json",
+          "restore-contract-report.json",
+          "page-generation-summary.json"
+        ],
+        "toolPolicy": {
+          "todoWriteAllowed": false,
+          "validationScriptsAllowed": false,
+          "previewAllowed": false,
+          "helperScriptsAllowed": false,
+          "designFileWriteAllowed": false,
+          "allowedWritePaths": ["design/pages/python-versions.html", "assets/"]
+        },
+        "skillRuntime": {
+          "skillDir": "/data/user/builtin/design/default/skills/solo-design",
+          "deterministicToolDir": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling",
+          "toolPaths": {
+            "applyHtmlHeadContract": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs",
+            "recordDispatchCompletion": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs",
+            "buildPageDispatchManifest": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/build-page-dispatch-manifest.mjs",
+            "validateDesignWorkspace": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-design-workspace.mjs",
+            "validateFinishReadiness": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-finish-readiness.mjs",
+            "validateRestoreContract": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-restore-contract.mjs"
+          },
+          "requiredForPageSubAgent": ["applyHtmlHeadContract", "recordDispatchCompletion"],
+          "pathInjection": "absolute",
+          "pathContract": "Do not use {SKILL_DIR} placeholders inside Page Sub-Agent packets; use toolPaths.* absolute paths.",
+          "commandTemplates": {
+            "recordDispatchCompletion": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs' '/workspace/pyforge-ai' --node-id='page-python-versions' --html-src='pages/python-versions.html' --status=completed --changed-files=<comma-separated-project-relative-files> --trace-digest=<main-agent-runtime-trace-digest> --tool-ledger-json=<tool-ledger-json-or-file>"
+          }
+        },
+        "cssFilePath": "/workspace/pyforge-ai/design/colors_and_type.css",
+        "htmlFilePath": "/workspace/pyforge-ai/design/pages/python-versions.html",
+        "brandPrefix": "pf",
+        "aestheticsMode": "free-explore",
+        "toolDisciplineBlockPresent": true,
+        "fillHtmlHeadCommand": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs' '/workspace/pyforge-ai/design/colors_and_type.css' '/workspace/pyforge-ai/design/pages/python-versions.html' --title='Python 版本管理' --lang='zh-CN' --prefix='pf'",
+        "headFillMode": "skeleton-first",
+        "viewportMode": "app-shell",
+        "completionSchemaExpected": "full",
+        "restoreFields": null,
+        "restoreContractStatus": null,
+        "restoreCompactPacket": null,
+        "deterministicCommands": null,
+        "sourceAuthorityLock": null,
+        "preDispatchFileHashes": {
+          "pyforge-ai.design": "1d8c19411df48c90c15f750f95e930db93fe55ae14b888e43f615f5edb1897dc"
+        },
+        "contextPreflight": {
+          "workflowPath": "intent-workflows/intent-project-complex-build/INTENT_WORKFLOW.md",
+          "requiredContextFiles": [
+            "shared-runtime/runtime-boundaries/lane-runtime-contracts.md",
+            "shared-runtime/agent-dispatch-runtime/lane-dispatch-index.md",
+            "shared-runtime/agent-dispatch-runtime/shared-page-rendering-kernel.md",
+            "delivery-quality/page-rendering-quality-gate.md",
+            "delivery-quality/design-artifact-validation.md",
+            "delivery-quality/delivery-evidence-contract.md",
+            "visual-experience/visual-experience-guidelines.md",
+            "visual-experience/visual-checkpoint-protocol.md"
+          ],
+          "optionalContextFiles": [],
+          "passed": true
+        },
+        "pageSliceOnly": true,
+        "requiredFieldsPresent": true,
+        "missingFields": [],
+        "fillHtmlHeadCommandValid": true,
+        "mobileNavigation": {
+          "required": false,
+          "appliesToThisPage": false,
+          "canonicalHtmlIncluded": false,
+          "missingFields": []
+        },
+        "persistedToSummary": true,
+        "taskQueryAudited": false,
+        "proofSource": "summary-only",
+        "largeWorkflowFilesInTaskQuery": null
+      },
+      {
+        "recorded_at": "2026-08-07T01:44:37.949Z",
+        "generatedBy": "build-page-dispatch-manifest.mjs",
+        "packetType": "ComplexPagePacket",
+        "laneContract": {
+          "resolvedLane": "complex_html_page",
+          "packetType": "ComplexPagePacket",
+          "pageRuntimeGuide": "intent-workflows/intent-project-complex-build/complex-page-runtime.md",
+          "dispatchContract": "intent-workflows/intent-project-complex-build/complex-page-dispatch-contract.md"
+        },
+        "taskLinePresent": true,
+        "outputPathPresent": true,
+        "sharedTemplate": "intent-workflows/intent-project-complex-build/complex-page-runtime.md",
+        "nodeId": "page-environments",
+        "htmlSrc": "design/pages/environments.html",
+        "supplementaryReads": [],
+        "allowedWritePaths": ["design/pages/environments.html", "assets/"],
+        "forbiddenWriteRoots": [
+          "*.design",
+          "runtime-orchestration-summary.json",
+          "validation-report.json",
+          "finish-readiness-report.json",
+          "restore-contract-report.json",
+          "page-generation-summary.json"
+        ],
+        "toolPolicy": {
+          "todoWriteAllowed": false,
+          "validationScriptsAllowed": false,
+          "previewAllowed": false,
+          "helperScriptsAllowed": false,
+          "designFileWriteAllowed": false,
+          "allowedWritePaths": ["design/pages/environments.html", "assets/"]
+        },
+        "skillRuntime": {
+          "skillDir": "/data/user/builtin/design/default/skills/solo-design",
+          "deterministicToolDir": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling",
+          "toolPaths": {
+            "applyHtmlHeadContract": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs",
+            "recordDispatchCompletion": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs",
+            "buildPageDispatchManifest": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/build-page-dispatch-manifest.mjs",
+            "validateDesignWorkspace": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-design-workspace.mjs",
+            "validateFinishReadiness": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-finish-readiness.mjs",
+            "validateRestoreContract": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-restore-contract.mjs"
+          },
+          "requiredForPageSubAgent": ["applyHtmlHeadContract", "recordDispatchCompletion"],
+          "pathInjection": "absolute",
+          "pathContract": "Do not use {SKILL_DIR} placeholders inside Page Sub-Agent packets; use toolPaths.* absolute paths.",
+          "commandTemplates": {
+            "recordDispatchCompletion": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs' '/workspace/pyforge-ai' --node-id='page-environments' --html-src='pages/environments.html' --status=completed --changed-files=<comma-separated-project-relative-files> --trace-digest=<main-agent-runtime-trace-digest> --tool-ledger-json=<tool-ledger-json-or-file>"
+          }
+        },
+        "cssFilePath": "/workspace/pyforge-ai/design/colors_and_type.css",
+        "htmlFilePath": "/workspace/pyforge-ai/design/pages/environments.html",
+        "brandPrefix": "pf",
+        "aestheticsMode": "free-explore",
+        "toolDisciplineBlockPresent": true,
+        "fillHtmlHeadCommand": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs' '/workspace/pyforge-ai/design/colors_and_type.css' '/workspace/pyforge-ai/design/pages/environments.html' --title='虚拟环境管理' --lang='zh-CN' --prefix='pf'",
+        "headFillMode": "skeleton-first",
+        "viewportMode": "app-shell",
+        "completionSchemaExpected": "full",
+        "restoreFields": null,
+        "restoreContractStatus": null,
+        "restoreCompactPacket": null,
+        "deterministicCommands": null,
+        "sourceAuthorityLock": null,
+        "preDispatchFileHashes": {
+          "pyforge-ai.design": "1d8c19411df48c90c15f750f95e930db93fe55ae14b888e43f615f5edb1897dc"
+        },
+        "contextPreflight": {
+          "workflowPath": "intent-workflows/intent-project-complex-build/INTENT_WORKFLOW.md",
+          "requiredContextFiles": [
+            "shared-runtime/runtime-boundaries/lane-runtime-contracts.md",
+            "shared-runtime/agent-dispatch-runtime/lane-dispatch-index.md",
+            "shared-runtime/agent-dispatch-runtime/shared-page-rendering-kernel.md",
+            "delivery-quality/page-rendering-quality-gate.md",
+            "delivery-quality/design-artifact-validation.md",
+            "delivery-quality/delivery-evidence-contract.md",
+            "visual-experience/visual-experience-guidelines.md",
+            "visual-experience/visual-checkpoint-protocol.md"
+          ],
+          "optionalContextFiles": [],
+          "passed": true
+        },
+        "pageSliceOnly": true,
+        "requiredFieldsPresent": true,
+        "missingFields": [],
+        "fillHtmlHeadCommandValid": true,
+        "mobileNavigation": {
+          "required": false,
+          "appliesToThisPage": false,
+          "canonicalHtmlIncluded": false,
+          "missingFields": []
+        },
+        "persistedToSummary": true,
+        "taskQueryAudited": false,
+        "proofSource": "summary-only",
+        "largeWorkflowFilesInTaskQuery": null
+      },
+      {
+        "recorded_at": "2026-08-07T01:44:37.949Z",
+        "generatedBy": "build-page-dispatch-manifest.mjs",
+        "packetType": "ComplexPagePacket",
+        "laneContract": {
+          "resolvedLane": "complex_html_page",
+          "packetType": "ComplexPagePacket",
+          "pageRuntimeGuide": "intent-workflows/intent-project-complex-build/complex-page-runtime.md",
+          "dispatchContract": "intent-workflows/intent-project-complex-build/complex-page-dispatch-contract.md"
+        },
+        "taskLinePresent": true,
+        "outputPathPresent": true,
+        "sharedTemplate": "intent-workflows/intent-project-complex-build/complex-page-runtime.md",
+        "nodeId": "page-packages",
+        "htmlSrc": "design/pages/packages.html",
+        "supplementaryReads": [],
+        "allowedWritePaths": ["design/pages/packages.html", "assets/"],
+        "forbiddenWriteRoots": [
+          "*.design",
+          "runtime-orchestration-summary.json",
+          "validation-report.json",
+          "finish-readiness-report.json",
+          "restore-contract-report.json",
+          "page-generation-summary.json"
+        ],
+        "toolPolicy": {
+          "todoWriteAllowed": false,
+          "validationScriptsAllowed": false,
+          "previewAllowed": false,
+          "helperScriptsAllowed": false,
+          "designFileWriteAllowed": false,
+          "allowedWritePaths": ["design/pages/packages.html", "assets/"]
+        },
+        "skillRuntime": {
+          "skillDir": "/data/user/builtin/design/default/skills/solo-design",
+          "deterministicToolDir": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling",
+          "toolPaths": {
+            "applyHtmlHeadContract": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs",
+            "recordDispatchCompletion": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs",
+            "buildPageDispatchManifest": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/build-page-dispatch-manifest.mjs",
+            "validateDesignWorkspace": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-design-workspace.mjs",
+            "validateFinishReadiness": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-finish-readiness.mjs",
+            "validateRestoreContract": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-restore-contract.mjs"
+          },
+          "requiredForPageSubAgent": ["applyHtmlHeadContract", "recordDispatchCompletion"],
+          "pathInjection": "absolute",
+          "pathContract": "Do not use {SKILL_DIR} placeholders inside Page Sub-Agent packets; use toolPaths.* absolute paths.",
+          "commandTemplates": {
+            "recordDispatchCompletion": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs' '/workspace/pyforge-ai' --node-id='page-packages' --html-src='pages/packages.html' --status=completed --changed-files=<comma-separated-project-relative-files> --trace-digest=<main-agent-runtime-trace-digest> --tool-ledger-json=<tool-ledger-json-or-file>"
+          }
+        },
+        "cssFilePath": "/workspace/pyforge-ai/design/colors_and_type.css",
+        "htmlFilePath": "/workspace/pyforge-ai/design/pages/packages.html",
+        "brandPrefix": "pf",
+        "aestheticsMode": "free-explore",
+        "toolDisciplineBlockPresent": true,
+        "fillHtmlHeadCommand": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs' '/workspace/pyforge-ai/design/colors_and_type.css' '/workspace/pyforge-ai/design/pages/packages.html' --title='包与镜像源' --lang='zh-CN' --prefix='pf'",
+        "headFillMode": "skeleton-first",
+        "viewportMode": "app-shell",
+        "completionSchemaExpected": "full",
+        "restoreFields": null,
+        "restoreContractStatus": null,
+        "restoreCompactPacket": null,
+        "deterministicCommands": null,
+        "sourceAuthorityLock": null,
+        "preDispatchFileHashes": {
+          "pyforge-ai.design": "1d8c19411df48c90c15f750f95e930db93fe55ae14b888e43f615f5edb1897dc"
+        },
+        "contextPreflight": {
+          "workflowPath": "intent-workflows/intent-project-complex-build/INTENT_WORKFLOW.md",
+          "requiredContextFiles": [
+            "shared-runtime/runtime-boundaries/lane-runtime-contracts.md",
+            "shared-runtime/agent-dispatch-runtime/lane-dispatch-index.md",
+            "shared-runtime/agent-dispatch-runtime/shared-page-rendering-kernel.md",
+            "delivery-quality/page-rendering-quality-gate.md",
+            "delivery-quality/design-artifact-validation.md",
+            "delivery-quality/delivery-evidence-contract.md",
+            "visual-experience/visual-experience-guidelines.md",
+            "visual-experience/visual-checkpoint-protocol.md"
+          ],
+          "optionalContextFiles": [],
+          "passed": true
+        },
+        "pageSliceOnly": true,
+        "requiredFieldsPresent": true,
+        "missingFields": [],
+        "fillHtmlHeadCommandValid": true,
+        "mobileNavigation": {
+          "required": false,
+          "appliesToThisPage": false,
+          "canonicalHtmlIncluded": false,
+          "missingFields": []
+        },
+        "persistedToSummary": true,
+        "taskQueryAudited": false,
+        "proofSource": "summary-only",
+        "largeWorkflowFilesInTaskQuery": null
+      },
+      {
+        "recorded_at": "2026-08-07T01:44:37.949Z",
+        "generatedBy": "build-page-dispatch-manifest.mjs",
+        "packetType": "ComplexPagePacket",
+        "laneContract": {
+          "resolvedLane": "complex_html_page",
+          "packetType": "ComplexPagePacket",
+          "pageRuntimeGuide": "intent-workflows/intent-project-complex-build/complex-page-runtime.md",
+          "dispatchContract": "intent-workflows/intent-project-complex-build/complex-page-dispatch-contract.md"
+        },
+        "taskLinePresent": true,
+        "outputPathPresent": true,
+        "sharedTemplate": "intent-workflows/intent-project-complex-build/complex-page-runtime.md",
+        "nodeId": "page-ai-deploy",
+        "htmlSrc": "design/pages/ai-deploy.html",
+        "supplementaryReads": [],
+        "allowedWritePaths": ["design/pages/ai-deploy.html", "assets/"],
+        "forbiddenWriteRoots": [
+          "*.design",
+          "runtime-orchestration-summary.json",
+          "validation-report.json",
+          "finish-readiness-report.json",
+          "restore-contract-report.json",
+          "page-generation-summary.json"
+        ],
+        "toolPolicy": {
+          "todoWriteAllowed": false,
+          "validationScriptsAllowed": false,
+          "previewAllowed": false,
+          "helperScriptsAllowed": false,
+          "designFileWriteAllowed": false,
+          "allowedWritePaths": ["design/pages/ai-deploy.html", "assets/"]
+        },
+        "skillRuntime": {
+          "skillDir": "/data/user/builtin/design/default/skills/solo-design",
+          "deterministicToolDir": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling",
+          "toolPaths": {
+            "applyHtmlHeadContract": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs",
+            "recordDispatchCompletion": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs",
+            "buildPageDispatchManifest": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/build-page-dispatch-manifest.mjs",
+            "validateDesignWorkspace": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-design-workspace.mjs",
+            "validateFinishReadiness": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-finish-readiness.mjs",
+            "validateRestoreContract": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-restore-contract.mjs"
+          },
+          "requiredForPageSubAgent": ["applyHtmlHeadContract", "recordDispatchCompletion"],
+          "pathInjection": "absolute",
+          "pathContract": "Do not use {SKILL_DIR} placeholders inside Page Sub-Agent packets; use toolPaths.* absolute paths.",
+          "commandTemplates": {
+            "recordDispatchCompletion": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs' '/workspace/pyforge-ai' --node-id='page-ai-deploy' --html-src='pages/ai-deploy.html' --status=completed --changed-files=<comma-separated-project-relative-files> --trace-digest=<main-agent-runtime-trace-digest> --tool-ledger-json=<tool-ledger-json-or-file>"
+          }
+        },
+        "cssFilePath": "/workspace/pyforge-ai/design/colors_and_type.css",
+        "htmlFilePath": "/workspace/pyforge-ai/design/pages/ai-deploy.html",
+        "brandPrefix": "pf",
+        "aestheticsMode": "free-explore",
+        "toolDisciplineBlockPresent": true,
+        "fillHtmlHeadCommand": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs' '/workspace/pyforge-ai/design/colors_and_type.css' '/workspace/pyforge-ai/design/pages/ai-deploy.html' --title='AI 智能部署' --lang='zh-CN' --prefix='pf'",
+        "headFillMode": "skeleton-first",
+        "viewportMode": "app-shell",
+        "completionSchemaExpected": "full",
+        "restoreFields": null,
+        "restoreContractStatus": null,
+        "restoreCompactPacket": null,
+        "deterministicCommands": null,
+        "sourceAuthorityLock": null,
+        "preDispatchFileHashes": {
+          "pyforge-ai.design": "1d8c19411df48c90c15f750f95e930db93fe55ae14b888e43f615f5edb1897dc"
+        },
+        "contextPreflight": {
+          "workflowPath": "intent-workflows/intent-project-complex-build/INTENT_WORKFLOW.md",
+          "requiredContextFiles": [
+            "shared-runtime/runtime-boundaries/lane-runtime-contracts.md",
+            "shared-runtime/agent-dispatch-runtime/lane-dispatch-index.md",
+            "shared-runtime/agent-dispatch-runtime/shared-page-rendering-kernel.md",
+            "delivery-quality/page-rendering-quality-gate.md",
+            "delivery-quality/design-artifact-validation.md",
+            "delivery-quality/delivery-evidence-contract.md",
+            "visual-experience/visual-experience-guidelines.md",
+            "visual-experience/visual-checkpoint-protocol.md"
+          ],
+          "optionalContextFiles": [],
+          "passed": true
+        },
+        "pageSliceOnly": true,
+        "requiredFieldsPresent": true,
+        "missingFields": [],
+        "fillHtmlHeadCommandValid": true,
+        "mobileNavigation": {
+          "required": false,
+          "appliesToThisPage": false,
+          "canonicalHtmlIncluded": false,
+          "missingFields": []
+        },
+        "persistedToSummary": true,
+        "taskQueryAudited": false,
+        "proofSource": "summary-only",
+        "largeWorkflowFilesInTaskQuery": null
+      },
+      {
+        "recorded_at": "2026-08-07T01:44:37.949Z",
+        "generatedBy": "build-page-dispatch-manifest.mjs",
+        "packetType": "ComplexPagePacket",
+        "laneContract": {
+          "resolvedLane": "complex_html_page",
+          "packetType": "ComplexPagePacket",
+          "pageRuntimeGuide": "intent-workflows/intent-project-complex-build/complex-page-runtime.md",
+          "dispatchContract": "intent-workflows/intent-project-complex-build/complex-page-dispatch-contract.md"
+        },
+        "taskLinePresent": true,
+        "outputPathPresent": true,
+        "sharedTemplate": "intent-workflows/intent-project-complex-build/complex-page-runtime.md",
+        "nodeId": "page-settings",
+        "htmlSrc": "design/pages/settings.html",
+        "supplementaryReads": [],
+        "allowedWritePaths": ["design/pages/settings.html", "assets/"],
+        "forbiddenWriteRoots": [
+          "*.design",
+          "runtime-orchestration-summary.json",
+          "validation-report.json",
+          "finish-readiness-report.json",
+          "restore-contract-report.json",
+          "page-generation-summary.json"
+        ],
+        "toolPolicy": {
+          "todoWriteAllowed": false,
+          "validationScriptsAllowed": false,
+          "previewAllowed": false,
+          "helperScriptsAllowed": false,
+          "designFileWriteAllowed": false,
+          "allowedWritePaths": ["design/pages/settings.html", "assets/"]
+        },
+        "skillRuntime": {
+          "skillDir": "/data/user/builtin/design/default/skills/solo-design",
+          "deterministicToolDir": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling",
+          "toolPaths": {
+            "applyHtmlHeadContract": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs",
+            "recordDispatchCompletion": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs",
+            "buildPageDispatchManifest": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/build-page-dispatch-manifest.mjs",
+            "validateDesignWorkspace": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-design-workspace.mjs",
+            "validateFinishReadiness": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-finish-readiness.mjs",
+            "validateRestoreContract": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-restore-contract.mjs"
+          },
+          "requiredForPageSubAgent": ["applyHtmlHeadContract", "recordDispatchCompletion"],
+          "pathInjection": "absolute",
+          "pathContract": "Do not use {SKILL_DIR} placeholders inside Page Sub-Agent packets; use toolPaths.* absolute paths.",
+          "commandTemplates": {
+            "recordDispatchCompletion": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs' '/workspace/pyforge-ai' --node-id='page-settings' --html-src='pages/settings.html' --status=completed --changed-files=<comma-separated-project-relative-files> --trace-digest=<main-agent-runtime-trace-digest> --tool-ledger-json=<tool-ledger-json-or-file>"
+          }
+        },
+        "cssFilePath": "/workspace/pyforge-ai/design/colors_and_type.css",
+        "htmlFilePath": "/workspace/pyforge-ai/design/pages/settings.html",
+        "brandPrefix": "pf",
+        "aestheticsMode": "free-explore",
+        "toolDisciplineBlockPresent": true,
+        "fillHtmlHeadCommand": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs' '/workspace/pyforge-ai/design/colors_and_type.css' '/workspace/pyforge-ai/design/pages/settings.html' --title='设置' --lang='zh-CN' --prefix='pf'",
+        "headFillMode": "skeleton-first",
+        "viewportMode": "app-shell",
+        "completionSchemaExpected": "full",
+        "restoreFields": null,
+        "restoreContractStatus": null,
+        "restoreCompactPacket": null,
+        "deterministicCommands": null,
+        "sourceAuthorityLock": null,
+        "preDispatchFileHashes": {
+          "pyforge-ai.design": "1d8c19411df48c90c15f750f95e930db93fe55ae14b888e43f615f5edb1897dc"
+        },
+        "contextPreflight": {
+          "workflowPath": "intent-workflows/intent-project-complex-build/INTENT_WORKFLOW.md",
+          "requiredContextFiles": [
+            "shared-runtime/runtime-boundaries/lane-runtime-contracts.md",
+            "shared-runtime/agent-dispatch-runtime/lane-dispatch-index.md",
+            "shared-runtime/agent-dispatch-runtime/shared-page-rendering-kernel.md",
+            "delivery-quality/page-rendering-quality-gate.md",
+            "delivery-quality/design-artifact-validation.md",
+            "delivery-quality/delivery-evidence-contract.md",
+            "visual-experience/visual-experience-guidelines.md",
+            "visual-experience/visual-checkpoint-protocol.md"
+          ],
+          "optionalContextFiles": [],
+          "passed": true
+        },
+        "pageSliceOnly": true,
+        "requiredFieldsPresent": true,
+        "missingFields": [],
+        "fillHtmlHeadCommandValid": true,
+        "mobileNavigation": {
+          "required": false,
+          "appliesToThisPage": false,
+          "canonicalHtmlIncluded": false,
+          "missingFields": []
+        },
+        "persistedToSummary": true,
+        "taskQueryAudited": false,
+        "proofSource": "summary-only",
+        "largeWorkflowFilesInTaskQuery": null
+      },
+      {
+        "recorded_at": "2026-08-07T02:40:00.000Z",
+        "generatedBy": "main-agent-manual",
+        "packetType": "ExistingEditPagePacket",
+        "laneContract": {
+          "resolvedLane": "existing_edit_add_comparison",
+          "packetType": "ExistingEditPagePacket",
+          "pageRuntimeGuide": "intent-workflows/intent-project-mutation/existing-edit-page-runtime.md",
+          "dispatchContract": "intent-workflows/intent-project-mutation/existing-edit-dispatch-contract.md"
+        },
+        "taskLinePresent": true,
+        "outputPathPresent": true,
+        "sharedTemplate": "intent-workflows/intent-project-mutation/existing-edit-page-runtime.md",
+        "nodeId": "page-dashboard-responsive",
+        "htmlSrc": "design/pages/dashboard-responsive.html",
+        "sourcePageId": "page-dashboard-platform",
+        "sourceHtmlSrc": "design/pages/dashboard-platform.html",
+        "derivationType": "comparison-page",
+        "inPlaceEditAllowed": false,
+        "supplementaryReads": [],
+        "allowedWritePaths": ["design/pages/dashboard-responsive.html", "assets/"],
+        "forbiddenWriteRoots": [
+          "*.design",
+          "runtime-orchestration-summary.json",
+          "validation-report.json",
+          "finish-readiness-report.json",
+          "restore-contract-report.json",
+          "page-generation-summary.json"
+        ],
+        "toolPolicy": {
+          "todoWriteAllowed": false,
+          "validationScriptsAllowed": false,
+          "previewAllowed": false,
+          "helperScriptsAllowed": false,
+          "designFileWriteAllowed": false,
+          "allowedWritePaths": ["design/pages/dashboard-responsive.html", "assets/"]
+        },
+        "skillRuntime": {
+          "skillDir": "/data/user/builtin/design/default/skills/solo-design",
+          "deterministicToolDir": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling",
+          "toolPaths": {
+            "applyHtmlHeadContract": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs",
+            "recordDispatchCompletion": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs"
+          },
+          "requiredForPageSubAgent": ["applyHtmlHeadContract", "recordDispatchCompletion"],
+          "pathInjection": "absolute",
+          "pathContract": "Do not use {SKILL_DIR} placeholders inside Page Sub-Agent packets; use toolPaths.* absolute paths.",
+          "commandTemplates": {
+            "recordDispatchCompletion": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs' '/workspace/pyforge-ai' --node-id='page-dashboard-responsive' --html-src='pages/dashboard-responsive.html' --status=completed --changed-files=pages/dashboard-responsive.html --trace-digest=responsive-edit-001 --tool-ledger-json={\"todoWriteCalls\":0,\"previewCalls\":0,\"validationScriptCalls\":0,\"helperScriptWrites\":0}"
+          }
+        },
+        "cssFilePath": "/workspace/pyforge-ai/design/colors_and_type.css",
+        "htmlFilePath": "/workspace/pyforge-ai/design/pages/dashboard-responsive.html",
+        "brandPrefix": "pf",
+        "aestheticsMode": "free-explore",
+        "toolDisciplineBlockPresent": true,
+        "fillHtmlHeadCommand": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs' '/workspace/pyforge-ai/design/colors_and_type.css' '/workspace/pyforge-ai/design/pages/dashboard-responsive.html' --title='控制台 - 响应式增强版' --lang='zh-CN' --prefix='pf'",
+        "headFillMode": "skeleton-first",
+        "viewportMode": "app-shell",
+        "completionSchemaExpected": "full",
+        "persistedToSummary": true,
+        "taskQueryAudited": true,
+        "proofSource": "summary-only",
+        "largeWorkflowFilesInTaskQuery": null
+      },
+      {
+        "recorded_at": "2026-08-07T02:40:00.000Z",
+        "generatedBy": "main-agent-manual",
+        "packetType": "ExistingEditPagePacket",
+        "laneContract": {
+          "resolvedLane": "existing_edit_add_comparison",
+          "packetType": "ExistingEditPagePacket",
+          "pageRuntimeGuide": "intent-workflows/intent-project-mutation/existing-edit-page-runtime.md",
+          "dispatchContract": "intent-workflows/intent-project-mutation/existing-edit-dispatch-contract.md"
+        },
+        "taskLinePresent": true,
+        "outputPathPresent": true,
+        "sharedTemplate": "intent-workflows/intent-project-mutation/existing-edit-page-runtime.md",
+        "nodeId": "page-ai-deploy-responsive",
+        "htmlSrc": "design/pages/ai-deploy-responsive.html",
+        "sourcePageId": "page-ai-deploy",
+        "sourceHtmlSrc": "design/pages/ai-deploy.html",
+        "derivationType": "comparison-page",
+        "inPlaceEditAllowed": false,
+        "supplementaryReads": [],
+        "allowedWritePaths": ["design/pages/ai-deploy-responsive.html", "assets/"],
+        "forbiddenWriteRoots": [
+          "*.design",
+          "runtime-orchestration-summary.json",
+          "validation-report.json",
+          "finish-readiness-report.json",
+          "restore-contract-report.json",
+          "page-generation-summary.json"
+        ],
+        "toolPolicy": {
+          "todoWriteAllowed": false,
+          "validationScriptsAllowed": false,
+          "previewAllowed": false,
+          "helperScriptsAllowed": false,
+          "designFileWriteAllowed": false,
+          "allowedWritePaths": ["design/pages/ai-deploy-responsive.html", "assets/"]
+        },
+        "skillRuntime": {
+          "skillDir": "/data/user/builtin/design/default/skills/solo-design",
+          "deterministicToolDir": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling",
+          "toolPaths": {
+            "applyHtmlHeadContract": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs",
+            "recordDispatchCompletion": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs"
+          },
+          "requiredForPageSubAgent": ["applyHtmlHeadContract", "recordDispatchCompletion"],
+          "pathInjection": "absolute",
+          "pathContract": "Do not use {SKILL_DIR} placeholders inside Page Sub-Agent packets; use toolPaths.* absolute paths.",
+          "commandTemplates": {
+            "recordDispatchCompletion": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs' '/workspace/pyforge-ai' --node-id='page-ai-deploy-responsive' --html-src='pages/ai-deploy-responsive.html' --status=completed --changed-files=pages/ai-deploy-responsive.html --trace-digest=responsive-edit-002 --tool-ledger-json={\"todoWriteCalls\":0,\"previewCalls\":0,\"validationScriptCalls\":0,\"helperScriptWrites\":0}"
+          }
+        },
+        "cssFilePath": "/workspace/pyforge-ai/design/colors_and_type.css",
+        "htmlFilePath": "/workspace/pyforge-ai/design/pages/ai-deploy-responsive.html",
+        "brandPrefix": "pf",
+        "aestheticsMode": "free-explore",
+        "toolDisciplineBlockPresent": true,
+        "fillHtmlHeadCommand": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs' '/workspace/pyforge-ai/design/colors_and_type.css' '/workspace/pyforge-ai/design/pages/ai-deploy-responsive.html' --title='AI 智能部署 - 响应式增强版' --lang='zh-CN' --prefix='pf'",
+        "headFillMode": "skeleton-first",
+        "viewportMode": "app-shell",
+        "completionSchemaExpected": "full",
+        "persistedToSummary": true,
+        "taskQueryAudited": true,
+        "proofSource": "summary-only",
+        "largeWorkflowFilesInTaskQuery": null
+      },
+      {
+        "recorded_at": "2026-08-07T03:00:00.000Z",
+        "generatedBy": "main-agent-manual",
+        "packetType": "ExistingEditPagePacket",
+        "laneContract": {
+          "resolvedLane": "existing_edit_add_comparison",
+          "packetType": "ExistingEditPagePacket",
+          "pageRuntimeGuide": "intent-workflows/intent-project-mutation/existing-edit-page-runtime.md",
+          "dispatchContract": "intent-workflows/intent-project-mutation/existing-edit-dispatch-contract.md"
+        },
+        "taskLinePresent": true,
+        "outputPathPresent": true,
+        "sharedTemplate": "intent-workflows/intent-project-mutation/existing-edit-page-runtime.md",
+        "nodeId": "page-platform-diff",
+        "htmlSrc": "design/pages/platform-diff.html",
+        "sourcePageId": "page-settings-platform",
+        "sourceHtmlSrc": "design/pages/settings-platform.html",
+        "derivationType": "comparison-page",
+        "inPlaceEditAllowed": false,
+        "supplementaryReads": [],
+        "allowedWritePaths": ["design/pages/platform-diff.html", "assets/"],
+        "forbiddenWriteRoots": [
+          "*.design",
+          "runtime-orchestration-summary.json",
+          "validation-report.json",
+          "finish-readiness-report.json",
+          "restore-contract-report.json",
+          "page-generation-summary.json"
+        ],
+        "toolPolicy": {
+          "todoWriteAllowed": false,
+          "validationScriptsAllowed": false,
+          "previewAllowed": false,
+          "helperScriptsAllowed": false,
+          "designFileWriteAllowed": false,
+          "allowedWritePaths": ["design/pages/platform-diff.html", "assets/"]
+        },
+        "skillRuntime": {
+          "skillDir": "/data/user/builtin/design/default/skills/solo-design",
+          "deterministicToolDir": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling",
+          "toolPaths": {
+            "applyHtmlHeadContract": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs",
+            "recordDispatchCompletion": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs"
+          },
+          "requiredForPageSubAgent": ["applyHtmlHeadContract", "recordDispatchCompletion"],
+          "pathInjection": "absolute",
+          "pathContract": "Do not use {SKILL_DIR} placeholders inside Page Sub-Agent packets; use toolPaths.* absolute paths.",
+          "commandTemplates": {
+            "recordDispatchCompletion": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs' '/workspace/pyforge-ai' --node-id='page-platform-diff' --html-src='pages/platform-diff.html' --status=completed --changed-files=pages/platform-diff.html --trace-digest=platform-diff-001 --tool-ledger-json={\"todoWriteCalls\":0,\"previewCalls\":0,\"validationScriptCalls\":0,\"helperScriptWrites\":0}"
+          }
+        },
+        "cssFilePath": "/workspace/pyforge-ai/design/colors_and_type.css",
+        "htmlFilePath": "/workspace/pyforge-ai/design/pages/platform-diff.html",
+        "brandPrefix": "pf",
+        "aestheticsMode": "free-explore",
+        "toolDisciplineBlockPresent": true,
+        "fillHtmlHeadCommand": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs' '/workspace/pyforge-ai/design/colors_and_type.css' '/workspace/pyforge-ai/design/pages/platform-diff.html' --title='平台差异化适配' --lang='zh-CN' --prefix='pf'",
+        "headFillMode": "skeleton-first",
+        "viewportMode": "app-shell",
+        "completionSchemaExpected": "full",
+        "persistedToSummary": true,
+        "taskQueryAudited": true,
+        "proofSource": "summary-only",
+        "largeWorkflowFilesInTaskQuery": null
+      },
+      {
+        "recorded_at": "2026-08-07T03:00:00.000Z",
+        "generatedBy": "main-agent-manual",
+        "packetType": "ExistingEditPagePacket",
+        "laneContract": {
+          "resolvedLane": "existing_edit_add_comparison",
+          "packetType": "ExistingEditPagePacket",
+          "pageRuntimeGuide": "intent-workflows/intent-project-mutation/existing-edit-page-runtime.md",
+          "dispatchContract": "intent-workflows/intent-project-mutation/existing-edit-dispatch-contract.md"
+        },
+        "taskLinePresent": true,
+        "outputPathPresent": true,
+        "sharedTemplate": "intent-workflows/intent-project-mutation/existing-edit-page-runtime.md",
+        "nodeId": "page-app-properties",
+        "htmlSrc": "design/pages/app-properties.html",
+        "sourcePageId": "page-settings-platform",
+        "sourceHtmlSrc": "design/pages/settings-platform.html",
+        "derivationType": "comparison-page",
+        "inPlaceEditAllowed": false,
+        "supplementaryReads": [],
+        "allowedWritePaths": ["design/pages/app-properties.html", "assets/"],
+        "forbiddenWriteRoots": [
+          "*.design",
+          "runtime-orchestration-summary.json",
+          "validation-report.json",
+          "finish-readiness-report.json",
+          "restore-contract-report.json",
+          "page-generation-summary.json"
+        ],
+        "toolPolicy": {
+          "todoWriteAllowed": false,
+          "validationScriptsAllowed": false,
+          "previewAllowed": false,
+          "helperScriptsAllowed": false,
+          "designFileWriteAllowed": false,
+          "allowedWritePaths": ["design/pages/app-properties.html", "assets/"]
+        },
+        "skillRuntime": {
+          "skillDir": "/data/user/builtin/design/default/skills/solo-design",
+          "deterministicToolDir": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling",
+          "toolPaths": {
+            "applyHtmlHeadContract": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs",
+            "recordDispatchCompletion": "/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs"
+          },
+          "requiredForPageSubAgent": ["applyHtmlHeadContract", "recordDispatchCompletion"],
+          "pathInjection": "absolute",
+          "pathContract": "Do not use {SKILL_DIR} placeholders inside Page Sub-Agent packets; use toolPaths.* absolute paths.",
+          "commandTemplates": {
+            "recordDispatchCompletion": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/record-dispatch-completion.mjs' '/workspace/pyforge-ai' --node-id='page-app-properties' --html-src='pages/app-properties.html' --status=completed --changed-files=pages/app-properties.html --trace-digest=app-properties-001 --tool-ledger-json={\"todoWriteCalls\":0,\"previewCalls\":0,\"validationScriptCalls\":0,\"helperScriptWrites\":0}"
+          }
+        },
+        "cssFilePath": "/workspace/pyforge-ai/design/colors_and_type.css",
+        "htmlFilePath": "/workspace/pyforge-ai/design/pages/app-properties.html",
+        "brandPrefix": "pf",
+        "aestheticsMode": "free-explore",
+        "toolDisciplineBlockPresent": true,
+        "fillHtmlHeadCommand": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/apply-html-head-contract.mjs' '/workspace/pyforge-ai/design/colors_and_type.css' '/workspace/pyforge-ai/design/pages/app-properties.html' --title='软件属性配置' --lang='zh-CN' --prefix='pf'",
+        "headFillMode": "skeleton-first",
+        "viewportMode": "app-shell",
+        "completionSchemaExpected": "full",
+        "persistedToSummary": true,
+        "taskQueryAudited": true,
+        "proofSource": "summary-only",
+        "largeWorkflowFilesInTaskQuery": null
+      }
+    ],
+    "visualQualityCheckpoints": [
+      {
+        "checkpointId": "vq-anchor",
+        "dimension": "visual-anchor",
+        "expected": "暗色终端美学桌面界面，左侧深色导航栏 + 右侧数据密集内容区，teal-cyan 主色点缀",
+        "evidenceTarget": "design/pages/dashboard.html#main-content"
+      },
+      {
+        "checkpointId": "vq-hierarchy",
+        "dimension": "information-hierarchy",
+        "expected": "页面标题 > 统计卡片 > 操作区 > 数据列表，层次分明，避免首屏信息过载",
+        "evidenceTarget": "design/pages/dashboard.html#content"
+      },
+      {
+        "checkpointId": "vq-structure",
+        "dimension": "composition-structure",
+        "expected": "240px 侧边栏 + 弹性主内容区，顶部 56px 工具栏，内容区 24px padding",
+        "evidenceTarget": "design/pages/dashboard.html#layout"
+      },
+      {
+        "checkpointId": "vq-implementation",
+        "dimension": "implementation-strategy",
+        "expected": "CSS Grid + Flexbox 布局，CSS 变量驱动主题，静态 CSS 覆盖关键布局不依赖 Tailwind 运行时",
+        "evidenceTarget": "design/pages/dashboard.html#implementation"
+      }
+    ],
+    "validationHistory": [
+      {
+        "reportPath": "validation-report.json",
+        "reportHash": "0f20a7c5e75983187a41bf7692ee8f3c41a83dfbc5df4b5a403d604f66e8512c",
+        "checkedAt": "2026-08-07T01:56:24.450Z",
+        "success": false,
+        "exitCode": 1,
+        "renderBlockingErrorCount": 19,
+        "repairPlanHints": [],
+        "errorSignatures": [
+          {
+            "errorClass": "app-shell-viewport",
+            "normalized": "[app-shell-viewport] pages/dashboard.html: viewportMode is app-shell but data-viewport-mode=\"app-shell\" is missing on the shell container.",
+            "signature": "0d40231a6056263b51c03e4914cf7629b9675a2a55c131c6234c5c54903ffc92"
+          },
+          {
+            "errorClass": "app-shell-viewport",
+            "normalized": "[app-shell-viewport] pages/dashboard.html: app-shell pages must declare data-scroll-region=\"primary\" on a class list containing overflow-y-auto.",
+            "signature": "bbbe905824ab5701b9cdadd6e152286d3f4de12850551ca5f0fe11361501b24e"
+          },
+          {
+            "errorClass": "app-shell-viewport",
+            "normalized": "[app-shell-viewport] pages/dashboard.html: app-shell page still looks like natural document flow (min-h-screen) without a complete internal scroll shell.",
+            "signature": "a348b919e9f78d4dc8beec864b7747f69fa7e013ea548726a92e10a51c371556"
+          },
+          {
+            "errorClass": "app-shell-viewport",
+            "normalized": "[app-shell-viewport] pages/python-versions.html: viewportMode is app-shell but data-viewport-mode=\"app-shell\" is missing on the shell container.",
+            "signature": "0b233d5fcb95121bb1d470b8e08fda87987fb71bce7447dc3223ae879abbf5ca"
+          },
+          {
+            "errorClass": "app-shell-viewport",
+            "normalized": "[app-shell-viewport] pages/python-versions.html: app-shell pages must declare data-scroll-region=\"primary\" on a class list containing overflow-y-auto.",
+            "signature": "6747d4c7a8e1266d2fdc0e9a3f26f96a0c29cb205d6f6c3cd7e99a20e0bcfa56"
+          },
+          {
+            "errorClass": "app-shell-viewport",
+            "normalized": "[app-shell-viewport] pages/python-versions.html: app-shell page still looks like natural document flow (min-h-screen) without a complete internal scroll shell.",
+            "signature": "88336cb8ae54f593264df4d3e52150ff479021011571a17c18e8cc00af4cd96a"
+          },
+          {
+            "errorClass": "app-shell-viewport",
+            "normalized": "[app-shell-viewport] pages/environments.html: viewportMode is app-shell but data-viewport-mode=\"app-shell\" is missing on the shell container.",
+            "signature": "dfca61011d18f0ad01995a42b33389f0ab9ace081a407553f792f4223bf9e632"
+          },
+          {
+            "errorClass": "app-shell-viewport",
+            "normalized": "[app-shell-viewport] pages/environments.html: app-shell pages must declare data-scroll-region=\"primary\" on a class list containing overflow-y-auto.",
+            "signature": "af941f7d87a64d5dd2bc4097c918324350a11c7ae5198059dba718cb1d1f7067"
+          },
+          {
+            "errorClass": "app-shell-viewport",
+            "normalized": "[app-shell-viewport] pages/environments.html: app-shell page still looks like natural document flow (min-h-screen) without a complete internal scroll shell.",
+            "signature": "06b3e59ba25a31c375101470fb9965dca7178cb92297b5be7f2ba6083c7e2ecb"
+          },
+          {
+            "errorClass": "app-shell-viewport",
+            "normalized": "[app-shell-viewport] pages/packages.html: viewportMode is app-shell but data-viewport-mode=\"app-shell\" is missing on the shell container.",
+            "signature": "bf631fc4031790fe52067aca017aa96408c396163b03c63e7128b3954e6921a7"
+          },
+          {
+            "errorClass": "app-shell-viewport",
+            "normalized": "[app-shell-viewport] pages/packages.html: app-shell pages must declare data-scroll-region=\"primary\" on a class list containing overflow-y-auto.",
+            "signature": "747e66f9c01e28d6f402f857e3759c625f78fedf21f2fb2320cb42ab262367f3"
+          },
+          {
+            "errorClass": "app-shell-viewport",
+            "normalized": "[app-shell-viewport] pages/packages.html: app-shell page still looks like natural document flow (min-h-screen) without a complete internal scroll shell.",
+            "signature": "1538368d773d025c00fe8e7678caeaa577fbf81593d14317ec8d51fafdf873b7"
+          },
+          {
+            "errorClass": "app-shell-viewport",
+            "normalized": "[app-shell-viewport] pages/ai-deploy.html: viewportMode is app-shell but data-viewport-mode=\"app-shell\" is missing on the shell container.",
+            "signature": "ea5b9b721a64864de7ff2bf5281dced217b7ba8d0f7c3ffba8119e5cba62663c"
+          },
+          {
+            "errorClass": "app-shell-viewport",
+            "normalized": "[app-shell-viewport] pages/ai-deploy.html: app-shell pages must declare data-scroll-region=\"primary\" on a class list containing overflow-y-auto.",
+            "signature": "03aa9acaaa208986bae2a419293309afd532510cef448604614081841486a300"
+          },
+          {
+            "errorClass": "app-shell-viewport",
+            "normalized": "[app-shell-viewport] pages/ai-deploy.html: app-shell page still looks like natural document flow (min-h-screen) without a complete internal scroll shell.",
+            "signature": "8ccb49f6eb3f46e00f0fc341e9eeef5d368be7ac5f26cb857a2a59fb3f079b3e"
+          },
+          {
+            "errorClass": "app-shell-viewport",
+            "normalized": "[app-shell-viewport] pages/settings.html: viewportMode is app-shell but data-viewport-mode=\"app-shell\" is missing on the shell container.",
+            "signature": "a8f4977e6ccb8ac0ce8c2faced7849050bb702d582123540ad1b4650102c401f"
+          },
+          {
+            "errorClass": "app-shell-viewport",
+            "normalized": "[app-shell-viewport] pages/settings.html: app-shell pages must declare data-scroll-region=\"primary\" on a class list containing overflow-y-auto.",
+            "signature": "cc74c7e0c0c72f83cf1d3db2f7e9d500c6af6fad97803fb6fdef9b03592ecdbf"
+          },
+          {
+            "errorClass": "app-shell-viewport",
+            "normalized": "[app-shell-viewport] pages/settings.html: app-shell page still looks like natural document flow (min-h-screen) without a complete internal scroll shell.",
+            "signature": "382b9c3b33f666561eac75ebcfa433af50411207e57c2db24b7f03815f5446ac"
+          },
+          {
+            "errorClass": "dispatch-preflight-or-ownership",
+            "normalized": "[dispatch-changed-files] project.expectedDispatches[] is required when dispatchPreflightManifest[] exists",
+            "signature": "1863095a5236c379a633d22a8424261bfcde770ff9ab246147a2326cba87f6fd"
+          }
+        ],
+        "terminalState": null
+      }
+    ],
+    "validationRepairLedger": [
+      {
+        "failedReportPath": "validation-report.json",
+        "failedReportHash": "0f20a7c5e75983187a41bf7692ee8f3c41a83dfbc5df4b5a403d604f66e8512c",
+        "repairWorkflowReadPath": "intent-workflows/intent-project-mutation/main-agent-repair-workflow.md",
+        "repairStartedAt": "2026-08-07T01:56:45.706Z",
+        "repairEntryStatus": "started-awaiting-owner-batch-repair",
+        "ownerTriage": [
+          {
+            "owner": "main-agent",
+            "errorClass": "unknown-blocking",
+            "affectedFiles": [],
+            "repairScope": "read validation report, classify owner, then use the narrowest targeted repair",
+            "strategy": "no validator source read; targeted affected-file excerpt only"
+          },
+          {
+            "owner": "main-agent",
+            "errorClass": "unknown-blocking",
+            "affectedFiles": [],
+            "repairScope": "read validation report, classify owner, then use the narrowest targeted repair",
+            "strategy": "no validator source read; targeted affected-file excerpt only"
+          },
+          {
+            "owner": "main-agent",
+            "errorClass": "unknown-blocking",
+            "affectedFiles": [],
+            "repairScope": "read validation report, classify owner, then use the narrowest targeted repair",
+            "strategy": "no validator source read; targeted affected-file excerpt only"
+          },
+          {
+            "owner": "main-agent",
+            "errorClass": "unknown-blocking",
+            "affectedFiles": [],
+            "repairScope": "read validation report, classify owner, then use the narrowest targeted repair",
+            "strategy": "no validator source read; targeted affected-file excerpt only"
+          },
+          {
+            "owner": "main-agent",
+            "errorClass": "unknown-blocking",
+            "affectedFiles": [],
+            "repairScope": "read validation report, classify owner, then use the narrowest targeted repair",
+            "strategy": "no validator source read; targeted affected-file excerpt only"
+          },
+          {
+            "owner": "main-agent",
+            "errorClass": "unknown-blocking",
+            "affectedFiles": [],
+            "repairScope": "read validation report, classify owner, then use the narrowest targeted repair",
+            "strategy": "no validator source read; targeted affected-file excerpt only"
+          },
+          {
+            "owner": "main-agent",
+            "errorClass": "unknown-blocking",
+            "affectedFiles": [],
+            "repairScope": "read validation report, classify owner, then use the narrowest targeted repair",
+            "strategy": "no validator source read; targeted affected-file excerpt only"
+          },
+          {
+            "owner": "main-agent",
+            "errorClass": "unknown-blocking",
+            "affectedFiles": [],
+            "repairScope": "read validation report, classify owner, then use the narrowest targeted repair",
+            "strategy": "no validator source read; targeted affected-file excerpt only"
+          }
+        ],
+        "repairPlanHints": [],
+        "repairActions": [],
+        "revalidationReportPath": null,
+        "revalidationReportHash": null,
+        "revalidationSuccess": null,
+        "blockedReason": null
+      }
+    ],
+    "repairEntryEvidence": [
+      {
+        "failedReportPath": "validation-report.json",
+        "failedReportHash": "0f20a7c5e75983187a41bf7692ee8f3c41a83dfbc5df4b5a403d604f66e8512c",
+        "repairWorkflowReadPath": "intent-workflows/intent-project-mutation/main-agent-repair-workflow.md",
+        "repairStartedAt": "2026-08-07T01:56:45.706Z",
+        "ledgerIndex": 0,
+        "ownerTriageCount": 8,
+        "repairActionCount": 0,
+        "revalidationReportPath": null,
+        "revalidationReportHash": null,
+        "revalidationSuccess": null
+      }
+    ],
+    "expectedDispatches": [
+      {
+        "nodeId": "page-dashboard",
+        "pageId": "page-dashboard",
+        "targetPageId": "page-dashboard",
+        "htmlSrc": "design/pages/dashboard.html",
+        "packetType": "ComplexPagePacket",
+        "status": "completed",
+        "changedFiles": ["design/pages/dashboard.html"],
+        "toolCallLedger": {
+          "source": "main-agent-runtime-trace",
+          "traceDigest": "main-agent-trace-001",
+          "todoWriteCalls": 0,
+          "previewCalls": 0,
+          "validationScriptCalls": 0,
+          "helperScriptWrites": 0
+        },
+        "recordedAt": "2026-08-07T02:03:36.487Z",
+        "source": "record-dispatch-completion.mjs"
+      },
+      {
+        "nodeId": "page-python-versions",
+        "pageId": "page-python-versions",
+        "targetPageId": "page-python-versions",
+        "htmlSrc": "design/pages/python-versions.html",
+        "packetType": "ComplexPagePacket",
+        "status": "completed",
+        "changedFiles": ["design/pages/python-versions.html"],
+        "toolCallLedger": {
+          "source": "main-agent-runtime-trace",
+          "traceDigest": "main-agent-trace-002",
+          "todoWriteCalls": 0,
+          "previewCalls": 0,
+          "validationScriptCalls": 0,
+          "helperScriptWrites": 0
+        },
+        "recordedAt": "2026-08-07T02:03:36.665Z",
+        "source": "record-dispatch-completion.mjs"
+      },
+      {
+        "nodeId": "page-environments",
+        "pageId": "page-environments",
+        "targetPageId": "page-environments",
+        "htmlSrc": "design/pages/environments.html",
+        "packetType": "ComplexPagePacket",
+        "status": "completed",
+        "changedFiles": ["design/pages/environments.html"],
+        "toolCallLedger": {
+          "source": "main-agent-runtime-trace",
+          "traceDigest": "main-agent-trace-003",
+          "todoWriteCalls": 0,
+          "previewCalls": 0,
+          "validationScriptCalls": 0,
+          "helperScriptWrites": 0
+        },
+        "recordedAt": "2026-08-07T02:03:36.854Z",
+        "source": "record-dispatch-completion.mjs"
+      },
+      {
+        "nodeId": "page-packages",
+        "pageId": "page-packages",
+        "targetPageId": "page-packages",
+        "htmlSrc": "design/pages/packages.html",
+        "packetType": "ComplexPagePacket",
+        "status": "completed",
+        "changedFiles": ["design/pages/packages.html"],
+        "toolCallLedger": {
+          "source": "main-agent-runtime-trace",
+          "traceDigest": "main-agent-trace-004",
+          "todoWriteCalls": 0,
+          "previewCalls": 0,
+          "validationScriptCalls": 0,
+          "helperScriptWrites": 0
+        },
+        "recordedAt": "2026-08-07T02:03:37.044Z",
+        "source": "record-dispatch-completion.mjs"
+      },
+      {
+        "nodeId": "page-ai-deploy",
+        "pageId": "page-ai-deploy",
+        "targetPageId": "page-ai-deploy",
+        "htmlSrc": "design/pages/ai-deploy.html",
+        "packetType": "ComplexPagePacket",
+        "status": "completed",
+        "changedFiles": ["design/pages/ai-deploy.html"],
+        "toolCallLedger": {
+          "source": "main-agent-runtime-trace",
+          "traceDigest": "main-agent-trace-005",
+          "todoWriteCalls": 0,
+          "previewCalls": 0,
+          "validationScriptCalls": 0,
+          "helperScriptWrites": 0
+        },
+        "recordedAt": "2026-08-07T02:03:37.233Z",
+        "source": "record-dispatch-completion.mjs"
+      },
+      {
+        "nodeId": "page-settings",
+        "pageId": "page-settings",
+        "targetPageId": "page-settings",
+        "htmlSrc": "design/pages/settings.html",
+        "packetType": "ComplexPagePacket",
+        "status": "completed",
+        "changedFiles": ["design/pages/settings.html"],
+        "toolCallLedger": {
+          "source": "main-agent-runtime-trace",
+          "traceDigest": "main-agent-trace-006",
+          "todoWriteCalls": 0,
+          "previewCalls": 0,
+          "validationScriptCalls": 0,
+          "helperScriptWrites": 0
+        },
+        "recordedAt": "2026-08-07T02:03:37.418Z",
+        "source": "record-dispatch-completion.mjs"
+      },
+      {
+        "nodeId": "page-dashboard-responsive",
+        "pageId": "page-dashboard-responsive",
+        "targetPageId": "page-dashboard-responsive",
+        "htmlSrc": "design/pages/dashboard-responsive.html",
+        "packetType": "ExistingEditPagePacket",
+        "status": "completed",
+        "changedFiles": ["design/pages/dashboard-responsive.html"],
+        "toolCallLedger": {
+          "source": "main-agent-runtime-trace",
+          "traceDigest": "responsive-edit-001",
+          "todoWriteCalls": 0,
+          "previewCalls": 0,
+          "validationScriptCalls": 0,
+          "helperScriptWrites": 0
+        },
+        "recordedAt": "2026-08-07T03:23:07.405Z",
+        "source": "record-dispatch-completion.mjs"
+      },
+      {
+        "nodeId": "page-ai-deploy-responsive",
+        "pageId": "page-ai-deploy-responsive",
+        "targetPageId": "page-ai-deploy-responsive",
+        "htmlSrc": "design/pages/ai-deploy-responsive.html",
+        "packetType": "ExistingEditPagePacket",
+        "status": "completed",
+        "changedFiles": ["design/pages/ai-deploy-responsive.html"],
+        "toolCallLedger": {
+          "source": "main-agent-runtime-trace",
+          "traceDigest": "responsive-edit-002",
+          "todoWriteCalls": 0,
+          "previewCalls": 0,
+          "validationScriptCalls": 0,
+          "helperScriptWrites": 0
+        },
+        "recordedAt": "2026-08-07T03:23:08.556Z",
+        "source": "record-dispatch-completion.mjs"
+      },
+      {
+        "nodeId": "page-platform-diff",
+        "pageId": "page-platform-diff",
+        "targetPageId": "page-platform-diff",
+        "htmlSrc": "design/pages/platform-diff.html",
+        "packetType": "ExistingEditPagePacket",
+        "status": "completed",
+        "changedFiles": ["design/pages/platform-diff.html"],
+        "toolCallLedger": {
+          "source": "main-agent-runtime-trace",
+          "traceDigest": "platform-diff-001",
+          "todoWriteCalls": 0,
+          "previewCalls": 0,
+          "validationScriptCalls": 0,
+          "helperScriptWrites": 0
+        },
+        "recordedAt": "2026-08-07T03:40:06.238Z",
+        "source": "record-dispatch-completion.mjs"
+      },
+      {
+        "nodeId": "page-app-properties",
+        "pageId": "page-app-properties",
+        "targetPageId": "page-app-properties",
+        "htmlSrc": "design/pages/app-properties.html",
+        "packetType": "ExistingEditPagePacket",
+        "status": "completed",
+        "changedFiles": ["design/pages/app-properties.html"],
+        "toolCallLedger": {
+          "source": "main-agent-runtime-trace",
+          "traceDigest": "app-properties-001",
+          "todoWriteCalls": 0,
+          "previewCalls": 0,
+          "validationScriptCalls": 0,
+          "helperScriptWrites": 0
+        },
+        "recordedAt": "2026-08-07T03:40:10.396Z",
+        "source": "record-dispatch-completion.mjs"
+      }
+    ],
+    "mainAgentPostDispatchMutations": [
+      {
+        "path": "pyforge-ai.design",
+        "reason": "Added navigation interactions (domId to targetPageId mappings) and quick-action interactions to all pages",
+        "owner": "main-agent",
+        "recordedAt": "2026-08-07T02:03:36.487Z",
+        "source": "record-dispatch-completion.mjs"
+      }
+    ]
+  },
+  "designSource": {
+    "operatingMode": "free-explore",
+    "cssFilePath": "design/colors_and_type.css",
+    "brandPrefix": "pf",
+    "styleConstraints": {
+      "radiusMax": 16,
+      "staticShadowAlphaMax": 0.05,
+      "primaryHueCount": 1,
+      "fontSystem": "Inter sans-serif + JetBrains Mono monospace"
+    }
+  },
+  "pages": [
+    {
+      "nodeId": "page-dashboard",
+      "title": "控制台",
+      "htmlSrc": "design/pages/dashboard.html",
+      "pageType": "information-dense",
+      "deviceType": "desktop",
+      "viewportMode": "app-shell",
+      "activeNavKey": "dashboard",
+      "visualNorthStar": "开发者控制台：系统概览 + AI 助手 + 快捷操作 + 环境状态一览，类似 Warp Terminal + Docker Desktop 的暗色仪表盘",
+      "compositionPattern": "dashboard-grid",
+      "continuityAnchors": [
+        "dark-sidebar-shell",
+        "teal-primary-cta",
+        "border-led-cards",
+        "mono-terminal-accents"
+      ],
+      "componentPlan": [
+        "stat-card",
+        "ai-assistant-panel",
+        "quick-action-grid",
+        "environment-status-list",
+        "activity-timeline"
+      ],
+      "imagePlan": [],
+      "chartsRequired": false,
+      "qualityRisks": ["density", "information-overload"]
+    },
+    {
+      "nodeId": "page-python-versions",
+      "title": "Python 版本管理",
+      "htmlSrc": "design/pages/python-versions.html",
+      "pageType": "task-driven",
+      "deviceType": "desktop",
+      "viewportMode": "app-shell",
+      "activeNavKey": "python-versions",
+      "visualNorthStar": "Python 版本管理器：已安装版本列表 + 可用版本安装 + 版本切换，类似 pyenv 的 GUI 化暗色界面",
+      "compositionPattern": "list-detail",
+      "continuityAnchors": [
+        "dark-sidebar-shell",
+        "teal-primary-cta",
+        "border-led-cards",
+        "mono-terminal-accents"
+      ],
+      "componentPlan": [
+        "version-list-table",
+        "install-progress-bar",
+        "version-detail-panel",
+        "terminal-output-block"
+      ],
+      "imagePlan": [],
+      "chartsRequired": false,
+      "qualityRisks": ["table-density"]
+    },
+    {
+      "nodeId": "page-environments",
+      "title": "虚拟环境管理",
+      "htmlSrc": "design/pages/environments.html",
+      "pageType": "task-driven",
+      "deviceType": "desktop",
+      "viewportMode": "app-shell",
+      "activeNavKey": "environments",
+      "visualNavKey": "environments",
+      "visualNorthStar": "虚拟环境管理：环境卡片网格 + 创建环境表单 + 依赖树可视化，暗色卡片式布局",
+      "compositionPattern": "card-grid-detail",
+      "continuityAnchors": [
+        "dark-sidebar-shell",
+        "teal-primary-cta",
+        "border-led-cards",
+        "mono-terminal-accents"
+      ],
+      "componentPlan": ["env-card-grid", "create-env-form", "dependency-tree", "env-detail-panel"],
+      "imagePlan": [],
+      "chartsRequired": false,
+      "qualityRisks": ["card-density", "form-layout"]
+    },
+    {
+      "nodeId": "page-packages",
+      "title": "包与镜像源",
+      "htmlSrc": "design/pages/packages.html",
+      "pageType": "information-dense",
+      "deviceType": "desktop",
+      "viewportMode": "app-shell",
+      "activeNavKey": "packages",
+      "visualNorthStar": "包管理 + 镜像源配置：pip 包搜索安装 + 镜像源速度测试 + 已安装包列表，类似 npm 的暗色管理界面",
+      "compositionPattern": "split-panel",
+      "continuityAnchors": [
+        "dark-sidebar-shell",
+        "teal-primary-cta",
+        "border-led-cards",
+        "mono-terminal-accents"
+      ],
+      "componentPlan": [
+        "package-search-bar",
+        "mirror-source-selector",
+        "speed-test-results",
+        "installed-packages-table"
+      ],
+      "imagePlan": [],
+      "chartsRequired": false,
+      "qualityRisks": ["split-panel-density", "table-overflow"]
+    },
+    {
+      "nodeId": "page-ai-deploy",
+      "title": "AI 智能部署",
+      "htmlSrc": "design/pages/ai-deploy.html",
+      "pageType": "showcase",
+      "deviceType": "desktop",
+      "viewportMode": "app-shell",
+      "activeNavKey": "ai-deploy",
+      "visualNorthStar": "AI 智能部署向导：项目分析 + AI 推荐 + 一键部署进度 + AI 对话助手，核心卖点页面，需要视觉冲击力",
+      "compositionPattern": "wizard-flow",
+      "continuityAnchors": [
+        "dark-sidebar-shell",
+        "teal-primary-cta",
+        "border-led-cards",
+        "mono-terminal-accents"
+      ],
+      "componentPlan": [
+        "ai-chat-panel",
+        "deployment-wizard-stepper",
+        "project-analysis-card",
+        "deployment-progress-terminal",
+        "ai-recommendation-list"
+      ],
+      "imagePlan": [],
+      "chartsRequired": false,
+      "qualityRisks": ["showcase-density", "ai-panel-layout"]
+    },
+    {
+      "nodeId": "page-settings",
+      "title": "设置",
+      "htmlSrc": "design/pages/settings.html",
+      "pageType": "task-driven",
+      "deviceType": "desktop",
+      "viewportMode": "app-shell",
+      "activeNavKey": "settings",
+      "visualNorthStar": "系统设置：通用设置 + 外观主题 + 路径配置 + AI 配置 + 关于，暗色表单式布局",
+      "compositionPattern": "settings-tabs",
+      "continuityAnchors": [
+        "dark-sidebar-shell",
+        "teal-primary-cta",
+        "border-led-cards",
+        "mono-terminal-accents"
+      ],
+      "componentPlan": [
+        "settings-tab-nav",
+        "settings-form-sections",
+        "path-config-input",
+        "theme-selector",
+        "about-panel"
+      ],
+      "imagePlan": [],
+      "chartsRequired": false,
+      "qualityRisks": ["form-density", "tab-layout"]
+    },
+    {
+      "nodeId": "page-dashboard-platform",
+      "title": "控制台 - 平台检测版",
+      "htmlSrc": "design/pages/dashboard-platform.html",
+      "pageType": "information-dense",
+      "deviceType": "desktop",
+      "viewportMode": "app-shell",
+      "activeNavKey": "dashboard",
+      "derivationType": "comparison-from-source",
+      "sourcePageId": "page-dashboard",
+      "sourceHtmlSrc": "design/pages/dashboard.html",
+      "visualNorthStar": "基于控制台页面增加平台自动检测横幅、平台状态卡片、平台适配功能推荐区，默认 Windows 平台，其他平台可选",
+      "compositionPattern": "dashboard-grid",
+      "continuityAnchors": [
+        "dark-sidebar-shell",
+        "teal-primary-cta",
+        "border-led-cards",
+        "mono-terminal-accents"
+      ],
+      "componentPlan": [
+        "platform-detection-banner",
+        "platform-status-card",
+        "stat-card",
+        "ai-assistant-panel",
+        "quick-action-grid",
+        "platform-feature-recommendations",
+        "activity-timeline"
+      ],
+      "imagePlan": [],
+      "chartsRequired": false,
+      "qualityRisks": ["density", "platform-banner-placement"]
+    },
+    {
+      "nodeId": "page-settings-platform",
+      "title": "设置 - 平台管理版",
+      "htmlSrc": "design/pages/settings-platform.html",
+      "pageType": "task-driven",
+      "deviceType": "desktop",
+      "viewportMode": "app-shell",
+      "activeNavKey": "settings",
+      "derivationType": "comparison-from-source",
+      "sourcePageId": "page-settings",
+      "sourceHtmlSrc": "design/pages/settings.html",
+      "visualNorthStar": "基于设置页面增加平台管理分区：平台自动检测结果、平台切换选择器、平台专属路径配置、平台功能开关",
+      "compositionPattern": "settings-tabs",
+      "continuityAnchors": [
+        "dark-sidebar-shell",
+        "teal-primary-cta",
+        "border-led-cards",
+        "mono-terminal-accents"
+      ],
+      "componentPlan": [
+        "settings-tab-nav",
+        "platform-detection-section",
+        "platform-selector",
+        "platform-path-config",
+        "platform-feature-toggles",
+        "settings-form-sections",
+        "terminal-config"
+      ],
+      "imagePlan": [],
+      "chartsRequired": false,
+      "qualityRisks": ["form-density", "platform-section-placement"]
+    }
+  ]
+}

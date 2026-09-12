@@ -1,0 +1,30 @@
+# Dependencies
+node_modules
+src-tauri/target
+
+# Local tool caches
+.cargo-home/
+.local-appdata/
+.tauri-tools/
+
+# Build outputs
+dist
+
+# Environment & secrets
+.env
+.env.*
+*.key
+*.key.pub
+src-tauri/updater/*.key
+
+# Generated reports
+stats.html
+design/artifacts/stats.html
+e2e/test-results/
+e2e/playwright-report/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.idea
+.vscode/settings.json

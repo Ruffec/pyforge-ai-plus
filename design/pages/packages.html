@@ -1,0 +1,1409 @@
+<!doctype html>
+<html lang="zh" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>包与镜像源</title>
+    <style id="theme-vars">
+      /* ==========================================================================
+   PyForge AI — Brand Design Tokens
+   Dark Developer Theme · Teal-Cyan Primary · AI-Forward
+   ========================================================================== */
+
+      /* --------------------------------------------------------------------------
+   Brand Prefix: pf
+   Default = Light Mode · .dark = Dark Mode (primary design)
+   -------------------------------------------------------------------------- */
+      :root {
+        /* ---- Primary Scale (Teal-Cyan) ---- */
+        --pf-primary-50: #ecfdfb;
+        --pf-primary-100: #cffeed;
+        --pf-primary-200: #9ff8dd;
+        --pf-primary-300: #5fecce;
+        --pf-primary-400: #2dd4bf;
+        --pf-primary-500: #14b8a6;
+        --pf-primary-600: #0d9488;
+        --pf-primary-700: #0f766e;
+        --pf-primary-800: #115e56;
+        --pf-primary-900: #134e48;
+
+        /* ---- Neutral Scale ---- */
+        --pf-neutral-50: #f6f8fa;
+        --pf-neutral-100: #e6edf3;
+        --pf-neutral-200: #c9d1d9;
+        --pf-neutral-300: #8b949e;
+        --pf-neutral-400: #6e7681;
+        --pf-neutral-500: #484f58;
+        --pf-neutral-600: #30363d;
+        --pf-neutral-700: #21262d;
+        --pf-neutral-800: #161b22;
+        --pf-neutral-900: #0d1117;
+        --pf-neutral-950: #0a0e14;
+
+        /* ---- Semantic Aliases (Light Mode Default) ---- */
+        --pf-background: #ffffff;
+        --pf-foreground: #0d1117;
+        --pf-card: #f6f8fa;
+        --pf-card-foreground: #0d1117;
+        --pf-popover: #ffffff;
+        --pf-popover-foreground: #0d1117;
+        --pf-primary: #0d9488;
+        --pf-primary-foreground: #ffffff;
+        --pf-muted: #f6f8fa;
+        --pf-muted-foreground: #6e7681;
+        --pf-border: #d0d7de;
+        --pf-input: #d0d7de;
+        --pf-ring: #0d9488;
+
+        /* ---- Radius Scale ---- */
+        --pf-radius-small: 4px;
+        --pf-radius-medium: 8px;
+        --pf-radius-large: 12px;
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-full: 9999px;
+
+        /* ---- State Colors ---- */
+        --state-success: #1a7f37;
+        --state-warning: #9a6700;
+        --state-error: #cf222e;
+        --state-info: #0969da;
+
+        /* ---- Typography ---- */
+        --pf-font-sans:
+          'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        --pf-font-mono:
+          'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', Consolas, monospace;
+
+        /* ---- Surface Depth ---- */
+        --pf-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+        --pf-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --pf-shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.06);
+
+        /* ---- Sidebar ---- */
+        --pf-sidebar-bg: #f6f8fa;
+        --pf-sidebar-item: #6e7681;
+        --pf-sidebar-item-active: #0d9488;
+        --pf-sidebar-item-hover: #e6edf3;
+      }
+
+      /* --------------------------------------------------------------------------
+   Dark Mode (Primary Design)
+   -------------------------------------------------------------------------- */
+      :root.dark {
+        --pf-background: #0a0e14;
+        --pf-foreground: #e6edf3;
+        --pf-card: #0d1117;
+        --pf-card-foreground: #e6edf3;
+        --pf-popover: #161b22;
+        --pf-popover-foreground: #e6edf3;
+        --pf-primary: #2dd4bf;
+        --pf-primary-foreground: #0a0e14;
+        --pf-muted: #161b22;
+        --pf-muted-foreground: #8b949e;
+        --pf-border: #21262d;
+        --pf-input: #21262d;
+        --pf-ring: #2dd4bf;
+
+        --state-success: #3fb950;
+        --state-warning: #d29922;
+        --state-error: #f85149;
+        --state-info: #58a6ff;
+
+        --pf-sidebar-bg: #0a0e14;
+        --pf-sidebar-item: #8b949e;
+        --pf-sidebar-item-active: #2dd4bf;
+        --pf-sidebar-item-hover: #161b22;
+
+        --pf-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+        --pf-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --pf-shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.06);
+      }
+
+      /* --------------------------------------------------------------------------
+   Typography Classes
+   -------------------------------------------------------------------------- */
+      .pf-text-display {
+        font-family: var(--pf-font-sans);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+      }
+
+      .pf-text-heading {
+        font-family: var(--pf-font-sans);
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        line-height: 1.3;
+      }
+
+      .pf-text-body {
+        font-family: var(--pf-font-sans);
+        font-weight: 400;
+        line-height: 1.6;
+      }
+
+      .pf-text-mono {
+        font-family: var(--pf-font-mono);
+        font-weight: 400;
+        letter-spacing: -0.02em;
+      }
+
+      .pf-text-label {
+        font-family: var(--pf-font-sans);
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+      @theme inline {
+        --color-background: var(--pf-background);
+        --color-foreground: var(--pf-foreground);
+        --color-card: var(--pf-card);
+        --color-card-foreground: var(--pf-card-foreground);
+        --color-popover: var(--pf-popover);
+        --color-popover-foreground: var(--pf-popover-foreground);
+        --color-primary: var(--pf-primary);
+        --color-primary-foreground: var(--pf-primary-foreground);
+        --color-muted: var(--pf-muted);
+        --color-muted-foreground: var(--pf-muted-foreground);
+        --color-border: var(--pf-border);
+        --color-input: var(--pf-input);
+        --color-ring: var(--pf-ring);
+        --radius-sm: var(--pf-radius-small);
+        --radius-md: var(--pf-radius-medium);
+        --radius-lg: var(--pf-radius-large);
+      }
+      @layer base {
+        body {
+          background: var(--pf-background);
+          color: var(--pf-foreground);
+        }
+        td,
+        th {
+          @apply break-words;
+          word-break: break-all;
+          word-break: auto-phrase;
+        }
+        th {
+          @apply whitespace-nowrap;
+        }
+      }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background {
+        background-color: var(--pf-background);
+      }
+      .text-background {
+        color: var(--pf-background);
+      }
+      .border-background {
+        border-color: var(--pf-background);
+      }
+      .ring-background {
+        --tw-ring-color: var(--pf-background);
+      }
+      .bg-foreground {
+        background-color: var(--pf-foreground);
+      }
+      .text-foreground {
+        color: var(--pf-foreground);
+      }
+      .border-foreground {
+        border-color: var(--pf-foreground);
+      }
+      .ring-foreground {
+        --tw-ring-color: var(--pf-foreground);
+      }
+      .bg-card {
+        background-color: var(--pf-card);
+      }
+      .text-card {
+        color: var(--pf-card);
+      }
+      .border-card {
+        border-color: var(--pf-card);
+      }
+      .ring-card {
+        --tw-ring-color: var(--pf-card);
+      }
+      .bg-card-foreground {
+        background-color: var(--pf-card-foreground);
+      }
+      .text-card-foreground {
+        color: var(--pf-card-foreground);
+      }
+      .border-card-foreground {
+        border-color: var(--pf-card-foreground);
+      }
+      .ring-card-foreground {
+        --tw-ring-color: var(--pf-card-foreground);
+      }
+      .bg-popover {
+        background-color: var(--pf-popover);
+      }
+      .text-popover {
+        color: var(--pf-popover);
+      }
+      .border-popover {
+        border-color: var(--pf-popover);
+      }
+      .ring-popover {
+        --tw-ring-color: var(--pf-popover);
+      }
+      .bg-popover-foreground {
+        background-color: var(--pf-popover-foreground);
+      }
+      .text-popover-foreground {
+        color: var(--pf-popover-foreground);
+      }
+      .border-popover-foreground {
+        border-color: var(--pf-popover-foreground);
+      }
+      .ring-popover-foreground {
+        --tw-ring-color: var(--pf-popover-foreground);
+      }
+      .bg-primary {
+        background-color: var(--pf-primary);
+      }
+      .text-primary {
+        color: var(--pf-primary);
+      }
+      .border-primary {
+        border-color: var(--pf-primary);
+      }
+      .ring-primary {
+        --tw-ring-color: var(--pf-primary);
+      }
+      .bg-primary-foreground {
+        background-color: var(--pf-primary-foreground);
+      }
+      .text-primary-foreground {
+        color: var(--pf-primary-foreground);
+      }
+      .border-primary-foreground {
+        border-color: var(--pf-primary-foreground);
+      }
+      .ring-primary-foreground {
+        --tw-ring-color: var(--pf-primary-foreground);
+      }
+      .bg-muted {
+        background-color: var(--pf-muted);
+      }
+      .text-muted {
+        color: var(--pf-muted);
+      }
+      .border-muted {
+        border-color: var(--pf-muted);
+      }
+      .ring-muted {
+        --tw-ring-color: var(--pf-muted);
+      }
+      .bg-muted-foreground {
+        background-color: var(--pf-muted-foreground);
+      }
+      .text-muted-foreground {
+        color: var(--pf-muted-foreground);
+      }
+      .border-muted-foreground {
+        border-color: var(--pf-muted-foreground);
+      }
+      .ring-muted-foreground {
+        --tw-ring-color: var(--pf-muted-foreground);
+      }
+      .bg-border {
+        background-color: var(--pf-border);
+      }
+      .text-border {
+        color: var(--pf-border);
+      }
+      .border-border {
+        border-color: var(--pf-border);
+      }
+      .ring-border {
+        --tw-ring-color: var(--pf-border);
+      }
+      .bg-input {
+        background-color: var(--pf-input);
+      }
+      .text-input {
+        color: var(--pf-input);
+      }
+      .border-input {
+        border-color: var(--pf-input);
+      }
+      .ring-input {
+        --tw-ring-color: var(--pf-input);
+      }
+      .bg-ring {
+        background-color: var(--pf-ring);
+      }
+      .text-ring {
+        color: var(--pf-ring);
+      }
+      .border-ring {
+        border-color: var(--pf-ring);
+      }
+      .ring-ring {
+        --tw-ring-color: var(--pf-ring);
+      }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+  </head>
+  <body class="font-sans antialiased">
+    <style id="critical-layout">
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      body {
+        font-family: var(--pf-font-sans);
+        background: var(--pf-background);
+        color: var(--pf-foreground);
+        font-size: 14px;
+        -webkit-font-smoothing: antialiased;
+      }
+      /* App shell */
+      .app-shell {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
+      /* Sidebar */
+      .sidebar {
+        width: 240px;
+        flex-shrink: 0;
+        background: var(--pf-sidebar-bg);
+        border-right: 1px solid var(--pf-border);
+        display: flex;
+        flex-direction: column;
+      }
+      .sidebar-logo {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--pf-border);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .sidebar-nav {
+        flex: 1;
+        padding: 12px 8px;
+        overflow-y: auto;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        margin-bottom: 2px;
+        border-radius: var(--pf-radius-small);
+        color: var(--pf-sidebar-item);
+        font-size: 14px;
+        cursor: pointer;
+        border-left: 2px solid transparent;
+        transition:
+          background 0.15s,
+          color 0.15s;
+      }
+      .nav-item:hover {
+        background: var(--pf-sidebar-item-hover);
+      }
+      .nav-item.active {
+        color: var(--pf-sidebar-item-active);
+        border-left: 2px solid var(--pf-sidebar-item-active);
+        background: var(--pf-sidebar-item-hover);
+      }
+      .nav-item svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+      }
+      .sidebar-footer {
+        padding: 12px;
+        border-top: 1px solid var(--pf-border);
+      }
+      .ai-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px;
+        border-radius: var(--pf-radius-medium);
+        background: linear-gradient(135deg, var(--pf-primary-400), var(--pf-primary-600));
+        color: var(--pf-primary-foreground);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        width: 100%;
+      }
+      .ai-btn svg {
+        width: 14px;
+        height: 14px;
+      }
+      .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 8px;
+        border-radius: var(--pf-radius-medium);
+        cursor: pointer;
+        margin-top: 8px;
+      }
+      .user-profile:hover {
+        background: var(--pf-sidebar-item-hover);
+      }
+      .avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: var(--radius-full);
+        background: var(--pf-primary-700);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--pf-primary-50);
+        font-size: 12px;
+        font-weight: 600;
+        flex-shrink: 0;
+      }
+      /* Main column */
+      .main-column {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .topbar {
+        height: 56px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        padding: 0 24px;
+        border-bottom: 1px solid var(--pf-border);
+        background: var(--pf-background);
+        gap: 16px;
+      }
+      .topbar-title {
+        font-size: 18px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      .topbar-search {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 320px;
+        padding: 6px 12px;
+        background: var(--pf-muted);
+        border: 1px solid var(--pf-border);
+        border-radius: var(--pf-radius-medium);
+      }
+      .topbar-search svg {
+        width: 14px;
+        height: 14px;
+        color: var(--pf-muted-foreground);
+        flex-shrink: 0;
+      }
+      .topbar-search input {
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--pf-foreground);
+        font-size: 13px;
+        width: 100%;
+      }
+      .topbar-search input::placeholder {
+        color: var(--pf-muted-foreground);
+      }
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-left: auto;
+      }
+      .status-chip {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--pf-muted-foreground);
+      }
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: var(--radius-full);
+        background: var(--state-success);
+      }
+      .icon-btn {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--pf-radius-medium);
+        color: var(--pf-muted-foreground);
+        cursor: pointer;
+        border: 1px solid transparent;
+      }
+      .icon-btn:hover {
+        background: var(--pf-muted);
+      }
+      .icon-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+      .cta-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 14px;
+        border-radius: var(--pf-radius-medium);
+        background: var(--pf-primary);
+        color: var(--pf-primary-foreground);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+      }
+      .cta-btn svg {
+        width: 14px;
+        height: 14px;
+      }
+      /* Main content */
+      .main-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+      }
+      /* Split panel */
+      .split-panel {
+        display: flex;
+        gap: 24px;
+        align-items: flex-start;
+      }
+      .left-panel {
+        flex: 0 0 40%;
+        max-width: 40%;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .right-panel {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      /* Card */
+      .card {
+        background: var(--pf-card);
+        border: 1px solid var(--pf-border);
+        border-radius: var(--pf-radius-large);
+      }
+      .card-pad-20 {
+        padding: 20px;
+      }
+      .card-pad-16 {
+        padding: 16px;
+      }
+      .card-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      .card-head svg {
+        width: 18px;
+        height: 18px;
+      }
+      .card-title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .card-title-sm {
+        font-size: 14px;
+        font-weight: 600;
+      }
+      /* Current source banner */
+      .current-source {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        border-radius: var(--pf-radius-medium);
+        background: var(--pf-muted);
+        border: 1px solid var(--pf-border);
+        margin-bottom: 14px;
+      }
+      .badge {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: var(--radius-full);
+        background: var(--pf-primary);
+        color: var(--pf-primary-foreground);
+        white-space: nowrap;
+      }
+      .speed-mono {
+        font-family: var(--pf-font-mono);
+        font-size: 13px;
+      }
+      /* Mirror rows */
+      .mirror-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 4px;
+        border-bottom: 1px solid var(--pf-border);
+      }
+      .mirror-row:last-child {
+        border-bottom: none;
+      }
+      .radio {
+        width: 16px;
+        height: 16px;
+        border-radius: var(--radius-full);
+        border: 1.5px solid var(--pf-neutral-500);
+        flex-shrink: 0;
+        position: relative;
+      }
+      .radio.on {
+        border-color: var(--pf-primary);
+      }
+      .radio.on::after {
+        content: '';
+        position: absolute;
+        inset: 3px;
+        border-radius: var(--radius-full);
+        background: var(--pf-primary);
+      }
+      .mirror-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .mirror-name {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--pf-foreground);
+      }
+      .mirror-url {
+        font-family: var(--pf-font-mono);
+        font-size: 11px;
+        color: var(--pf-muted-foreground);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .mirror-speed {
+        font-family: var(--pf-font-mono);
+        font-size: 12px;
+        flex-shrink: 0;
+        min-width: 44px;
+        text-align: right;
+      }
+      .text-green {
+        color: var(--state-success);
+      }
+      .text-yellow {
+        color: var(--state-warning);
+      }
+      .text-red {
+        color: var(--state-error);
+      }
+      .text-primary {
+        color: var(--pf-primary);
+      }
+      .test-btn {
+        font-size: 12px;
+        color: var(--pf-muted-foreground);
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px 8px;
+        flex-shrink: 0;
+      }
+      .test-btn:hover {
+        color: var(--pf-primary);
+      }
+      .apply-btn {
+        width: 100%;
+        padding: 10px;
+        margin-top: 16px;
+        border-radius: var(--pf-radius-medium);
+        border: none;
+        cursor: pointer;
+        background: var(--pf-primary);
+        color: var(--pf-primary-foreground);
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .apply-btn:hover {
+        background: var(--pf-primary-500);
+      }
+      /* Speed test bars */
+      .speed-bar-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .speed-bar-label {
+        font-size: 12px;
+        width: 64px;
+        flex-shrink: 0;
+        color: var(--pf-foreground);
+      }
+      .speed-bar-track {
+        flex: 1;
+        height: 6px;
+        border-radius: var(--radius-full);
+        background: var(--pf-muted);
+        overflow: hidden;
+      }
+      .speed-bar-fill {
+        height: 100%;
+        border-radius: var(--radius-full);
+        background: var(--pf-primary);
+      }
+      .speed-bar-val {
+        font-family: var(--pf-font-mono);
+        font-size: 11px;
+        width: 44px;
+        text-align: right;
+        flex-shrink: 0;
+        color: var(--pf-muted-foreground);
+      }
+      .ghost-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border: 1px solid var(--pf-border);
+        border-radius: var(--pf-radius-medium);
+        background: transparent;
+        color: var(--pf-foreground);
+        font-size: 12px;
+        cursor: pointer;
+        margin-top: 4px;
+      }
+      .ghost-btn svg {
+        width: 12px;
+        height: 12px;
+      }
+      .ghost-btn:hover {
+        border-color: var(--pf-primary);
+        color: var(--pf-primary);
+      }
+      /* Install */
+      .install-search {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--pf-muted);
+        border: 1px solid var(--pf-border);
+        border-radius: var(--pf-radius-medium);
+        padding: 10px 16px;
+        margin-bottom: 12px;
+      }
+      .install-search svg {
+        width: 16px;
+        height: 16px;
+        color: var(--pf-muted-foreground);
+        flex-shrink: 0;
+      }
+      .install-search input {
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--pf-foreground);
+        font-family: var(--pf-font-mono);
+        font-size: 13px;
+        width: 100%;
+      }
+      .install-search input::placeholder {
+        color: var(--pf-muted-foreground);
+      }
+      .pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+      .pill {
+        font-family: var(--pf-font-mono);
+        font-size: 12px;
+        padding: 4px 12px;
+        border: 1px solid var(--pf-border);
+        border-radius: var(--radius-full);
+        color: var(--pf-muted-foreground);
+        cursor: pointer;
+        transition:
+          border-color 0.15s,
+          color 0.15s;
+      }
+      .pill:hover {
+        border-color: var(--pf-primary);
+        color: var(--pf-primary);
+      }
+      .terminal {
+        font-family: var(--pf-font-mono);
+        font-size: 12px;
+        padding: 10px 14px;
+        background: var(--pf-neutral-950);
+        border: 1px solid var(--pf-border);
+        border-radius: var(--pf-radius-medium);
+        color: var(--pf-foreground);
+        margin-bottom: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .terminal .prompt {
+        color: var(--pf-primary);
+      }
+      .install-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .env-select {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border: 1px solid var(--pf-border);
+        border-radius: var(--pf-radius-medium);
+        font-size: 13px;
+        cursor: pointer;
+        color: var(--pf-foreground);
+      }
+      .env-select svg {
+        width: 14px;
+        height: 14px;
+        color: var(--pf-muted-foreground);
+      }
+      /* Package table */
+      .pkg-row {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr 1fr 1.3fr 1.4fr;
+        align-items: center;
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--pf-border);
+      }
+      .pkg-row:last-child {
+        border-bottom: none;
+      }
+      .pkg-row.data:hover {
+        background: var(--pf-muted);
+      }
+      .pkg-head {
+        font-size: 11px;
+        color: var(--pf-muted-foreground);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-weight: 500;
+        border-bottom: 1px solid var(--pf-border);
+      }
+      .pkg-name {
+        font-family: var(--pf-font-mono);
+        font-size: 13px;
+        color: var(--pf-foreground);
+      }
+      .pkg-ver {
+        font-family: var(--pf-font-mono);
+        font-size: 12px;
+        color: var(--pf-muted-foreground);
+      }
+      .pkg-status {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--pf-muted-foreground);
+      }
+      .status-pill-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: var(--radius-full);
+        flex-shrink: 0;
+      }
+      .dot-green {
+        background: var(--state-success);
+      }
+      .dot-yellow {
+        background: var(--state-warning);
+      }
+      .pkg-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .link-btn {
+        font-size: 12px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+      }
+      .link-update {
+        color: var(--pf-primary);
+      }
+      .link-muted {
+        color: var(--pf-muted-foreground);
+      }
+      .link-btn:hover {
+        text-decoration: underline;
+      }
+      .table-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        border-top: 1px solid var(--pf-border);
+      }
+      .pagination {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .page-btn {
+        min-width: 26px;
+        height: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--pf-radius-small);
+        cursor: pointer;
+        color: var(--pf-muted-foreground);
+        border: 1px solid transparent;
+        font-size: 12px;
+      }
+      .page-btn:hover {
+        background: var(--pf-muted);
+      }
+      .page-btn.active {
+        background: var(--pf-primary);
+        color: var(--pf-primary-foreground);
+      }
+      /* Footer */
+      .app-footer {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 24px;
+        border-top: 1px solid var(--pf-border);
+        font-size: 12px;
+        color: var(--pf-muted-foreground);
+      }
+    </style>
+    <div class="app-shell" data-viewport-mode="app-shell">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-logo">
+          <div
+            style="
+              width: 28px;
+              height: 28px;
+              border-radius: 6px;
+              background: linear-gradient(135deg, var(--pf-primary-400), var(--pf-primary-600));
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex-shrink: 0;
+            "
+          >
+            <i
+              data-lucide="flame"
+              style="width: 16px; height: 16px; color: var(--pf-primary-foreground)"
+            ></i>
+          </div>
+          <div>
+            <div
+              style="
+                font-size: 14px;
+                font-weight: 700;
+                letter-spacing: -0.01em;
+                color: var(--pf-foreground);
+              "
+            >
+              PyForge AI
+            </div>
+            <div
+              style="
+                font-size: 11px;
+                color: var(--pf-muted-foreground);
+                font-family: var(--pf-font-mono);
+              "
+            >
+              v2.4.0
+            </div>
+          </div>
+        </div>
+        <nav class="sidebar-nav">
+          <div class="nav-item" data-dom-id="nav-dashboard">
+            <i data-lucide="layout-dashboard"></i><span>控制台</span>
+          </div>
+          <div class="nav-item" data-dom-id="nav-python-versions">
+            <i data-lucide="boxes"></i><span>Python 版本</span>
+          </div>
+          <div class="nav-item" data-dom-id="nav-environments">
+            <i data-lucide="layers"></i><span>虚拟环境</span>
+          </div>
+          <div class="nav-item active" data-dom-id="nav-packages">
+            <i data-lucide="package"></i><span>包与镜像源</span>
+          </div>
+          <div class="nav-item" data-dom-id="nav-ai-deploy">
+            <i data-lucide="sparkles"></i><span>AI 智能部署</span>
+          </div>
+          <div class="nav-item" data-dom-id="nav-settings">
+            <i data-lucide="settings"></i><span>设置</span>
+          </div>
+        </nav>
+        <div class="sidebar-footer">
+          <button class="ai-btn"><i data-lucide="sparkles"></i>AI 助手</button>
+          <div class="user-profile">
+            <div class="avatar">DW</div>
+            <div style="min-width: 0">
+              <div style="font-size: 13px; font-weight: 500; color: var(--pf-foreground)">
+                Dev Wang
+              </div>
+              <div style="font-size: 11px; color: var(--pf-muted-foreground)">开发者</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+      <!-- Main column -->
+      <div class="main-column">
+        <!-- Top bar -->
+        <header class="topbar">
+          <div class="topbar-title">包与镜像源</div>
+          <div class="topbar-search">
+            <i data-lucide="search"></i>
+            <input type="text" placeholder="搜索包..." />
+          </div>
+          <div class="topbar-right">
+            <div class="status-chip"><span class="status-dot"></span>系统正常</div>
+            <div class="icon-btn"><i data-lucide="bell"></i></div>
+            <button class="cta-btn"><i data-lucide="rocket"></i>快速部署</button>
+          </div>
+        </header>
+        <!-- Main content -->
+        <main class="main-content overflow-y-auto" data-scroll-region="primary">
+          <div class="split-panel">
+            <!-- Left panel: mirror sources -->
+            <section class="left-panel">
+              <!-- Mirror config card -->
+              <div class="card card-pad-20">
+                <div class="card-head">
+                  <i data-lucide="globe" style="color: var(--pf-primary)"></i>
+                  <span class="card-title">镜像源配置</span>
+                </div>
+                <!-- current source banner -->
+                <div class="current-source">
+                  <div style="flex: 1; min-width: 0">
+                    <div style="font-size: 14px; font-weight: 600; color: var(--pf-foreground)">
+                      清华大学
+                    </div>
+                    <div style="font-size: 11px; color: var(--pf-muted-foreground)">
+                      当前使用的镜像源
+                    </div>
+                  </div>
+                  <span class="badge">当前使用</span>
+                  <span class="speed-mono text-primary">12ms</span>
+                </div>
+                <!-- mirror list -->
+                <div class="mirror-row">
+                  <span class="radio on"></span>
+                  <div class="mirror-info">
+                    <div class="mirror-name">清华大学</div>
+                    <div class="mirror-url">https://pypi.tuna.tsinghua.edu.cn</div>
+                  </div>
+                  <span class="mirror-speed text-green">12ms</span>
+                  <button class="test-btn">测试</button>
+                </div>
+                <div class="mirror-row">
+                  <span class="radio"></span>
+                  <div class="mirror-info">
+                    <div class="mirror-name">阿里云</div>
+                    <div class="mirror-url">https://mirrors.aliyun.com/pypi</div>
+                  </div>
+                  <span class="mirror-speed text-green">18ms</span>
+                  <button class="test-btn">测试</button>
+                </div>
+                <div class="mirror-row">
+                  <span class="radio"></span>
+                  <div class="mirror-info">
+                    <div class="mirror-name">腾讯云</div>
+                    <div class="mirror-url">https://mirrors.cloud.tencent.com/pypi</div>
+                  </div>
+                  <span class="mirror-speed text-green">25ms</span>
+                  <button class="test-btn">测试</button>
+                </div>
+                <div class="mirror-row">
+                  <span class="radio"></span>
+                  <div class="mirror-info">
+                    <div class="mirror-name">中科大</div>
+                    <div class="mirror-url">https://pypi.mirrors.ustc.edu.cn</div>
+                  </div>
+                  <span class="mirror-speed text-yellow">31ms</span>
+                  <button class="test-btn">测试</button>
+                </div>
+                <div class="mirror-row">
+                  <span class="radio"></span>
+                  <div class="mirror-info">
+                    <div class="mirror-name">豆瓣</div>
+                    <div class="mirror-url">https://pypi.douban.com</div>
+                  </div>
+                  <span class="mirror-speed text-red">超时</span>
+                  <button class="test-btn">测试</button>
+                </div>
+                <div class="mirror-row">
+                  <span class="radio"></span>
+                  <div class="mirror-info">
+                    <div class="mirror-name">官方源</div>
+                    <div class="mirror-url">https://pypi.org</div>
+                  </div>
+                  <span class="mirror-speed text-red">156ms</span>
+                  <button class="test-btn">测试</button>
+                </div>
+                <button class="apply-btn">应用镜像源</button>
+              </div>
+              <!-- Speed test card -->
+              <div class="card card-pad-16">
+                <div class="card-head">
+                  <i data-lucide="activity" style="color: var(--pf-primary)"></i>
+                  <span class="card-title-sm">速度测试</span>
+                </div>
+                <div class="speed-bar-row">
+                  <span class="speed-bar-label">清华大学</span>
+                  <span class="speed-bar-track"
+                    ><span class="speed-bar-fill" style="width: 100%"></span
+                  ></span>
+                  <span class="speed-bar-val">12ms</span>
+                </div>
+                <div class="speed-bar-row">
+                  <span class="speed-bar-label">阿里云</span>
+                  <span class="speed-bar-track"
+                    ><span class="speed-bar-fill" style="width: 67%"></span
+                  ></span>
+                  <span class="speed-bar-val">18ms</span>
+                </div>
+                <div class="speed-bar-row">
+                  <span class="speed-bar-label">腾讯云</span>
+                  <span class="speed-bar-track"
+                    ><span class="speed-bar-fill" style="width: 48%"></span
+                  ></span>
+                  <span class="speed-bar-val">25ms</span>
+                </div>
+                <button class="ghost-btn"><i data-lucide="refresh-cw"></i>重新测试</button>
+              </div>
+            </section>
+            <!-- Right panel: package management -->
+            <section class="right-panel">
+              <!-- Install card -->
+              <div class="card card-pad-16">
+                <div class="card-head">
+                  <i data-lucide="package-plus" style="color: var(--pf-primary)"></i>
+                  <span class="card-title-sm">安装包</span>
+                </div>
+                <div class="install-search">
+                  <i data-lucide="search"></i>
+                  <input type="text" placeholder="搜索包名，如 numpy, flask, django..." />
+                </div>
+                <div class="pills">
+                  <span class="pill">numpy</span>
+                  <span class="pill">pandas</span>
+                  <span class="pill">flask</span>
+                  <span class="pill">django</span>
+                  <span class="pill">requests</span>
+                  <span class="pill">scikit-learn</span>
+                  <span class="pill">torch</span>
+                </div>
+                <div class="terminal">
+                  <span class="prompt">$</span> pip install numpy pandas flask
+                </div>
+                <div class="install-actions">
+                  <button class="cta-btn"><i data-lucide="download"></i>安装</button>
+                  <div class="env-select">my-project<i data-lucide="chevron-down"></i></div>
+                </div>
+              </div>
+              <!-- Installed packages table -->
+              <div class="card">
+                <div
+                  style="display: flex; align-items: center; gap: 8px; padding: 16px 16px 0 16px"
+                >
+                  <span class="card-title-sm">已安装包</span>
+                  <span
+                    style="
+                      font-size: 13px;
+                      font-weight: 600;
+                      color: var(--pf-primary);
+                      font-family: var(--pf-font-mono);
+                    "
+                    >248</span
+                  >
+                  <span style="flex: 1"></span>
+                  <a style="font-size: 12px; color: var(--pf-primary); cursor: pointer">更新全部</a>
+                </div>
+                <div style="margin-top: 12px">
+                  <div class="pkg-row pkg-head">
+                    <span>包名</span>
+                    <span>当前版本</span>
+                    <span>最新版本</span>
+                    <span>描述</span>
+                    <span>操作</span>
+                  </div>
+                  <div class="pkg-row data">
+                    <span class="pkg-name">numpy</span>
+                    <span class="pkg-ver">1.26.4</span>
+                    <span class="pkg-ver">2.0.1</span>
+                    <span class="pkg-status"
+                      ><span class="status-pill-dot dot-yellow"></span>可更新</span
+                    >
+                    <span class="pkg-actions"
+                      ><button class="link-btn link-update">更新</button
+                      ><button class="link-btn link-muted">卸载</button></span
+                    >
+                  </div>
+                  <div class="pkg-row data">
+                    <span class="pkg-name">pandas</span>
+                    <span class="pkg-ver">2.2.2</span>
+                    <span class="pkg-ver">2.2.2</span>
+                    <span class="pkg-status"
+                      ><span class="status-pill-dot dot-green"></span>最新</span
+                    >
+                    <span class="pkg-actions"
+                      ><button class="link-btn link-muted">卸载</button></span
+                    >
+                  </div>
+                  <div class="pkg-row data">
+                    <span class="pkg-name">flask</span>
+                    <span class="pkg-ver">3.0.3</span>
+                    <span class="pkg-ver">3.0.3</span>
+                    <span class="pkg-status"
+                      ><span class="status-pill-dot dot-green"></span>最新</span
+                    >
+                    <span class="pkg-actions"
+                      ><button class="link-btn link-muted">卸载</button></span
+                    >
+                  </div>
+                  <div class="pkg-row data">
+                    <span class="pkg-name">django</span>
+                    <span class="pkg-ver">4.2.13</span>
+                    <span class="pkg-ver">5.0.7</span>
+                    <span class="pkg-status"
+                      ><span class="status-pill-dot dot-yellow"></span>可更新</span
+                    >
+                    <span class="pkg-actions"
+                      ><button class="link-btn link-update">更新</button
+                      ><button class="link-btn link-muted">卸载</button></span
+                    >
+                  </div>
+                  <div class="pkg-row data">
+                    <span class="pkg-name">requests</span>
+                    <span class="pkg-ver">2.32.3</span>
+                    <span class="pkg-ver">2.32.3</span>
+                    <span class="pkg-status"
+                      ><span class="status-pill-dot dot-green"></span>最新</span
+                    >
+                    <span class="pkg-actions"
+                      ><button class="link-btn link-muted">卸载</button></span
+                    >
+                  </div>
+                  <div class="pkg-row data">
+                    <span class="pkg-name">scikit-learn</span>
+                    <span class="pkg-ver">1.5.0</span>
+                    <span class="pkg-ver">1.5.1</span>
+                    <span class="pkg-status"
+                      ><span class="status-pill-dot dot-yellow"></span>可更新</span
+                    >
+                    <span class="pkg-actions"
+                      ><button class="link-btn link-update">更新</button
+                      ><button class="link-btn link-muted">卸载</button></span
+                    >
+                  </div>
+                  <div class="pkg-row data">
+                    <span class="pkg-name">matplotlib</span>
+                    <span class="pkg-ver">3.9.0</span>
+                    <span class="pkg-ver">3.9.0</span>
+                    <span class="pkg-status"
+                      ><span class="status-pill-dot dot-green"></span>最新</span
+                    >
+                    <span class="pkg-actions"
+                      ><button class="link-btn link-muted">卸载</button></span
+                    >
+                  </div>
+                  <div class="pkg-row data">
+                    <span class="pkg-name">torch</span>
+                    <span class="pkg-ver">2.3.1</span>
+                    <span class="pkg-ver">2.4.0</span>
+                    <span class="pkg-status"
+                      ><span class="status-pill-dot dot-yellow"></span>可更新</span
+                    >
+                    <span class="pkg-actions"
+                      ><button class="link-btn link-update">更新</button
+                      ><button class="link-btn link-muted">卸载</button></span
+                    >
+                  </div>
+                </div>
+                <div class="table-footer">
+                  <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                    >显示 8 / 248 个包</span
+                  >
+                  <div class="pagination">
+                    <span class="page-btn">‹</span>
+                    <span class="page-btn active">1</span>
+                    <span class="page-btn">2</span>
+                    <span class="page-btn">3</span>
+                    <span class="page-btn" style="cursor: default">...</span>
+                    <span class="page-btn">31</span>
+                    <span class="page-btn">›</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </main>
+        <!-- Footer -->
+        <footer class="app-footer">
+          <span>PyForge AI v2.4.0 · 构建 2024.08.07</span>
+          <span>© 2024 PyForge AI</span>
+        </footer>
+      </div>
+    </div>
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

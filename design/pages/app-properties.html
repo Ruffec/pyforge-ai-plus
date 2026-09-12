@@ -1,0 +1,2875 @@
+<!doctype html>
+<html lang="zh" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>软件属性配置 - PyForge AI</title>
+    <style id="theme-vars">
+      /* ==========================================================================
+   PyForge AI — Brand Design Tokens
+   Dark Developer Theme · Teal-Cyan Primary · AI-Forward
+   ========================================================================== */
+
+      /* --------------------------------------------------------------------------
+   Brand Prefix: pf
+   Default = Light Mode · .dark = Dark Mode (primary design)
+   -------------------------------------------------------------------------- */
+      :root {
+        /* ---- Primary Scale (Teal-Cyan) ---- */
+        --pf-primary-50: #ecfdfb;
+        --pf-primary-100: #cffeed;
+        --pf-primary-200: #9ff8dd;
+        --pf-primary-300: #5fecce;
+        --pf-primary-400: #2dd4bf;
+        --pf-primary-500: #14b8a6;
+        --pf-primary-600: #0d9488;
+        --pf-primary-700: #0f766e;
+        --pf-primary-800: #115e56;
+        --pf-primary-900: #134e48;
+
+        /* ---- Neutral Scale ---- */
+        --pf-neutral-50: #f6f8fa;
+        --pf-neutral-100: #e6edf3;
+        --pf-neutral-200: #c9d1d9;
+        --pf-neutral-300: #8b949e;
+        --pf-neutral-400: #6e7681;
+        --pf-neutral-500: #484f58;
+        --pf-neutral-600: #30363d;
+        --pf-neutral-700: #21262d;
+        --pf-neutral-800: #161b22;
+        --pf-neutral-900: #0d1117;
+        --pf-neutral-950: #0a0e14;
+
+        /* ---- Semantic Aliases (Light Mode Default) ---- */
+        --pf-background: #ffffff;
+        --pf-foreground: #0d1117;
+        --pf-card: #f6f8fa;
+        --pf-card-foreground: #0d1117;
+        --pf-popover: #ffffff;
+        --pf-popover-foreground: #0d1117;
+        --pf-primary: #0d9488;
+        --pf-primary-foreground: #ffffff;
+        --pf-muted: #f6f8fa;
+        --pf-muted-foreground: #6e7681;
+        --pf-border: #d0d7de;
+        --pf-input: #d0d7de;
+        --pf-ring: #0d9488;
+
+        /* ---- Radius Scale ---- */
+        --pf-radius-small: 4px;
+        --pf-radius-medium: 8px;
+        --pf-radius-large: 12px;
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-full: 9999px;
+
+        /* ---- State Colors ---- */
+        --state-success: #1a7f37;
+        --state-warning: #9a6700;
+        --state-error: #cf222e;
+        --state-info: #0969da;
+
+        /* ---- Typography ---- */
+        --pf-font-sans:
+          'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        --pf-font-mono:
+          'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', Consolas, monospace;
+
+        /* ---- Surface Depth ---- */
+        --pf-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+        --pf-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --pf-shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.05);
+
+        /* ---- Sidebar ---- */
+        --pf-sidebar-bg: #f6f8fa;
+        --pf-sidebar-item: #6e7681;
+        --pf-sidebar-item-active: #0d9488;
+        --pf-sidebar-item-hover: #e6edf3;
+      }
+
+      /* --------------------------------------------------------------------------
+   Dark Mode (Primary Design)
+   -------------------------------------------------------------------------- */
+      :root.dark {
+        --pf-background: #0a0e14;
+        --pf-foreground: #e6edf3;
+        --pf-card: #0d1117;
+        --pf-card-foreground: #e6edf3;
+        --pf-popover: #161b22;
+        --pf-popover-foreground: #e6edf3;
+        --pf-primary: #2dd4bf;
+        --pf-primary-foreground: #0a0e14;
+        --pf-muted: #161b22;
+        --pf-muted-foreground: #8b949e;
+        --pf-border: #21262d;
+        --pf-input: #21262d;
+        --pf-ring: #2dd4bf;
+
+        --state-success: #3fb950;
+        --state-warning: #d29922;
+        --state-error: #f85149;
+        --state-info: #58a6ff;
+
+        --pf-sidebar-bg: #0a0e14;
+        --pf-sidebar-item: #8b949e;
+        --pf-sidebar-item-active: #2dd4bf;
+        --pf-sidebar-item-hover: #161b22;
+
+        --pf-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+        --pf-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --pf-shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.05);
+      }
+
+      /* --------------------------------------------------------------------------
+   Typography Classes
+   -------------------------------------------------------------------------- */
+      .pf-text-display {
+        font-family: var(--pf-font-sans);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+      }
+
+      .pf-text-heading {
+        font-family: var(--pf-font-sans);
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        line-height: 1.3;
+      }
+
+      .pf-text-body {
+        font-family: var(--pf-font-sans);
+        font-weight: 400;
+        line-height: 1.6;
+      }
+
+      .pf-text-mono {
+        font-family: var(--pf-font-mono);
+        font-weight: 400;
+        letter-spacing: -0.02em;
+      }
+
+      .pf-text-label {
+        font-family: var(--pf-font-sans);
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+      @theme inline {
+        --color-background: var(--pf-background);
+        --color-foreground: var(--pf-foreground);
+        --color-card: var(--pf-card);
+        --color-card-foreground: var(--pf-card-foreground);
+        --color-popover: var(--pf-popover);
+        --color-popover-foreground: var(--pf-popover-foreground);
+        --color-primary: var(--pf-primary);
+        --color-primary-foreground: var(--pf-primary-foreground);
+        --color-muted: var(--pf-muted);
+        --color-muted-foreground: var(--pf-muted-foreground);
+        --color-border: var(--pf-border);
+        --color-input: var(--pf-input);
+        --color-ring: var(--pf-ring);
+        --radius-sm: var(--pf-radius-small);
+        --radius-md: var(--pf-radius-medium);
+        --radius-lg: var(--pf-radius-large);
+      }
+      @layer base {
+        body {
+          background: var(--pf-background);
+          color: var(--pf-foreground);
+        }
+        td,
+        th {
+          @apply break-words;
+          word-break: break-all;
+          word-break: auto-phrase;
+        }
+        th {
+          @apply whitespace-nowrap;
+        }
+      }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background {
+        background-color: var(--pf-background);
+      }
+      .text-background {
+        color: var(--pf-background);
+      }
+      .border-background {
+        border-color: var(--pf-background);
+      }
+      .ring-background {
+        --tw-ring-color: var(--pf-background);
+      }
+      .bg-foreground {
+        background-color: var(--pf-foreground);
+      }
+      .text-foreground {
+        color: var(--pf-foreground);
+      }
+      .border-foreground {
+        border-color: var(--pf-foreground);
+      }
+      .ring-foreground {
+        --tw-ring-color: var(--pf-foreground);
+      }
+      .bg-card {
+        background-color: var(--pf-card);
+      }
+      .text-card {
+        color: var(--pf-card);
+      }
+      .border-card {
+        border-color: var(--pf-card);
+      }
+      .ring-card {
+        --tw-ring-color: var(--pf-card);
+      }
+      .bg-card-foreground {
+        background-color: var(--pf-card-foreground);
+      }
+      .text-card-foreground {
+        color: var(--pf-card-foreground);
+      }
+      .border-card-foreground {
+        border-color: var(--pf-card-foreground);
+      }
+      .ring-card-foreground {
+        --tw-ring-color: var(--pf-card-foreground);
+      }
+      .bg-popover {
+        background-color: var(--pf-popover);
+      }
+      .text-popover {
+        color: var(--pf-popover);
+      }
+      .border-popover {
+        border-color: var(--pf-popover);
+      }
+      .ring-popover {
+        --tw-ring-color: var(--pf-popover);
+      }
+      .bg-popover-foreground {
+        background-color: var(--pf-popover-foreground);
+      }
+      .text-popover-foreground {
+        color: var(--pf-popover-foreground);
+      }
+      .border-popover-foreground {
+        border-color: var(--pf-popover-foreground);
+      }
+      .ring-popover-foreground {
+        --tw-ring-color: var(--pf-popover-foreground);
+      }
+      .bg-primary {
+        background-color: var(--pf-primary);
+      }
+      .text-primary {
+        color: var(--pf-primary);
+      }
+      .border-primary {
+        border-color: var(--pf-primary);
+      }
+      .ring-primary {
+        --tw-ring-color: var(--pf-primary);
+      }
+      .bg-primary-foreground {
+        background-color: var(--pf-primary-foreground);
+      }
+      .text-primary-foreground {
+        color: var(--pf-primary-foreground);
+      }
+      .border-primary-foreground {
+        border-color: var(--pf-primary-foreground);
+      }
+      .ring-primary-foreground {
+        --tw-ring-color: var(--pf-primary-foreground);
+      }
+      .bg-muted {
+        background-color: var(--pf-muted);
+      }
+      .text-muted {
+        color: var(--pf-muted);
+      }
+      .border-muted {
+        border-color: var(--pf-muted);
+      }
+      .ring-muted {
+        --tw-ring-color: var(--pf-muted);
+      }
+      .bg-muted-foreground {
+        background-color: var(--pf-muted-foreground);
+      }
+      .text-muted-foreground {
+        color: var(--pf-muted-foreground);
+      }
+      .border-muted-foreground {
+        border-color: var(--pf-muted-foreground);
+      }
+      .ring-muted-foreground {
+        --tw-ring-color: var(--pf-muted-foreground);
+      }
+      .bg-border {
+        background-color: var(--pf-border);
+      }
+      .text-border {
+        color: var(--pf-border);
+      }
+      .border-border {
+        border-color: var(--pf-border);
+      }
+      .ring-border {
+        --tw-ring-color: var(--pf-border);
+      }
+      .bg-input {
+        background-color: var(--pf-input);
+      }
+      .text-input {
+        color: var(--pf-input);
+      }
+      .border-input {
+        border-color: var(--pf-input);
+      }
+      .ring-input {
+        --tw-ring-color: var(--pf-input);
+      }
+      .bg-ring {
+        background-color: var(--pf-ring);
+      }
+      .text-ring {
+        color: var(--pf-ring);
+      }
+      .border-ring {
+        border-color: var(--pf-ring);
+      }
+      .ring-ring {
+        --tw-ring-color: var(--pf-ring);
+      }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+    <style id="critical-layout">
+      /* ===== App shell: sidebar + main (100dvh with vh fallback) ===== */
+      .app-shell {
+        display: flex;
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+      }
+      .app-sidebar {
+        width: 240px;
+        flex-shrink: 0;
+        background: var(--pf-sidebar-bg);
+        border-right: 1px solid var(--pf-border);
+        display: flex;
+        flex-direction: column;
+      }
+      .app-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+      .app-topbar {
+        height: 56px;
+        flex-shrink: 0;
+        border-bottom: 1px solid var(--pf-border);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .app-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+      }
+
+      /* ===== Sidebar nav ===== */
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 9px 12px;
+        border-radius: 8px;
+        font-size: 14px;
+        color: var(--pf-sidebar-item);
+        cursor: pointer;
+        text-decoration: none;
+        transition:
+          background 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+          color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+      }
+      .nav-item:hover {
+        background: var(--pf-sidebar-item-hover);
+        color: var(--pf-foreground);
+      }
+      .nav-item.active {
+        color: var(--pf-sidebar-item-active);
+        background: var(--pf-sidebar-item-hover);
+        font-weight: 500;
+      }
+      .nav-item.active::before {
+        content: '';
+        position: absolute;
+        left: -12px;
+        top: 7px;
+        bottom: 7px;
+        width: 2px;
+        border-radius: 2px;
+        background: var(--pf-primary);
+      }
+
+      /* ===== Settings layout (220px tab nav + 1fr content) ===== */
+      .settings-layout {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 24px;
+        align-items: flex-start;
+      }
+      .settings-tabnav {
+        width: 220px;
+      }
+      .settings-content {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      /* ===== Vertical tab nav ===== */
+      .tab-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        color: var(--pf-muted-foreground);
+        cursor: pointer;
+        transition:
+          background 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+          color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .tab-item:hover {
+        background: var(--pf-sidebar-item-hover);
+        color: var(--pf-foreground);
+      }
+      .tab-item.active {
+        background: color-mix(in srgb, var(--pf-primary) 14%, transparent);
+        color: var(--pf-primary);
+        font-weight: 600;
+      }
+
+      /* ===== Settings rows ===== */
+      .settings-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 16px 0;
+        border-bottom: 1px solid var(--pf-border);
+      }
+      .settings-row:last-child {
+        border-bottom: none;
+      }
+
+      /* ===== Select control ===== */
+      .pf-select {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--pf-muted);
+        border: 1px solid var(--pf-border);
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 13px;
+        color: var(--pf-foreground);
+        cursor: pointer;
+        white-space: nowrap;
+        transition: border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .pf-select:hover {
+        border-color: var(--pf-primary);
+      }
+
+      /* ===== Toggle switch ===== */
+      .toggle {
+        width: 38px;
+        height: 22px;
+        border-radius: 9999px;
+        position: relative;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .toggle::after {
+        content: '';
+        position: absolute;
+        top: 3px;
+        width: 16px;
+        height: 16px;
+        border-radius: 9999px;
+        transition:
+          left 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+          background 0.2s;
+      }
+      .toggle.on {
+        background: var(--pf-primary);
+      }
+      .toggle.on::after {
+        left: 19px;
+        background: var(--pf-neutral-50);
+      }
+      .toggle.off {
+        background: var(--pf-muted);
+      }
+      .toggle.off::after {
+        left: 3px;
+        background: var(--pf-muted-foreground);
+      }
+
+      /* ===== Shortcut badge ===== */
+      .kbd-badge {
+        background: var(--pf-muted);
+        border: 1px solid var(--pf-border);
+        border-radius: 4px;
+        padding: 2px 8px;
+        font-family: var(--pf-font-mono);
+        font-size: 12px;
+        color: var(--pf-foreground);
+        white-space: nowrap;
+      }
+
+      /* ===== Buttons ===== */
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 36px;
+        padding: 0 20px;
+        border-radius: 8px;
+        background: var(--pf-primary);
+        color: var(--pf-primary-foreground);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        transition: opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .btn-primary:hover {
+        opacity: 0.9;
+      }
+      .btn-primary:active {
+        transform: translateY(1px);
+      }
+      .btn-ghost {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 36px;
+        padding: 0 16px;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--pf-muted-foreground);
+        font-size: 13px;
+        cursor: pointer;
+        border: none;
+        transition: color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .btn-ghost:hover {
+        color: var(--pf-foreground);
+      }
+      .btn-outline {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 36px;
+        padding: 0 16px;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--pf-foreground);
+        font-size: 13px;
+        cursor: pointer;
+        border: 1px solid var(--pf-border);
+        transition: border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .btn-outline:hover {
+        border-color: var(--pf-primary);
+      }
+
+      /* ===== AI gradient button ===== */
+      .ai-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        height: 36px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, var(--pf-primary-400), var(--pf-primary-600));
+        color: var(--pf-primary-foreground);
+        font-size: 13px;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition: opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .ai-btn:hover {
+        opacity: 0.92;
+      }
+
+      /* ===== Section helpers ===== */
+      .section-desc {
+        font-size: 12px;
+        color: var(--pf-muted-foreground);
+        margin: 4px 0 16px 0;
+        line-height: 1.5;
+      }
+      .link-btn {
+        font-size: 13px;
+        color: var(--pf-primary);
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .link-btn:hover {
+        text-decoration: underline;
+      }
+      section {
+        contain: layout style;
+      }
+
+      /* ===== Platform icon badge ===== */
+      .platform-icon-badge {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--pf-muted);
+        border: 1px solid var(--pf-border);
+        flex-shrink: 0;
+      }
+      .platform-icon-badge.lg {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+      }
+      .platform-icon-badge.sm {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+      }
+
+      /* ===== Radio / select cards ===== */
+      .platform-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      .platform-cards.two {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .platform-cards.four {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .platform-card {
+        position: relative;
+        border: 1px solid var(--pf-border);
+        border-radius: 12px;
+        padding: 16px;
+        cursor: pointer;
+        background: var(--pf-card);
+        transition:
+          border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+          background 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+          transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .platform-card:hover {
+        border-color: var(--pf-muted-foreground);
+      }
+      .platform-card.selected {
+        border-color: var(--pf-primary);
+        background: color-mix(in srgb, var(--pf-primary) 10%, var(--pf-card));
+      }
+      .platform-card.selected .platform-icon-badge {
+        background: color-mix(in srgb, var(--pf-primary) 18%, transparent);
+        border-color: color-mix(in srgb, var(--pf-primary) 40%, transparent);
+      }
+      .select-radio {
+        width: 18px;
+        height: 18px;
+        border-radius: 9999px;
+        border: 1.5px solid var(--pf-border);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: transparent;
+        transition:
+          background 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+          border-color 0.15s;
+      }
+      .select-radio.on {
+        background: var(--pf-primary);
+        border-color: var(--pf-primary);
+        color: var(--pf-primary-foreground);
+      }
+      .default-badge {
+        display: inline-flex;
+        align-items: center;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 9999px;
+        background: color-mix(in srgb, var(--pf-primary) 16%, transparent);
+        color: var(--pf-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      /* ===== Status badges ===== */
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 9999px;
+        flex-shrink: 0;
+      }
+      .status-badge.success {
+        background: color-mix(in srgb, var(--state-success) 16%, transparent);
+        color: var(--state-success);
+      }
+      .status-badge.warning {
+        background: color-mix(in srgb, var(--state-warning) 16%, transparent);
+        color: var(--state-warning);
+      }
+      .status-badge.info {
+        background: color-mix(in srgb, var(--state-info) 16%, transparent);
+        color: var(--state-info);
+      }
+
+      /* ===== Path config ===== */
+      .path-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--pf-border);
+      }
+      .path-row:last-of-type {
+        border-bottom: none;
+      }
+      .path-label {
+        width: 160px;
+        flex-shrink: 0;
+      }
+      .path-input {
+        flex: 1;
+        min-width: 0;
+        height: 32px;
+        background: var(--pf-muted);
+        border: 1px solid var(--pf-border);
+        border-radius: 8px;
+        padding: 0 12px;
+        font-family: var(--pf-font-mono);
+        font-size: 12px;
+        color: var(--pf-foreground);
+        outline: none;
+        transition: border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .path-input:focus {
+        border-color: var(--pf-primary);
+      }
+      .browse-btn {
+        flex-shrink: 0;
+        height: 32px;
+        padding: 0 12px;
+        border-radius: 8px;
+        background: transparent;
+        border: 1px solid var(--pf-border);
+        color: var(--pf-foreground);
+        font-size: 12px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition:
+          border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+          color 0.15s;
+      }
+      .browse-btn:hover {
+        border-color: var(--pf-primary);
+        color: var(--pf-primary);
+      }
+      .path-note {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 16px;
+        padding: 10px 12px;
+        background: color-mix(in srgb, var(--pf-primary) 8%, transparent);
+        border: 1px solid color-mix(in srgb, var(--pf-primary) 24%, transparent);
+        border-radius: 8px;
+        font-size: 12px;
+        color: var(--pf-muted-foreground);
+      }
+
+      /* ===== Feature rows ===== */
+      .feature-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--pf-border);
+      }
+      .feature-row:last-child {
+        border-bottom: none;
+      }
+
+      /* ===== Icon preview boxes ===== */
+      .icon-preview-box {
+        border: 1px solid var(--pf-border);
+        border-radius: 12px;
+        background: var(--pf-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .icon-preview-lg {
+        width: 128px;
+        height: 128px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--pf-primary-400), var(--pf-primary-600));
+        border: none;
+      }
+
+      /* ===== Drop zone ===== */
+      .drop-zone {
+        border: 2px dashed var(--pf-border);
+        border-radius: 12px;
+        padding: 32px;
+        text-align: center;
+        cursor: pointer;
+        transition:
+          border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+          background 0.15s;
+      }
+      .drop-zone:hover {
+        border-color: var(--pf-primary);
+        background: color-mix(in srgb, var(--pf-primary) 5%, transparent);
+      }
+
+      /* ===== Mock window ===== */
+      .mock-window {
+        border: 1px solid var(--pf-border);
+        border-radius: 10px;
+        overflow: hidden;
+        background: var(--pf-card);
+      }
+      .mock-titlebar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        background: var(--pf-muted);
+        border-bottom: 1px solid var(--pf-border);
+      }
+      .mock-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 9999px;
+      }
+
+      /* ===== Lucide sizing helper ===== */
+      [data-lucide] {
+        display: inline-block;
+        vertical-align: middle;
+        flex-shrink: 0;
+      }
+
+      /* ===== Responsive: stack settings layout at <=1024px ===== */
+      @media (max-width: 1024px) {
+        .settings-layout {
+          grid-template-columns: 1fr;
+        }
+        .settings-tabnav {
+          width: 100%;
+        }
+        .platform-cards,
+        .platform-cards.two,
+        .platform-cards.four {
+          grid-template-columns: 1fr;
+        }
+        .split-2col {
+          grid-template-columns: 1fr !important;
+        }
+      }
+      @media (max-width: 768px) {
+        .app-sidebar {
+          display: none;
+        }
+      }
+
+      /* ===== Accessibility: reduced motion ===== */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          transition: none !important;
+          animation: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="font-sans antialiased">
+    <div class="app-shell" data-viewport-mode="app-shell">
+      <!-- ============ SIDEBAR ============ -->
+      <aside class="app-sidebar">
+        <!-- Logo -->
+        <div
+          class="flex items-center gap-2.5 px-4"
+          style="height: 56px; border-bottom: 1px solid var(--pf-border)"
+        >
+          <div
+            class="flex items-center justify-center"
+            style="
+              width: 30px;
+              height: 30px;
+              border-radius: 8px;
+              background: linear-gradient(135deg, var(--pf-primary-400), var(--pf-primary-600));
+            "
+          >
+            <i
+              data-lucide="flame"
+              width="16"
+              height="16"
+              style="color: var(--pf-primary-foreground)"
+            ></i>
+          </div>
+          <div class="flex flex-col leading-tight">
+            <span style="font-size: 14px; font-weight: 600; color: var(--pf-foreground)"
+              >PyForge AI</span
+            >
+            <span
+              style="
+                font-size: 11px;
+                color: var(--pf-muted-foreground);
+                font-family: var(--pf-font-mono);
+              "
+              >v2.4.0</span
+            >
+          </div>
+        </div>
+
+        <!-- Nav -->
+        <nav class="flex-1 flex flex-col gap-1" style="padding: 12px">
+          <a class="nav-item" data-dom-id="nav-dashboard"
+            ><i data-lucide="layout-dashboard" width="18" height="18"></i><span>控制台</span></a
+          >
+          <a class="nav-item" data-dom-id="nav-python-versions"
+            ><i data-lucide="boxes" width="18" height="18"></i><span>Python 版本</span></a
+          >
+          <a class="nav-item" data-dom-id="nav-environments"
+            ><i data-lucide="layers" width="18" height="18"></i><span>虚拟环境</span></a
+          >
+          <a class="nav-item" data-dom-id="nav-packages"
+            ><i data-lucide="package" width="18" height="18"></i><span>包与镜像源</span></a
+          >
+          <a class="nav-item" data-dom-id="nav-ai-deploy"
+            ><i data-lucide="sparkles" width="18" height="18"></i><span>AI 智能部署</span></a
+          >
+          <a class="nav-item active" data-dom-id="nav-settings"
+            ><i data-lucide="settings" width="18" height="18"></i><span>设置</span></a
+          >
+        </nav>
+
+        <!-- Bottom: AI button + profile -->
+        <div style="padding: 12px; border-top: 1px solid var(--pf-border)">
+          <button class="ai-btn">
+            <i data-lucide="sparkles" width="15" height="15"></i>
+            <span>AI 助手</span>
+          </button>
+          <div
+            class="flex items-center gap-2.5"
+            style="margin-top: 12px; padding: 6px 4px; border-radius: 8px"
+          >
+            <div
+              class="flex items-center justify-center"
+              style="
+                width: 30px;
+                height: 30px;
+                border-radius: 9999px;
+                background: var(--pf-muted);
+                border: 1px solid var(--pf-border);
+                font-size: 12px;
+                font-weight: 600;
+                color: var(--pf-primary);
+              "
+            >
+              DY
+            </div>
+            <div class="flex flex-col leading-tight" style="min-width: 0">
+              <span style="font-size: 13px; color: var(--pf-foreground)">Dev User</span>
+              <span style="font-size: 11px; color: var(--pf-muted-foreground)">dev@pyforge.ai</span>
+            </div>
+            <i
+              data-lucide="chevron-up"
+              width="14"
+              height="14"
+              style="color: var(--pf-muted-foreground); margin-left: auto"
+            ></i>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ============ MAIN ============ -->
+      <div class="app-main">
+        <!-- ===== Top Bar ===== -->
+        <header class="app-topbar px-6">
+          <h1
+            style="
+              font-size: 18px;
+              font-weight: 600;
+              color: var(--pf-foreground);
+              white-space: nowrap;
+            "
+          >
+            软件属性配置
+          </h1>
+
+          <!-- Center search -->
+          <div class="flex-1 flex justify-center">
+            <div
+              class="flex items-center gap-2"
+              style="
+                width: 100%;
+                max-width: 380px;
+                height: 32px;
+                background: var(--pf-muted);
+                border: 1px solid var(--pf-border);
+                border-radius: 8px;
+                padding: 0 12px;
+              "
+            >
+              <i
+                data-lucide="search"
+                width="14"
+                height="14"
+                style="color: var(--pf-muted-foreground)"
+              ></i>
+              <input
+                type="text"
+                placeholder="搜索属性配置..."
+                style="
+                  background: transparent;
+                  border: none;
+                  outline: none;
+                  font-size: 13px;
+                  color: var(--pf-foreground);
+                  width: 100%;
+                "
+              />
+              <span class="kbd-badge" style="font-size: 11px; padding: 1px 6px">Ctrl K</span>
+            </div>
+          </div>
+
+          <!-- Right actions -->
+          <div class="flex items-center gap-4">
+            <!-- Platform indicator -->
+            <div
+              class="flex items-center gap-1.5"
+              style="
+                height: 30px;
+                padding: 0 10px;
+                border-radius: 8px;
+                background: var(--pf-muted);
+                border: 1px solid var(--pf-border);
+              "
+              title="当前平台"
+            >
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+                style="color: var(--state-info)"
+              >
+                <path
+                  d="M3 5.6 10.4 4.5V11.3H3V5.6Zm0 12.8 7.4 1.1V12.7H3v5.7ZM11.4 4.35 21 3V11.3H11.4V4.35Zm0 15.3L21 21V12.7H11.4v6.95Z"
+                />
+              </svg>
+              <span style="font-size: 12px; color: var(--pf-foreground); font-weight: 500"
+                >Windows 11</span
+              >
+            </div>
+            <div class="flex items-center gap-1.5" title="服务在线">
+              <span
+                style="
+                  width: 8px;
+                  height: 8px;
+                  border-radius: 9999px;
+                  background: var(--state-success);
+                  box-shadow: 0 0 0 3px color-mix(in srgb, var(--state-success) 20%, transparent);
+                "
+              ></span>
+            </div>
+            <button
+              class="flex items-center justify-center"
+              style="
+                width: 32px;
+                height: 32px;
+                border-radius: 8px;
+                color: var(--pf-muted-foreground);
+                background: transparent;
+                border: none;
+                cursor: pointer;
+              "
+              title="通知"
+            >
+              <i data-lucide="bell" width="18" height="18"></i>
+            </button>
+            <button
+              class="flex items-center gap-1.5"
+              style="
+                height: 32px;
+                padding: 0 14px;
+                border-radius: 8px;
+                background: var(--pf-primary);
+                color: var(--pf-primary-foreground);
+                font-size: 13px;
+                font-weight: 500;
+                border: none;
+                cursor: pointer;
+              "
+            >
+              <i data-lucide="rocket" width="14" height="14"></i>
+              <span>快速部署</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- ===== Content ===== -->
+        <main class="app-content overflow-y-auto" data-scroll-region="primary">
+          <div class="settings-layout">
+            <!-- ===== Left: Settings Tab Nav ===== -->
+            <div class="settings-tabnav">
+              <div
+                style="
+                  background: var(--pf-card);
+                  border: 1px solid var(--pf-border);
+                  border-radius: 12px;
+                  padding: 12px;
+                "
+              >
+                <div class="tab-item active" data-dom-id="tab-app-identity">
+                  <i data-lucide="building-2" width="18" height="18"></i><span>软件属性</span>
+                </div>
+                <div class="tab-item" data-dom-id="tab-app-icon">
+                  <i data-lucide="image" width="18" height="18"></i><span>应用图标</span>
+                </div>
+                <div class="tab-item" data-dom-id="tab-copyright">
+                  <i data-lucide="file-text" width="18" height="18"></i><span>版权与许可</span>
+                </div>
+                <div class="tab-item" data-dom-id="tab-signature">
+                  <i data-lucide="shield-check" width="18" height="18"></i><span>数字签名</span>
+                </div>
+                <div class="tab-item" data-dom-id="tab-enterprise">
+                  <i data-lucide="server" width="18" height="18"></i><span>企业部署</span>
+                </div>
+                <div class="tab-item" data-dom-id="tab-update-channel">
+                  <i data-lucide="refresh-cw" width="18" height="18"></i><span>更新通道</span>
+                </div>
+                <div class="tab-item" data-dom-id="tab-about">
+                  <i data-lucide="info" width="18" height="18"></i><span>关于</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ===== Right: Settings Content ===== -->
+            <div class="settings-content">
+              <!-- ============ Section 1: 应用标识配置 ============ -->
+              <section
+                data-dom-id="app-identity"
+                style="
+                  background: var(--pf-card);
+                  border: 1px solid var(--pf-border);
+                  border-radius: 12px;
+                  padding: 24px;
+                "
+              >
+                <div class="flex items-center gap-2" style="margin-bottom: 4px">
+                  <i
+                    data-lucide="building-2"
+                    width="16"
+                    height="16"
+                    style="color: var(--pf-primary)"
+                  ></i>
+                  <h2 style="font-size: 16px; font-weight: 600; color: var(--pf-foreground)">
+                    应用标识配置
+                  </h2>
+                </div>
+                <p class="section-desc">
+                  配置应用名称、版本号与基本标识信息，用于安装包与系统注册表。
+                </p>
+
+                <div
+                  class="split-2col"
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 280px;
+                    gap: 24px;
+                    align-items: start;
+                  "
+                >
+                  <!-- Left: fields -->
+                  <div>
+                    <div class="settings-row">
+                      <div class="flex flex-col" style="gap: 2px">
+                        <span style="font-size: 14px; color: var(--pf-foreground)">应用名称</span>
+                        <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                          >显示在标题栏与任务栏</span
+                        >
+                      </div>
+                      <div class="flex items-center" style="gap: 8px">
+                        <input
+                          type="text"
+                          value="PyForge AI"
+                          readonly
+                          style="
+                            height: 32px;
+                            width: 200px;
+                            background: var(--pf-muted);
+                            border: 1px solid var(--pf-border);
+                            border-radius: 8px;
+                            padding: 0 12px;
+                            font-size: 13px;
+                            color: var(--pf-foreground);
+                            outline: none;
+                          "
+                        />
+                        <button class="browse-btn">
+                          <i data-lucide="pencil" width="13" height="13"></i>编辑
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="settings-row">
+                      <div class="flex flex-col" style="gap: 2px">
+                        <span style="font-size: 14px; color: var(--pf-foreground)">应用版本号</span>
+                        <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                          >语义化版本号</span
+                        >
+                      </div>
+                      <span
+                        style="
+                          font-family: var(--pf-font-mono);
+                          font-size: 13px;
+                          color: var(--pf-primary);
+                          font-weight: 500;
+                        "
+                        >v2.4.0</span
+                      >
+                    </div>
+
+                    <div class="settings-row">
+                      <div class="flex flex-col" style="gap: 2px">
+                        <span style="font-size: 14px; color: var(--pf-foreground)"
+                          >内部版本号 (Build)</span
+                        >
+                        <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                          >构建时间戳标识</span
+                        >
+                      </div>
+                      <span
+                        style="
+                          font-family: var(--pf-font-mono);
+                          font-size: 13px;
+                          color: var(--pf-foreground);
+                        "
+                        >2024.08.07.1432</span
+                      >
+                    </div>
+
+                    <div class="settings-row" style="align-items: flex-start">
+                      <div class="flex flex-col" style="gap: 2px">
+                        <span style="font-size: 14px; color: var(--pf-foreground)">应用描述</span>
+                        <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                          >显示在系统关于对话框</span
+                        >
+                      </div>
+                      <textarea
+                        readonly
+                        style="
+                          width: 260px;
+                          min-height: 60px;
+                          background: var(--pf-muted);
+                          border: 1px solid var(--pf-border);
+                          border-radius: 8px;
+                          padding: 8px 12px;
+                          font-size: 13px;
+                          color: var(--pf-foreground);
+                          outline: none;
+                          resize: none;
+                          font-family: var(--pf-font-sans);
+                        "
+                      >
+企业级 Python 环境智能部署与管理平台</textarea>
+                    </div>
+
+                    <div class="settings-row">
+                      <div class="flex flex-col" style="gap: 2px">
+                        <span style="font-size: 14px; color: var(--pf-foreground)">应用官网</span>
+                        <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                          >产品主页链接</span
+                        >
+                      </div>
+                      <a
+                        href="https://pyforge.ai"
+                        style="
+                          font-size: 13px;
+                          color: var(--pf-primary);
+                          text-decoration: none;
+                          display: inline-flex;
+                          align-items: center;
+                          gap: 5px;
+                        "
+                        onmouseover="this.style.textDecoration = 'underline'"
+                        onmouseout="this.style.textDecoration = 'none'"
+                      >
+                        <i data-lucide="external-link" width="13" height="13"></i>https://pyforge.ai
+                      </a>
+                    </div>
+                  </div>
+
+                  <!-- Right: live preview -->
+                  <div>
+                    <div
+                      style="
+                        font-size: 11px;
+                        color: var(--pf-muted-foreground);
+                        letter-spacing: 0.04em;
+                        text-transform: uppercase;
+                        margin-bottom: 8px;
+                      "
+                    >
+                      实时预览
+                    </div>
+                    <div class="mock-window">
+                      <div class="mock-titlebar">
+                        <div class="flex items-center" style="gap: 6px">
+                          <div
+                            class="flex items-center justify-center"
+                            style="
+                              width: 18px;
+                              height: 18px;
+                              border-radius: 5px;
+                              background: linear-gradient(
+                                135deg,
+                                var(--pf-primary-400),
+                                var(--pf-primary-600)
+                              );
+                            "
+                          >
+                            <i
+                              data-lucide="flame"
+                              width="11"
+                              height="11"
+                              style="color: var(--pf-primary-foreground)"
+                            ></i>
+                          </div>
+                          <span
+                            style="font-size: 12px; font-weight: 600; color: var(--pf-foreground)"
+                            >PyForge AI</span
+                          >
+                        </div>
+                        <div class="flex items-center" style="gap: 6px; margin-left: auto">
+                          <span class="mock-dot" style="background: var(--state-error)"></span>
+                          <span class="mock-dot" style="background: var(--state-warning)"></span>
+                          <span class="mock-dot" style="background: var(--state-success)"></span>
+                        </div>
+                      </div>
+                      <div style="padding: 16px">
+                        <div
+                          style="
+                            font-size: 11px;
+                            color: var(--pf-muted-foreground);
+                            margin-bottom: 6px;
+                          "
+                        >
+                          窗口标题栏外观
+                        </div>
+                        <div
+                          style="
+                            font-size: 13px;
+                            color: var(--pf-foreground);
+                            font-family: var(--pf-font-mono);
+                            font-weight: 600;
+                          "
+                        >
+                          PyForge AI v2.4.0
+                        </div>
+                        <div
+                          style="
+                            font-size: 11px;
+                            color: var(--pf-muted-foreground);
+                            margin-top: 10px;
+                            line-height: 1.5;
+                          "
+                        >
+                          企业级 Python 环境智能部署与管理平台
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- ============ Section 2: 应用图标管理 ============ -->
+              <section
+                data-dom-id="app-icon-config"
+                style="
+                  background: var(--pf-card);
+                  border: 1px solid var(--pf-border);
+                  border-radius: 12px;
+                  padding: 24px;
+                "
+              >
+                <div class="flex items-center gap-2" style="margin-bottom: 4px">
+                  <i
+                    data-lucide="image"
+                    width="16"
+                    height="16"
+                    style="color: var(--pf-primary)"
+                  ></i>
+                  <h2 style="font-size: 16px; font-weight: 600; color: var(--pf-foreground)">
+                    应用图标管理
+                  </h2>
+                </div>
+                <p class="section-desc">管理应用图标资源，支持多平台多尺寸自动生成。</p>
+
+                <!-- Preview + variants -->
+                <div
+                  class="split-2col"
+                  style="
+                    display: grid;
+                    grid-template-columns: 160px 1fr;
+                    gap: 24px;
+                    align-items: start;
+                    margin-bottom: 20px;
+                  "
+                >
+                  <!-- Large preview -->
+                  <div class="flex flex-col items-center" style="gap: 10px">
+                    <div class="icon-preview-box icon-preview-lg">
+                      <i
+                        data-lucide="flame"
+                        width="72"
+                        height="72"
+                        style="color: var(--pf-primary-foreground)"
+                      ></i>
+                    </div>
+                    <span
+                      style="
+                        font-size: 11px;
+                        color: var(--pf-muted-foreground);
+                        font-family: var(--pf-font-mono);
+                      "
+                      >128 × 128</span
+                    >
+                  </div>
+                  <!-- Variants grid -->
+                  <div>
+                    <div
+                      style="
+                        font-size: 11px;
+                        color: var(--pf-muted-foreground);
+                        letter-spacing: 0.04em;
+                        text-transform: uppercase;
+                        margin-bottom: 10px;
+                      "
+                    >
+                      尺寸变体预览
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px">
+                      <!-- 16x16 -->
+                      <div class="flex flex-col items-center" style="gap: 8px">
+                        <div class="icon-preview-box" style="width: 72px; height: 72px">
+                          <div
+                            style="
+                              width: 16px;
+                              height: 16px;
+                              border-radius: 3px;
+                              background: linear-gradient(
+                                135deg,
+                                var(--pf-primary-400),
+                                var(--pf-primary-600)
+                              );
+                              display: flex;
+                              align-items: center;
+                              justify-content: center;
+                            "
+                          >
+                            <i
+                              data-lucide="flame"
+                              width="10"
+                              height="10"
+                              style="color: var(--pf-primary-foreground)"
+                            ></i>
+                          </div>
+                        </div>
+                        <span
+                          style="
+                            font-size: 11px;
+                            color: var(--pf-muted-foreground);
+                            font-family: var(--pf-font-mono);
+                          "
+                          >16 × 16</span
+                        >
+                      </div>
+                      <!-- 32x32 -->
+                      <div class="flex flex-col items-center" style="gap: 8px">
+                        <div class="icon-preview-box" style="width: 72px; height: 72px">
+                          <div
+                            style="
+                              width: 32px;
+                              height: 32px;
+                              border-radius: 6px;
+                              background: linear-gradient(
+                                135deg,
+                                var(--pf-primary-400),
+                                var(--pf-primary-600)
+                              );
+                              display: flex;
+                              align-items: center;
+                              justify-content: center;
+                            "
+                          >
+                            <i
+                              data-lucide="flame"
+                              width="20"
+                              height="20"
+                              style="color: var(--pf-primary-foreground)"
+                            ></i>
+                          </div>
+                        </div>
+                        <span
+                          style="
+                            font-size: 11px;
+                            color: var(--pf-muted-foreground);
+                            font-family: var(--pf-font-mono);
+                          "
+                          >32 × 32</span
+                        >
+                      </div>
+                      <!-- 64x64 -->
+                      <div class="flex flex-col items-center" style="gap: 8px">
+                        <div class="icon-preview-box" style="width: 72px; height: 72px">
+                          <div
+                            style="
+                              width: 48px;
+                              height: 48px;
+                              border-radius: 8px;
+                              background: linear-gradient(
+                                135deg,
+                                var(--pf-primary-400),
+                                var(--pf-primary-600)
+                              );
+                              display: flex;
+                              align-items: center;
+                              justify-content: center;
+                            "
+                          >
+                            <i
+                              data-lucide="flame"
+                              width="30"
+                              height="30"
+                              style="color: var(--pf-primary-foreground)"
+                            ></i>
+                          </div>
+                        </div>
+                        <span
+                          style="
+                            font-size: 11px;
+                            color: var(--pf-muted-foreground);
+                            font-family: var(--pf-font-mono);
+                          "
+                          >64 × 64</span
+                        >
+                      </div>
+                      <!-- 128x128 -->
+                      <div class="flex flex-col items-center" style="gap: 8px">
+                        <div class="icon-preview-box" style="width: 72px; height: 72px">
+                          <div
+                            style="
+                              width: 60px;
+                              height: 60px;
+                              border-radius: 10px;
+                              background: linear-gradient(
+                                135deg,
+                                var(--pf-primary-400),
+                                var(--pf-primary-600)
+                              );
+                              display: flex;
+                              align-items: center;
+                              justify-content: center;
+                            "
+                          >
+                            <i
+                              data-lucide="flame"
+                              width="38"
+                              height="38"
+                              style="color: var(--pf-primary-foreground)"
+                            ></i>
+                          </div>
+                        </div>
+                        <span
+                          style="
+                            font-size: 11px;
+                            color: var(--pf-muted-foreground);
+                            font-family: var(--pf-font-mono);
+                          "
+                          >128 × 128</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Drop zone -->
+                <div class="drop-zone">
+                  <i
+                    data-lucide="upload-cloud"
+                    width="32"
+                    height="32"
+                    style="color: var(--pf-muted-foreground)"
+                  ></i>
+                  <div
+                    style="
+                      font-size: 14px;
+                      color: var(--pf-foreground);
+                      margin-top: 8px;
+                      font-weight: 500;
+                    "
+                  >
+                    拖放图标文件或点击上传
+                  </div>
+                  <div
+                    style="
+                      font-size: 12px;
+                      color: var(--pf-muted-foreground);
+                      margin-top: 4px;
+                      font-family: var(--pf-font-mono);
+                    "
+                  >
+                    PNG, ICO, ICNS · 推荐 512×512
+                  </div>
+                </div>
+
+                <!-- Platform-specific icon config -->
+                <div style="margin-top: 20px">
+                  <div
+                    style="
+                      font-size: 12px;
+                      color: var(--pf-muted-foreground);
+                      margin-bottom: 4px;
+                      letter-spacing: 0.02em;
+                    "
+                  >
+                    平台专属图标配置
+                  </div>
+                  <div class="path-row">
+                    <div class="flex items-center" style="gap: 10px; width: 160px; flex-shrink: 0">
+                      <div class="platform-icon-badge sm" style="color: var(--state-info)">
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M3 5.6 10.4 4.5V11.3H3V5.6Zm0 12.8 7.4 1.1V12.7H3v5.7ZM11.4 4.35 21 3V11.3H11.4V4.35Zm0 15.3L21 21V12.7H11.4v6.95Z"
+                          />
+                        </svg>
+                      </div>
+                      <div class="flex flex-col" style="gap: 1px">
+                        <span style="font-size: 13px; color: var(--pf-foreground)">Windows</span>
+                        <span
+                          style="
+                            font-size: 11px;
+                            color: var(--pf-muted-foreground);
+                            font-family: var(--pf-font-mono);
+                          "
+                          >.ico</span
+                        >
+                      </div>
+                    </div>
+                    <input
+                      class="path-input"
+                      type="text"
+                      value="assets/icons/pyforge.ico"
+                      readonly
+                    />
+                    <button class="browse-btn">
+                      <i data-lucide="folder-open" width="13" height="13"></i>浏览
+                    </button>
+                  </div>
+                  <div class="path-row">
+                    <div class="flex items-center" style="gap: 10px; width: 160px; flex-shrink: 0">
+                      <div class="platform-icon-badge sm" style="color: var(--pf-foreground)">
+                        <svg
+                          width="15"
+                          height="15"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M17.05 12.04c-.03-2.55 2.08-3.77 2.18-3.83-1.19-1.74-3.04-1.98-3.7-2-1.57-.16-3.07.93-3.87.93-.8 0-2.02-.91-3.32-.89-1.71.03-3.29.99-4.17 2.52-1.78 3.08-.45 7.64 1.28 10.14.84 1.22 1.84 2.6 3.16 2.55 1.27-.05 1.75-.82 3.28-.82 1.52 0 1.96.82 3.31.8 1.37-.03 2.23-1.25 3.06-2.48.96-1.42 1.36-2.78 1.38-2.85-.03-.01-2.66-1.02-2.69-4.04M14.63 4.77c.7-.85 1.17-2.02 1.04-3.19-1.01.04-2.23.67-2.95 1.51-.65.75-1.21 1.94-1.06 3.09 1.12.09 2.27-.57 2.97-1.41"
+                          />
+                        </svg>
+                      </div>
+                      <div class="flex flex-col" style="gap: 1px">
+                        <span style="font-size: 13px; color: var(--pf-foreground)">macOS</span>
+                        <span
+                          style="
+                            font-size: 11px;
+                            color: var(--pf-muted-foreground);
+                            font-family: var(--pf-font-mono);
+                          "
+                          >.icns</span
+                        >
+                      </div>
+                    </div>
+                    <input
+                      class="path-input"
+                      type="text"
+                      value="assets/icons/pyforge.icns"
+                      readonly
+                    />
+                    <button class="browse-btn">
+                      <i data-lucide="folder-open" width="13" height="13"></i>浏览
+                    </button>
+                  </div>
+                  <div class="path-row">
+                    <div class="flex items-center" style="gap: 10px; width: 160px; flex-shrink: 0">
+                      <div class="platform-icon-badge sm" style="color: var(--pf-foreground)">
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M12 2.4c-1.5 0-2.7 1.2-2.7 2.7 0 .6.2 1.1.5 1.6-1.8 1-3.1 3.1-3.1 5.6 0 1.7.6 3.2 1.4 4.4-.8.6-1.4 1.6-1.4 2.7 0 .3 0 .6.1.9-.5.2-.8.7-.8 1.3 0 .8.6 1.4 1.4 1.4h9.2c.8 0 1.4-.6 1.4-1.4 0-.6-.3-1.1-.8-1.3.1-.3.1-.6.1-.9 0-1.1-.6-2.1-1.4-2.7.8-1.2 1.4-2.7 1.4-4.4 0-2.5-1.3-4.6-3.1-5.6.3-.5.5-1 .5-1.6 0-1.5-1.2-2.7-2.7-2.7Z"
+                          />
+                        </svg>
+                      </div>
+                      <div class="flex flex-col" style="gap: 1px">
+                        <span style="font-size: 13px; color: var(--pf-foreground)">Linux</span>
+                        <span
+                          style="
+                            font-size: 11px;
+                            color: var(--pf-muted-foreground);
+                            font-family: var(--pf-font-mono);
+                          "
+                          >.png</span
+                        >
+                      </div>
+                    </div>
+                    <input
+                      class="path-input"
+                      type="text"
+                      value="assets/icons/pyforge-256.png"
+                      readonly
+                    />
+                    <button class="browse-btn">
+                      <i data-lucide="folder-open" width="13" height="13"></i>浏览
+                    </button>
+                  </div>
+                </div>
+              </section>
+
+              <!-- ============ Section 3: 版权与法律信息 ============ -->
+              <section
+                data-dom-id="copyright-info"
+                style="
+                  background: var(--pf-card);
+                  border: 1px solid var(--pf-border);
+                  border-radius: 12px;
+                  padding: 24px;
+                "
+              >
+                <div class="flex items-center gap-2" style="margin-bottom: 4px">
+                  <i
+                    data-lucide="file-text"
+                    width="16"
+                    height="16"
+                    style="color: var(--pf-primary)"
+                  ></i>
+                  <h2 style="font-size: 16px; font-weight: 600; color: var(--pf-foreground)">
+                    版权与法律信息
+                  </h2>
+                </div>
+                <p class="section-desc">配置版权声明、开源许可与法律文档链接。</p>
+
+                <div
+                  class="split-2col"
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 300px;
+                    gap: 24px;
+                    align-items: start;
+                  "
+                >
+                  <!-- Left: fields -->
+                  <div>
+                    <div class="settings-row" style="align-items: flex-start">
+                      <div class="flex flex-col" style="gap: 2px">
+                        <span style="font-size: 14px; color: var(--pf-foreground)">版权持有者</span>
+                        <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                          >显示在关于对话框与启动画面</span
+                        >
+                      </div>
+                      <input
+                        type="text"
+                        value="© 2024 PyForge Technologies Inc. 保留所有权利。"
+                        readonly
+                        style="
+                          flex: 1;
+                          max-width: 320px;
+                          height: 32px;
+                          background: var(--pf-muted);
+                          border: 1px solid var(--pf-border);
+                          border-radius: 8px;
+                          padding: 0 12px;
+                          font-size: 12px;
+                          color: var(--pf-foreground);
+                          outline: none;
+                        "
+                      />
+                    </div>
+
+                    <div class="settings-row">
+                      <div class="flex flex-col" style="gap: 2px">
+                        <span style="font-size: 14px; color: var(--pf-foreground)">许可证类型</span>
+                        <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                          >开源许可证协议</span
+                        >
+                      </div>
+                      <div class="pf-select">
+                        <span>Apache License 2.0</span
+                        ><i
+                          data-lucide="chevron-down"
+                          width="14"
+                          height="14"
+                          style="color: var(--pf-muted-foreground)"
+                        ></i>
+                      </div>
+                    </div>
+
+                    <div class="settings-row">
+                      <div class="flex flex-col" style="gap: 2px">
+                        <span style="font-size: 14px; color: var(--pf-foreground)">许可证链接</span>
+                        <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                          >许可证全文地址</span
+                        >
+                      </div>
+                      <a
+                        href="https://www.apache.org/licenses/LICENSE-2.0"
+                        style="
+                          font-size: 12px;
+                          color: var(--pf-primary);
+                          text-decoration: none;
+                          display: inline-flex;
+                          align-items: center;
+                          gap: 5px;
+                          font-family: var(--pf-font-mono);
+                        "
+                        onmouseover="this.style.textDecoration = 'underline'"
+                        onmouseout="this.style.textDecoration = 'none'"
+                      >
+                        <i data-lucide="external-link" width="12" height="12"></i
+                        >apache.org/licenses/LICENSE-2.0
+                      </a>
+                    </div>
+
+                    <div class="settings-row">
+                      <div class="flex flex-col" style="gap: 2px">
+                        <span style="font-size: 14px; color: var(--pf-foreground)">开源声明</span>
+                        <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                          >在关于对话框显示开源许可信息</span
+                        >
+                      </div>
+                      <div
+                        class="toggle on"
+                        role="switch"
+                        aria-checked="true"
+                        aria-label="显示开源许可信息"
+                      ></div>
+                    </div>
+
+                    <div class="settings-row">
+                      <div class="flex flex-col" style="gap: 2px">
+                        <span style="font-size: 14px; color: var(--pf-foreground)"
+                          >隐私政策链接</span
+                        >
+                        <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                          >隐私政策页面地址</span
+                        >
+                      </div>
+                      <a
+                        href="https://pyforge.ai/privacy"
+                        style="
+                          font-size: 12px;
+                          color: var(--pf-primary);
+                          text-decoration: none;
+                          display: inline-flex;
+                          align-items: center;
+                          gap: 5px;
+                          font-family: var(--pf-font-mono);
+                        "
+                        onmouseover="this.style.textDecoration = 'underline'"
+                        onmouseout="this.style.textDecoration = 'none'"
+                      >
+                        <i data-lucide="external-link" width="12" height="12"></i>pyforge.ai/privacy
+                      </a>
+                    </div>
+
+                    <div class="settings-row">
+                      <div class="flex flex-col" style="gap: 2px">
+                        <span style="font-size: 14px; color: var(--pf-foreground)"
+                          >服务条款链接</span
+                        >
+                        <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                          >服务条款页面地址</span
+                        >
+                      </div>
+                      <a
+                        href="https://pyforge.ai/terms"
+                        style="
+                          font-size: 12px;
+                          color: var(--pf-primary);
+                          text-decoration: none;
+                          display: inline-flex;
+                          align-items: center;
+                          gap: 5px;
+                          font-family: var(--pf-font-mono);
+                        "
+                        onmouseover="this.style.textDecoration = 'underline'"
+                        onmouseout="this.style.textDecoration = 'none'"
+                      >
+                        <i data-lucide="external-link" width="12" height="12"></i>pyforge.ai/terms
+                      </a>
+                    </div>
+
+                    <div class="settings-row">
+                      <div class="flex flex-col" style="gap: 2px">
+                        <span style="font-size: 14px; color: var(--pf-foreground)"
+                          >第三方组件许可</span
+                        >
+                        <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                          >查看应用依赖的开源组件许可</span
+                        >
+                      </div>
+                      <button
+                        class="btn-outline"
+                        style="height: 32px; padding: 0 14px; font-size: 12px"
+                      >
+                        <i data-lucide="list" width="13" height="13"></i>
+                        <span>查看第三方组件许可列表</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Right: 关于 dialog mockup -->
+                  <div>
+                    <div
+                      style="
+                        font-size: 11px;
+                        color: var(--pf-muted-foreground);
+                        letter-spacing: 0.04em;
+                        text-transform: uppercase;
+                        margin-bottom: 8px;
+                      "
+                    >
+                      关于对话框预览
+                    </div>
+                    <div class="mock-window">
+                      <div class="mock-titlebar">
+                        <span style="font-size: 12px; font-weight: 600; color: var(--pf-foreground)"
+                          >关于 PyForge AI</span
+                        >
+                        <div class="flex items-center" style="gap: 6px; margin-left: auto">
+                          <span class="mock-dot" style="background: var(--state-error)"></span>
+                          <span class="mock-dot" style="background: var(--state-warning)"></span>
+                          <span class="mock-dot" style="background: var(--state-success)"></span>
+                        </div>
+                      </div>
+                      <div style="padding: 18px 16px">
+                        <div class="flex items-center" style="gap: 12px; margin-bottom: 14px">
+                          <div
+                            style="
+                              width: 44px;
+                              height: 44px;
+                              border-radius: 10px;
+                              background: linear-gradient(
+                                135deg,
+                                var(--pf-primary-400),
+                                var(--pf-primary-600)
+                              );
+                              display: flex;
+                              align-items: center;
+                              justify-content: center;
+                              flex-shrink: 0;
+                            "
+                          >
+                            <i
+                              data-lucide="flame"
+                              width="26"
+                              height="26"
+                              style="color: var(--pf-primary-foreground)"
+                            ></i>
+                          </div>
+                          <div class="flex flex-col" style="gap: 2px">
+                            <span
+                              style="font-size: 14px; font-weight: 600; color: var(--pf-foreground)"
+                              >PyForge AI</span
+                            >
+                            <span
+                              style="
+                                font-size: 11px;
+                                color: var(--pf-muted-foreground);
+                                font-family: var(--pf-font-mono);
+                              "
+                              >v2.4.0</span
+                            >
+                          </div>
+                        </div>
+                        <div style="font-size: 11px; color: var(--pf-foreground); line-height: 1.6">
+                          © 2024 PyForge Technologies Inc. 保留所有权利。
+                        </div>
+                        <div
+                          style="
+                            font-size: 10px;
+                            color: var(--pf-muted-foreground);
+                            margin-top: 6px;
+                            font-family: var(--pf-font-mono);
+                          "
+                        >
+                          Apache License 2.0
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- ============ Section 4: 数字签名与安全 ============ -->
+              <section
+                data-dom-id="digital-signature"
+                style="
+                  background: var(--pf-card);
+                  border: 1px solid var(--pf-border);
+                  border-radius: 12px;
+                  padding: 24px;
+                "
+              >
+                <div class="flex items-center gap-2" style="margin-bottom: 4px">
+                  <i
+                    data-lucide="shield-check"
+                    width="16"
+                    height="16"
+                    style="color: var(--pf-primary)"
+                  ></i>
+                  <h2 style="font-size: 16px; font-weight: 600; color: var(--pf-foreground)">
+                    数字签名与安全
+                  </h2>
+                </div>
+                <p class="section-desc">配置代码签名证书与完整性校验，确保发布包可信。</p>
+
+                <!-- Security status card -->
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 14px;
+                    padding: 16px;
+                    margin-bottom: 18px;
+                    background: color-mix(in srgb, var(--state-success) 10%, var(--pf-card));
+                    border: 1px solid color-mix(in srgb, var(--state-success) 30%, transparent);
+                    border-radius: 12px;
+                  "
+                >
+                  <div
+                    style="
+                      width: 40px;
+                      height: 40px;
+                      border-radius: 9999px;
+                      background: color-mix(in srgb, var(--state-success) 18%, transparent);
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      flex-shrink: 0;
+                    "
+                  >
+                    <i
+                      data-lucide="shield-check"
+                      width="22"
+                      height="22"
+                      style="color: var(--state-success)"
+                    ></i>
+                  </div>
+                  <div class="flex flex-col" style="gap: 2px">
+                    <span style="font-size: 14px; font-weight: 600; color: var(--pf-foreground)"
+                      >已通过安全验证</span
+                    >
+                    <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                      >代码签名有效 · 完整性校验通过</span
+                    >
+                  </div>
+                  <span class="status-badge success" style="margin-left: auto">已验证</span>
+                </div>
+
+                <div>
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">代码签名证书</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >用于签发可执行文件的证书颁发机构</span
+                      >
+                    </div>
+                    <div class="flex items-center" style="gap: 8px">
+                      <span class="status-badge success">
+                        <i data-lucide="check-circle-2" width="13" height="13"></i>
+                        已签名
+                      </span>
+                      <div class="pf-select">
+                        <span>DigiCert Code Signing CA</span
+                        ><i
+                          data-lucide="chevron-down"
+                          width="14"
+                          height="14"
+                          style="color: var(--pf-muted-foreground)"
+                        ></i>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)"
+                        >证书指纹 (SHA-256)</span
+                      >
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >证书唯一标识</span
+                      >
+                    </div>
+                    <input
+                      type="text"
+                      value="a1:b2:c3:d4:e5:f6:1a:2b:3c:4d:5e:6f:7a:8b:9c:0d"
+                      readonly
+                      style="
+                        width: 320px;
+                        height: 32px;
+                        background: var(--pf-muted);
+                        border: 1px solid var(--pf-border);
+                        border-radius: 8px;
+                        padding: 0 12px;
+                        font-family: var(--pf-font-mono);
+                        font-size: 11px;
+                        color: var(--pf-foreground);
+                        outline: none;
+                      "
+                    />
+                  </div>
+
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">签名时间戳</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >RFC 3161 时间戳服务器记录</span
+                      >
+                    </div>
+                    <span
+                      style="
+                        font-family: var(--pf-font-mono);
+                        font-size: 12px;
+                        color: var(--pf-foreground);
+                      "
+                      >2024-08-07 09:30 UTC</span
+                    >
+                  </div>
+
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">自动签名验证</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >启动时自动验证签名有效性</span
+                      >
+                    </div>
+                    <div
+                      class="toggle on"
+                      role="switch"
+                      aria-checked="true"
+                      aria-label="自动签名验证"
+                    ></div>
+                  </div>
+
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">防篡改保护</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >检测并阻止二进制篡改</span
+                      >
+                    </div>
+                    <div
+                      class="toggle on"
+                      role="switch"
+                      aria-checked="true"
+                      aria-label="防篡改保护"
+                    ></div>
+                  </div>
+
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)"
+                        >完整性校验 (SHA-256)</span
+                      >
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >发布包哈希校验值</span
+                      >
+                    </div>
+                    <input
+                      type="text"
+                      value="e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6"
+                      readonly
+                      style="
+                        width: 320px;
+                        height: 32px;
+                        background: var(--pf-muted);
+                        border: 1px solid var(--pf-border);
+                        border-radius: 8px;
+                        padding: 0 12px;
+                        font-family: var(--pf-font-mono);
+                        font-size: 11px;
+                        color: var(--pf-foreground);
+                        outline: none;
+                      "
+                    />
+                  </div>
+                </div>
+              </section>
+
+              <!-- ============ Section 5: 企业部署配置 ============ -->
+              <section
+                data-dom-id="enterprise-deploy"
+                style="
+                  background: var(--pf-card);
+                  border: 1px solid var(--pf-border);
+                  border-radius: 12px;
+                  padding: 24px;
+                "
+              >
+                <div class="flex items-center gap-2" style="margin-bottom: 4px">
+                  <i
+                    data-lucide="server"
+                    width="16"
+                    height="16"
+                    style="color: var(--pf-primary)"
+                  ></i>
+                  <h2 style="font-size: 16px; font-weight: 600; color: var(--pf-foreground)">
+                    企业部署配置
+                  </h2>
+                </div>
+                <p class="section-desc">配置企业批量部署、安装包生成与组策略集成。</p>
+
+                <!-- 部署模式 radio cards -->
+                <div style="font-size: 12px; color: var(--pf-muted-foreground); margin-bottom: 8px">
+                  部署模式
+                </div>
+                <div class="platform-cards two" style="margin-bottom: 20px">
+                  <div class="platform-card" role="button" tabindex="0" aria-pressed="false">
+                    <div class="flex items-start justify-between">
+                      <div class="platform-icon-badge" style="color: var(--pf-foreground)">
+                        <i data-lucide="user" width="20" height="20"></i>
+                      </div>
+                      <span class="select-radio"></span>
+                    </div>
+                    <div class="flex items-center" style="gap: 8px; margin-top: 14px">
+                      <span style="font-size: 14px; font-weight: 600; color: var(--pf-foreground)"
+                        >单用户部署</span
+                      >
+                    </div>
+                    <div
+                      style="font-size: 12px; color: var(--pf-muted-foreground); margin-top: 5px"
+                    >
+                      面向个人开发者的本地安装
+                    </div>
+                  </div>
+                  <div
+                    class="platform-card selected"
+                    role="button"
+                    tabindex="0"
+                    aria-pressed="true"
+                  >
+                    <div class="flex items-start justify-between">
+                      <div class="platform-icon-badge" style="color: var(--pf-primary)">
+                        <i data-lucide="building" width="20" height="20"></i>
+                      </div>
+                      <span class="select-radio on"
+                        ><i data-lucide="check" width="12" height="12"></i
+                      ></span>
+                    </div>
+                    <div class="flex items-center" style="gap: 8px; margin-top: 14px">
+                      <span style="font-size: 14px; font-weight: 600; color: var(--pf-foreground)"
+                        >企业批量部署</span
+                      >
+                      <span class="default-badge">已选</span>
+                    </div>
+                    <div
+                      style="font-size: 12px; color: var(--pf-muted-foreground); margin-top: 5px"
+                    >
+                      支持 MSI/DMG/DEB 多格式分发
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <!-- MSI -->
+                  <div class="feature-row">
+                    <div class="flex items-center" style="gap: 12px; min-width: 0">
+                      <div class="platform-icon-badge sm" style="color: var(--state-info)">
+                        <svg
+                          width="15"
+                          height="15"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M3 5.6 10.4 4.5V11.3H3V5.6Zm0 12.8 7.4 1.1V12.7H3v5.7ZM11.4 4.35 21 3V11.3H11.4V4.35Zm0 15.3L21 21V12.7H11.4v6.95Z"
+                          />
+                        </svg>
+                      </div>
+                      <div class="flex flex-col" style="gap: 2px">
+                        <span style="font-size: 14px; color: var(--pf-foreground)"
+                          >MSI 安装包 (Windows)</span
+                        >
+                        <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                          >生成 Windows Installer 包</span
+                        >
+                      </div>
+                    </div>
+                    <div class="flex items-center" style="gap: 12px">
+                      <input
+                        class="path-input"
+                        type="text"
+                        value="dist/PyForgeAI-2.4.0.msi"
+                        readonly
+                        style="width: 220px"
+                      />
+                      <div
+                        class="toggle on"
+                        role="switch"
+                        aria-checked="true"
+                        aria-label="生成 MSI 安装包"
+                      ></div>
+                    </div>
+                  </div>
+
+                  <!-- DMG -->
+                  <div class="feature-row">
+                    <div class="flex items-center" style="gap: 12px; min-width: 0">
+                      <div class="platform-icon-badge sm" style="color: var(--pf-foreground)">
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M17.05 12.04c-.03-2.55 2.08-3.77 2.18-3.83-1.19-1.74-3.04-1.98-3.7-2-1.57-.16-3.07.93-3.87.93-.8 0-2.02-.91-3.32-.89-1.71.03-3.29.99-4.17 2.52-1.78 3.08-.45 7.64 1.28 10.14.84 1.22 1.84 2.6 3.16 2.55 1.27-.05 1.75-.82 3.28-.82 1.52 0 1.96.82 3.31.8 1.37-.03 2.23-1.25 3.06-2.48.96-1.42 1.36-2.78 1.38-2.85-.03-.01-2.66-1.02-2.69-4.04M14.63 4.77c.7-.85 1.17-2.02 1.04-3.19-1.01.04-2.23.67-2.95 1.51-.65.75-1.21 1.94-1.06 3.09 1.12.09 2.27-.57 2.97-1.41"
+                          />
+                        </svg>
+                      </div>
+                      <div class="flex flex-col" style="gap: 2px">
+                        <span style="font-size: 14px; color: var(--pf-foreground)"
+                          >DMG 安装包 (macOS)</span
+                        >
+                        <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                          >生成 macOS 磁盘映像</span
+                        >
+                      </div>
+                    </div>
+                    <div class="flex items-center" style="gap: 12px">
+                      <input
+                        class="path-input"
+                        type="text"
+                        value="dist/PyForgeAI-2.4.0.dmg"
+                        readonly
+                        style="width: 220px"
+                      />
+                      <div
+                        class="toggle on"
+                        role="switch"
+                        aria-checked="true"
+                        aria-label="生成 DMG 安装包"
+                      ></div>
+                    </div>
+                  </div>
+
+                  <!-- DEB/RPM -->
+                  <div class="feature-row">
+                    <div class="flex items-center" style="gap: 12px; min-width: 0">
+                      <div class="platform-icon-badge sm" style="color: var(--pf-foreground)">
+                        <svg
+                          width="15"
+                          height="15"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M12 2.4c-1.5 0-2.7 1.2-2.7 2.7 0 .6.2 1.1.5 1.6-1.8 1-3.1 3.1-3.1 5.6 0 1.7.6 3.2 1.4 4.4-.8.6-1.4 1.6-1.4 2.7 0 .3 0 .6.1.9-.5.2-.8.7-.8 1.3 0 .8.6 1.4 1.4 1.4h9.2c.8 0 1.4-.6 1.4-1.4 0-.6-.3-1.1-.8-1.3.1-.3.1-.6.1-.9 0-1.1-.6-2.1-1.4-2.7.8-1.2 1.4-2.7 1.4-4.4 0-2.5-1.3-4.6-3.1-5.6.3-.5.5-1 .5-1.6 0-1.5-1.2-2.7-2.7-2.7Z"
+                          />
+                        </svg>
+                      </div>
+                      <div class="flex flex-col" style="gap: 2px">
+                        <span style="font-size: 14px; color: var(--pf-foreground)"
+                          >DEB/RPM 包 (Linux)</span
+                        >
+                        <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                          >生成 Debian 与 Red Hat 安装包</span
+                        >
+                      </div>
+                    </div>
+                    <div class="flex items-center" style="gap: 12px">
+                      <input
+                        class="path-input"
+                        type="text"
+                        value="dist/pyforge-ai-2.4.0.deb"
+                        readonly
+                        style="width: 220px"
+                      />
+                      <div
+                        class="toggle on"
+                        role="switch"
+                        aria-checked="true"
+                        aria-label="生成 DEB/RPM 包"
+                      ></div>
+                    </div>
+                  </div>
+
+                  <!-- 静默安装参数 -->
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">静默安装参数</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >无人值守安装命令行参数</span
+                      >
+                    </div>
+                    <input
+                      type="text"
+                      value="/S /D=C:\Program Files\PyForge"
+                      readonly
+                      style="
+                        width: 240px;
+                        height: 32px;
+                        background: var(--pf-muted);
+                        border: 1px solid var(--pf-border);
+                        border-radius: 8px;
+                        padding: 0 12px;
+                        font-family: var(--pf-font-mono);
+                        font-size: 12px;
+                        color: var(--pf-foreground);
+                        outline: none;
+                      "
+                    />
+                  </div>
+
+                  <!-- 组策略模板 -->
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)"
+                        >组策略模板 (GPO)</span
+                      >
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >生成 ADMX 管理模板供域控统一配置</span
+                      >
+                    </div>
+                    <div
+                      class="toggle off"
+                      role="switch"
+                      aria-checked="false"
+                      aria-label="生成 ADMX 模板"
+                    ></div>
+                  </div>
+
+                  <!-- 企业更新服务器 -->
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)"
+                        >企业更新服务器</span
+                      >
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >内网私有更新源地址</span
+                      >
+                    </div>
+                    <input
+                      type="text"
+                      value="https://update.enterprise.pyforge.ai"
+                      readonly
+                      style="
+                        width: 280px;
+                        height: 32px;
+                        background: var(--pf-muted);
+                        border: 1px solid var(--pf-border);
+                        border-radius: 8px;
+                        padding: 0 12px;
+                        font-family: var(--pf-font-mono);
+                        font-size: 12px;
+                        color: var(--pf-foreground);
+                        outline: none;
+                      "
+                    />
+                  </div>
+
+                  <!-- 离线部署包 -->
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">离线部署包</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >打包完整离线安装介质</span
+                      >
+                    </div>
+                    <button
+                      class="btn-outline"
+                      style="height: 32px; padding: 0 14px; font-size: 12px"
+                    >
+                      <i data-lucide="package" width="13" height="13"></i>
+                      <span>生成离线安装包</span>
+                    </button>
+                  </div>
+                </div>
+              </section>
+
+              <!-- ============ Section 6: 更新通道 ============ -->
+              <section
+                data-dom-id="update-channel"
+                style="
+                  background: var(--pf-card);
+                  border: 1px solid var(--pf-border);
+                  border-radius: 12px;
+                  padding: 24px;
+                "
+              >
+                <div class="flex items-center gap-2" style="margin-bottom: 4px">
+                  <i
+                    data-lucide="refresh-cw"
+                    width="16"
+                    height="16"
+                    style="color: var(--pf-primary)"
+                  ></i>
+                  <h2 style="font-size: 16px; font-weight: 600; color: var(--pf-foreground)">
+                    更新通道
+                  </h2>
+                </div>
+                <p class="section-desc">选择更新通道并配置自动更新策略。</p>
+
+                <!-- Channel radio cards -->
+                <div class="platform-cards four" style="margin-bottom: 20px">
+                  <div
+                    class="platform-card selected"
+                    role="button"
+                    tabindex="0"
+                    aria-pressed="true"
+                  >
+                    <div class="flex items-start justify-between">
+                      <div class="platform-icon-badge" style="color: var(--pf-primary)">
+                        <i data-lucide="shield" width="20" height="20"></i>
+                      </div>
+                      <span class="select-radio on"
+                        ><i data-lucide="check" width="12" height="12"></i
+                      ></span>
+                    </div>
+                    <div class="flex items-center" style="gap: 8px; margin-top: 14px">
+                      <span style="font-size: 14px; font-weight: 600; color: var(--pf-foreground)"
+                        >稳定版</span
+                      >
+                      <span class="default-badge">推荐</span>
+                    </div>
+                    <div
+                      style="font-size: 12px; color: var(--pf-muted-foreground); margin-top: 5px"
+                    >
+                      推荐生产环境
+                    </div>
+                  </div>
+                  <div class="platform-card" role="button" tabindex="0" aria-pressed="false">
+                    <div class="flex items-start justify-between">
+                      <div class="platform-icon-badge" style="color: var(--state-info)">
+                        <i data-lucide="flask-conical" width="20" height="20"></i>
+                      </div>
+                      <span class="select-radio"></span>
+                    </div>
+                    <div class="flex items-center" style="gap: 8px; margin-top: 14px">
+                      <span style="font-size: 14px; font-weight: 600; color: var(--pf-foreground)"
+                        >预览版</span
+                      >
+                    </div>
+                    <div
+                      style="font-size: 12px; color: var(--pf-muted-foreground); margin-top: 5px"
+                    >
+                      提前体验新功能
+                    </div>
+                  </div>
+                  <div class="platform-card" role="button" tabindex="0" aria-pressed="false">
+                    <div class="flex items-start justify-between">
+                      <div class="platform-icon-badge" style="color: var(--state-warning)">
+                        <i data-lucide="code-2" width="20" height="20"></i>
+                      </div>
+                      <span class="select-radio"></span>
+                    </div>
+                    <div class="flex items-center" style="gap: 8px; margin-top: 14px">
+                      <span style="font-size: 14px; font-weight: 600; color: var(--pf-foreground)"
+                        >开发版</span
+                      >
+                    </div>
+                    <div
+                      style="font-size: 12px; color: var(--pf-muted-foreground); margin-top: 5px"
+                    >
+                      每日构建
+                    </div>
+                  </div>
+                  <div class="platform-card" role="button" tabindex="0" aria-pressed="false">
+                    <div class="flex items-start justify-between">
+                      <div class="platform-icon-badge" style="color: var(--pf-foreground)">
+                        <i data-lucide="building-2" width="20" height="20"></i>
+                      </div>
+                      <span class="select-radio"></span>
+                    </div>
+                    <div class="flex items-center" style="gap: 8px; margin-top: 14px">
+                      <span style="font-size: 14px; font-weight: 600; color: var(--pf-foreground)"
+                        >企业版</span
+                      >
+                    </div>
+                    <div
+                      style="font-size: 12px; color: var(--pf-muted-foreground); margin-top: 5px"
+                    >
+                      延迟更新，经过额外验证
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Auto-update settings -->
+                <div style="font-size: 12px; color: var(--pf-muted-foreground); margin-bottom: 4px">
+                  自动更新设置
+                </div>
+                <div>
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">自动检查更新</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >定期检查新版本</span
+                      >
+                    </div>
+                    <div
+                      class="toggle on"
+                      role="switch"
+                      aria-checked="true"
+                      aria-label="自动检查更新"
+                    ></div>
+                  </div>
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">检查频率</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >更新检查周期</span
+                      >
+                    </div>
+                    <div class="pf-select">
+                      <span>每日</span
+                      ><i
+                        data-lucide="chevron-down"
+                        width="14"
+                        height="14"
+                        style="color: var(--pf-muted-foreground)"
+                      ></i>
+                    </div>
+                  </div>
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">下载时机</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >更新包下载条件</span
+                      >
+                    </div>
+                    <div class="pf-select">
+                      <span>仅在 Wi-Fi 下</span
+                      ><i
+                        data-lucide="chevron-down"
+                        width="14"
+                        height="14"
+                        style="color: var(--pf-muted-foreground)"
+                      ></i>
+                    </div>
+                  </div>
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">安装时机</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >更新应用安装时机</span
+                      >
+                    </div>
+                    <div class="pf-select">
+                      <span>退出时安装</span
+                      ><i
+                        data-lucide="chevron-down"
+                        width="14"
+                        height="14"
+                        style="color: var(--pf-muted-foreground)"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Current version info card -->
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 16px;
+                    padding: 16px;
+                    margin-top: 18px;
+                    background: var(--pf-muted);
+                    border: 1px solid var(--pf-border);
+                    border-radius: 12px;
+                  "
+                >
+                  <div class="flex flex-col" style="gap: 2px">
+                    <span style="font-size: 11px; color: var(--pf-muted-foreground)">当前版本</span>
+                    <span
+                      style="
+                        font-family: var(--pf-font-mono);
+                        font-size: 14px;
+                        color: var(--pf-foreground);
+                        font-weight: 500;
+                      "
+                      >v2.4.0</span
+                    >
+                  </div>
+                  <i
+                    data-lucide="arrow-right"
+                    width="16"
+                    height="16"
+                    style="color: var(--pf-muted-foreground)"
+                  ></i>
+                  <div class="flex flex-col" style="gap: 2px">
+                    <span style="font-size: 11px; color: var(--pf-muted-foreground)">最新版本</span>
+                    <span
+                      style="
+                        font-family: var(--pf-font-mono);
+                        font-size: 14px;
+                        color: var(--pf-foreground);
+                        font-weight: 500;
+                      "
+                      >v2.4.1</span
+                    >
+                  </div>
+                  <span class="status-badge success" style="margin-left: auto">
+                    <i data-lucide="arrow-up-circle" width="13" height="13"></i>
+                    更新可用
+                  </span>
+                  <button
+                    class="btn-primary"
+                    style="height: 32px; padding: 0 14px; font-size: 12px"
+                  >
+                    <i data-lucide="download" width="13" height="13"></i>
+                    <span>立即更新</span>
+                  </button>
+                </div>
+              </section>
+
+              <!-- Bottom action bar -->
+              <div class="flex items-center" style="gap: 12px; padding-top: 4px">
+                <button class="btn-primary">
+                  <i data-lucide="save" width="15" height="15"></i>
+                  <span>保存配置</span>
+                </button>
+                <button class="btn-ghost">
+                  <i data-lucide="rotate-ccw" width="15" height="15"></i>
+                  <span>恢复默认</span>
+                </button>
+                <button class="btn-outline" style="margin-left: auto">
+                  <i data-lucide="refresh-cw" width="15" height="15"></i>
+                  <span>应用并重启</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <footer
+            class="flex items-center justify-between"
+            style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--pf-border)"
+          >
+            <span
+              style="
+                font-size: 12px;
+                color: var(--pf-muted-foreground);
+                font-family: var(--pf-font-mono);
+              "
+              >PyForge AI v2.4.0 · 构建 2024.08.07.1432</span
+            >
+            <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+              >© 2024 PyForge Technologies Inc.</span
+            >
+          </footer>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

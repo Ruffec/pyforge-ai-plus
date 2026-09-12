@@ -1,0 +1,12 @@
+# PyForge AI - 项目级 Cargo 配置
+# 覆盖全局 CARGO_HOME 中不可写的注册表配置，确保在沙箱 / CI 中可构建
+
+[source.crates-io]
+replace-with = "ustc"
+
+[source.ustc]
+registry = "sparse+https://mirrors.ustc.edu.cn/crates.io-index/"
+
+[net]
+git-fetch-with-cli = true
+retry = 3

@@ -1,0 +1,63 @@
+{
+  "root": {
+    "nodeId": "root",
+    "type": "root",
+    "status": "generated",
+    "children": [
+      {
+        "nodeId": "page-dashboard",
+        "type": "leaf",
+        "status": "pending",
+        "outputFile": "design/pages/dashboard.html",
+        "generationPath": ["root"],
+        "inheritedFragments": [],
+        "privateRegions": ["full-page"]
+      },
+      {
+        "nodeId": "page-python-versions",
+        "type": "leaf",
+        "status": "pending",
+        "outputFile": "design/pages/python-versions.html",
+        "generationPath": ["root"],
+        "inheritedFragments": [],
+        "privateRegions": ["full-page"]
+      },
+      {
+        "nodeId": "page-environments",
+        "type": "leaf",
+        "status": "pending",
+        "outputFile": "design/pages/environments.html",
+        "generationPath": ["root"],
+        "inheritedFragments": [],
+        "privateRegions": ["full-page"]
+      },
+      {
+        "nodeId": "page-packages",
+        "type": "leaf",
+        "status": "pending",
+        "outputFile": "design/pages/packages.html",
+        "generationPath": ["root"],
+        "inheritedFragments": [],
+        "privateRegions": ["full-page"]
+      },
+      {
+        "nodeId": "page-ai-deploy",
+        "type": "leaf",
+        "status": "pending",
+        "outputFile": "design/pages/ai-deploy.html",
+        "generationPath": ["root"],
+        "inheritedFragments": [],
+        "privateRegions": ["full-page"]
+      },
+      {
+        "nodeId": "page-settings",
+        "type": "leaf",
+        "status": "pending",
+        "outputFile": "design/pages/settings.html",
+        "generationPath": ["root"],
+        "inheritedFragments": [],
+        "privateRegions": ["full-page"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "success": true,
+  "outcome": "passed",
+  "repairable": true,
+  "terminalViolations": [],
+  "terminalBlockingSummary": null,
+  "skillProvenance": {
+    "name": "solo-design",
+    "version": "2026.07.22.00.00.00",
+    "version_source": "skill-release-manifest.json",
+    "runtime_skill_dir": null,
+    "recorded_at": null,
+    "expected_version": "2026.07.22.00.00.00",
+    "status": "matched",
+    "read_status": "loaded"
+  },
+  "operatingMode": "free-explore",
+  "renderBlockingErrorCount": 0,
+  "softWarningCount": 8,
+  "renderBlockingErrors": [],
+  "errorSignatures": [],
+  "softWarnings": [
+    "[html-head-style] ai-deploy-responsive.html: found 1 custom <style> block(s) in <head>. The <head> is owned by apply-html-head-contract.mjs; move custom styles before </body> or re-run apply-html-head-contract.mjs <css-path> <html-file> --replace-head to relocate them.",
+    "[html-head-style] app-properties.html: found 1 custom <style> block(s) in <head>. The <head> is owned by apply-html-head-contract.mjs; move custom styles before </body> or re-run apply-html-head-contract.mjs <css-path> <html-file> --replace-head to relocate them.",
+    "[html-head-style] dashboard-responsive.html: found 1 custom <style> block(s) in <head>. The <head> is owned by apply-html-head-contract.mjs; move custom styles before </body> or re-run apply-html-head-contract.mjs <css-path> <html-file> --replace-head to relocate them.",
+    "[html-head-style] platform-diff.html: found 1 custom <style> block(s) in <head>. The <head> is owned by apply-html-head-contract.mjs; move custom styles before </body> or re-run apply-html-head-contract.mjs <css-path> <html-file> --replace-head to relocate them.",
+    "[repair-ledger] validationRepairLedger[0].repairActions[] is missing",
+    "[repair-ledger] validationRepairLedger[0].revalidationReportPath is missing",
+    "[repair-ledger] validationRepairLedger[0].revalidationReportHash is missing",
+    "[repair-ledger] validationRepairLedger[0].revalidationSuccess should be a boolean"
+  ],
+  "repairPlanHints": [],
+  "repairActionTable": [],
+  "errorCount": 0,
+  "warningCount": 8,
+  "errors": [],
+  "warnings": [
+    "[html-head-style] ai-deploy-responsive.html: found 1 custom <style> block(s) in <head>. The <head> is owned by apply-html-head-contract.mjs; move custom styles before </body> or re-run apply-html-head-contract.mjs <css-path> <html-file> --replace-head to relocate them.",
+    "[html-head-style] app-properties.html: found 1 custom <style> block(s) in <head>. The <head> is owned by apply-html-head-contract.mjs; move custom styles before </body> or re-run apply-html-head-contract.mjs <css-path> <html-file> --replace-head to relocate them.",
+    "[html-head-style] dashboard-responsive.html: found 1 custom <style> block(s) in <head>. The <head> is owned by apply-html-head-contract.mjs; move custom styles before </body> or re-run apply-html-head-contract.mjs <css-path> <html-file> --replace-head to relocate them.",
+    "[html-head-style] platform-diff.html: found 1 custom <style> block(s) in <head>. The <head> is owned by apply-html-head-contract.mjs; move custom styles before </body> or re-run apply-html-head-contract.mjs <css-path> <html-file> --replace-head to relocate them.",
+    "[repair-ledger] validationRepairLedger[0].repairActions[] is missing",
+    "[repair-ledger] validationRepairLedger[0].revalidationReportPath is missing",
+    "[repair-ledger] validationRepairLedger[0].revalidationReportHash is missing",
+    "[repair-ledger] validationRepairLedger[0].revalidationSuccess should be a boolean"
+  ],
+  "validationRunDisciplineStatus": {
+    "declared": true,
+    "restoreMode": false,
+    "maxFullValidationRuns": 2,
+    "validationHistoryCount": 1,
+    "repairLedgerCount": 1,
+    "softWarningsTriggerRepair": false,
+    "terminalState": null,
+    "nextAction": null,
+    "violations": [],
+    "success": true
+  },
+  "terminalState": null,
+  "nextCheck": {
+    "type": "finish-readiness",
+    "command": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-finish-readiness.mjs' '/workspace/pyforge-ai' --check=all",
+    "fullValidationAllowed": false,
+    "reason": "workspace validation passed; run complete finish readiness before final delivery"
+  },
+  "repairBatch": [],
+  "repairContextPacket": {
+    "schema_version": "1.0",
+    "purpose": "small-context repair packet; read this before full validation-report.json",
+    "success": true,
+    "terminalState": null,
+    "skillProvenance": {
+      "name": "solo-design",
+      "version": "2026.07.22.00.00.00",
+      "version_source": "skill-release-manifest.json",
+      "runtime_skill_dir": null,
+      "recorded_at": null,
+      "expected_version": "2026.07.22.00.00.00",
+      "status": "matched",
+      "read_status": "loaded"
+    },
+    "renderBlockingErrorCount": 0,
+    "softWarningCount": 8,
+    "renderBlockingErrors": [],
+    "repairActionTable": [],
+    "nextCheck": {
+      "type": "finish-readiness",
+      "command": "node '/data/user/builtin/design/default/skills/solo-design/shared-runtime/deterministic-tooling/validate-finish-readiness.mjs' '/workspace/pyforge-ai' --check=all",
+      "fullValidationAllowed": false,
+      "reason": "workspace validation passed; run complete finish readiness before final delivery"
+    },
+    "forbidden": [
+      "do not read validator source",
+      "do not rerun full validation when nextCheck.fullValidationAllowed=false",
+      "do not start preview/browser unless user explicitly asks",
+      "do not hand-edit repair ledger fields"
+    ]
+  },
+  "projectFileHashes": {
+    "pyforge-ai.design": "44d96313a0f4dc744c32cdb8729ba18c9fc632d3635fdfe567a13266c584f1e0",
+    "design/colors_and_type.css": "8e2ed9e01355ba9b122d8512a5ca3dc8b9de586b67141a670ea725ff53f8b57d",
+    "runtime-orchestration-summary.json": "6c822e70927b6d997540ba92fda37eba48404f8f1e6c0674fda33235a4bb22a0",
+    "design/pages/ai-deploy-responsive.html": "81bf95e10ca78a9060baef03f1ffca674cdbf4913604d975c3509c9de92f71eb",
+    "design/pages/ai-deploy.html": "e7e6399939ca73271b8eb34174fa82ef58ae948556d5d9e2b6d98f6914276e0e",
+    "design/pages/app-properties.html": "70b20dea8c777ce2258121e246fe8059a0422d96bee98af28e797f29f2a6589c",
+    "design/pages/dashboard-platform.html": "9322d8e4eb97ff13d814e0420ab911ff9e2a10be71d0cf94766363c45d6484a5",
+    "design/pages/dashboard-responsive.html": "8e521dfb782aa19b3f309a9d2de9b9ee24d0aa705ba8d6b93cf0b14e478b4131",
+    "design/pages/dashboard.html": "2ef4eaba6480a7fb8247cb47c7430c02392e60484d3670274dbe26b4cf60304b",
+    "design/pages/environments.html": "f27c4437c4ac92b0c23500a0da8c967fab5bfb09fd52b43b49c8557af4e5d6f7",
+    "design/pages/packages.html": "3e70855b8ff996eeba6364adfcd45e9e3b9a31f789970ca4a12038b4a677fed4",
+    "design/pages/platform-diff.html": "ff97b1e317a8b4fa0ed9270d80d8012fe00e094624b435a454d11479107aaddf",
+    "design/pages/python-versions.html": "be72c95f7fc5f986c31d2bad555fc7760410d51f519ec4ebf749a20d13adf25d",
+    "design/pages/settings-platform.html": "17556ddff327c6f256905b57c5bc996f9b4e5bbdf5b454c40d61930570f821e2",
+    "design/pages/settings.html": "72b8f9c247d19b1f5bd2b8344f8fb9fdf03bab071df3921eee03d1e2f92073b6"
+  },
+  "designDir": "/workspace/pyforge-ai",
+  "expectedPages": null,
+  "requireInteractions": null,
+  "checkedAt": "2026-08-07T03:40:15.415Z"
+}

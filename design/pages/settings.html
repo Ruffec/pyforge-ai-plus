@@ -1,0 +1,1334 @@
+<!doctype html>
+<html lang="zh" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>设置</title>
+    <style id="theme-vars">
+      /* ==========================================================================
+   PyForge AI — Brand Design Tokens
+   Dark Developer Theme · Teal-Cyan Primary · AI-Forward
+   ========================================================================== */
+
+      /* --------------------------------------------------------------------------
+   Brand Prefix: pf
+   Default = Light Mode · .dark = Dark Mode (primary design)
+   -------------------------------------------------------------------------- */
+      :root {
+        /* ---- Primary Scale (Teal-Cyan) ---- */
+        --pf-primary-50: #ecfdfb;
+        --pf-primary-100: #cffeed;
+        --pf-primary-200: #9ff8dd;
+        --pf-primary-300: #5fecce;
+        --pf-primary-400: #2dd4bf;
+        --pf-primary-500: #14b8a6;
+        --pf-primary-600: #0d9488;
+        --pf-primary-700: #0f766e;
+        --pf-primary-800: #115e56;
+        --pf-primary-900: #134e48;
+
+        /* ---- Neutral Scale ---- */
+        --pf-neutral-50: #f6f8fa;
+        --pf-neutral-100: #e6edf3;
+        --pf-neutral-200: #c9d1d9;
+        --pf-neutral-300: #8b949e;
+        --pf-neutral-400: #6e7681;
+        --pf-neutral-500: #484f58;
+        --pf-neutral-600: #30363d;
+        --pf-neutral-700: #21262d;
+        --pf-neutral-800: #161b22;
+        --pf-neutral-900: #0d1117;
+        --pf-neutral-950: #0a0e14;
+
+        /* ---- Semantic Aliases (Light Mode Default) ---- */
+        --pf-background: #ffffff;
+        --pf-foreground: #0d1117;
+        --pf-card: #f6f8fa;
+        --pf-card-foreground: #0d1117;
+        --pf-popover: #ffffff;
+        --pf-popover-foreground: #0d1117;
+        --pf-primary: #0d9488;
+        --pf-primary-foreground: #ffffff;
+        --pf-muted: #f6f8fa;
+        --pf-muted-foreground: #6e7681;
+        --pf-border: #d0d7de;
+        --pf-input: #d0d7de;
+        --pf-ring: #0d9488;
+
+        /* ---- Radius Scale ---- */
+        --pf-radius-small: 4px;
+        --pf-radius-medium: 8px;
+        --pf-radius-large: 12px;
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-full: 9999px;
+
+        /* ---- State Colors ---- */
+        --state-success: #1a7f37;
+        --state-warning: #9a6700;
+        --state-error: #cf222e;
+        --state-info: #0969da;
+
+        /* ---- Typography ---- */
+        --pf-font-sans:
+          'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        --pf-font-mono:
+          'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', Consolas, monospace;
+
+        /* ---- Surface Depth ---- */
+        --pf-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+        --pf-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --pf-shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.05);
+
+        /* ---- Sidebar ---- */
+        --pf-sidebar-bg: #f6f8fa;
+        --pf-sidebar-item: #6e7681;
+        --pf-sidebar-item-active: #0d9488;
+        --pf-sidebar-item-hover: #e6edf3;
+      }
+
+      /* --------------------------------------------------------------------------
+   Dark Mode (Primary Design)
+   -------------------------------------------------------------------------- */
+      :root.dark {
+        --pf-background: #0a0e14;
+        --pf-foreground: #e6edf3;
+        --pf-card: #0d1117;
+        --pf-card-foreground: #e6edf3;
+        --pf-popover: #161b22;
+        --pf-popover-foreground: #e6edf3;
+        --pf-primary: #2dd4bf;
+        --pf-primary-foreground: #0a0e14;
+        --pf-muted: #161b22;
+        --pf-muted-foreground: #8b949e;
+        --pf-border: #21262d;
+        --pf-input: #21262d;
+        --pf-ring: #2dd4bf;
+
+        --state-success: #3fb950;
+        --state-warning: #d29922;
+        --state-error: #f85149;
+        --state-info: #58a6ff;
+
+        --pf-sidebar-bg: #0a0e14;
+        --pf-sidebar-item: #8b949e;
+        --pf-sidebar-item-active: #2dd4bf;
+        --pf-sidebar-item-hover: #161b22;
+
+        --pf-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+        --pf-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --pf-shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.05);
+      }
+
+      /* --------------------------------------------------------------------------
+   Typography Classes
+   -------------------------------------------------------------------------- */
+      .pf-text-display {
+        font-family: var(--pf-font-sans);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+      }
+
+      .pf-text-heading {
+        font-family: var(--pf-font-sans);
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        line-height: 1.3;
+      }
+
+      .pf-text-body {
+        font-family: var(--pf-font-sans);
+        font-weight: 400;
+        line-height: 1.6;
+      }
+
+      .pf-text-mono {
+        font-family: var(--pf-font-mono);
+        font-weight: 400;
+        letter-spacing: -0.02em;
+      }
+
+      .pf-text-label {
+        font-family: var(--pf-font-sans);
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+      @theme inline {
+        --color-background: var(--pf-background);
+        --color-foreground: var(--pf-foreground);
+        --color-card: var(--pf-card);
+        --color-card-foreground: var(--pf-card-foreground);
+        --color-popover: var(--pf-popover);
+        --color-popover-foreground: var(--pf-popover-foreground);
+        --color-primary: var(--pf-primary);
+        --color-primary-foreground: var(--pf-primary-foreground);
+        --color-muted: var(--pf-muted);
+        --color-muted-foreground: var(--pf-muted-foreground);
+        --color-border: var(--pf-border);
+        --color-input: var(--pf-input);
+        --color-ring: var(--pf-ring);
+        --radius-sm: var(--pf-radius-small);
+        --radius-md: var(--pf-radius-medium);
+        --radius-lg: var(--pf-radius-large);
+      }
+      @layer base {
+        body {
+          background: var(--pf-background);
+          color: var(--pf-foreground);
+        }
+        td,
+        th {
+          @apply break-words;
+          word-break: break-all;
+          word-break: auto-phrase;
+        }
+        th {
+          @apply whitespace-nowrap;
+        }
+      }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background {
+        background-color: var(--pf-background);
+      }
+      .text-background {
+        color: var(--pf-background);
+      }
+      .border-background {
+        border-color: var(--pf-background);
+      }
+      .ring-background {
+        --tw-ring-color: var(--pf-background);
+      }
+      .bg-foreground {
+        background-color: var(--pf-foreground);
+      }
+      .text-foreground {
+        color: var(--pf-foreground);
+      }
+      .border-foreground {
+        border-color: var(--pf-foreground);
+      }
+      .ring-foreground {
+        --tw-ring-color: var(--pf-foreground);
+      }
+      .bg-card {
+        background-color: var(--pf-card);
+      }
+      .text-card {
+        color: var(--pf-card);
+      }
+      .border-card {
+        border-color: var(--pf-card);
+      }
+      .ring-card {
+        --tw-ring-color: var(--pf-card);
+      }
+      .bg-card-foreground {
+        background-color: var(--pf-card-foreground);
+      }
+      .text-card-foreground {
+        color: var(--pf-card-foreground);
+      }
+      .border-card-foreground {
+        border-color: var(--pf-card-foreground);
+      }
+      .ring-card-foreground {
+        --tw-ring-color: var(--pf-card-foreground);
+      }
+      .bg-popover {
+        background-color: var(--pf-popover);
+      }
+      .text-popover {
+        color: var(--pf-popover);
+      }
+      .border-popover {
+        border-color: var(--pf-popover);
+      }
+      .ring-popover {
+        --tw-ring-color: var(--pf-popover);
+      }
+      .bg-popover-foreground {
+        background-color: var(--pf-popover-foreground);
+      }
+      .text-popover-foreground {
+        color: var(--pf-popover-foreground);
+      }
+      .border-popover-foreground {
+        border-color: var(--pf-popover-foreground);
+      }
+      .ring-popover-foreground {
+        --tw-ring-color: var(--pf-popover-foreground);
+      }
+      .bg-primary {
+        background-color: var(--pf-primary);
+      }
+      .text-primary {
+        color: var(--pf-primary);
+      }
+      .border-primary {
+        border-color: var(--pf-primary);
+      }
+      .ring-primary {
+        --tw-ring-color: var(--pf-primary);
+      }
+      .bg-primary-foreground {
+        background-color: var(--pf-primary-foreground);
+      }
+      .text-primary-foreground {
+        color: var(--pf-primary-foreground);
+      }
+      .border-primary-foreground {
+        border-color: var(--pf-primary-foreground);
+      }
+      .ring-primary-foreground {
+        --tw-ring-color: var(--pf-primary-foreground);
+      }
+      .bg-muted {
+        background-color: var(--pf-muted);
+      }
+      .text-muted {
+        color: var(--pf-muted);
+      }
+      .border-muted {
+        border-color: var(--pf-muted);
+      }
+      .ring-muted {
+        --tw-ring-color: var(--pf-muted);
+      }
+      .bg-muted-foreground {
+        background-color: var(--pf-muted-foreground);
+      }
+      .text-muted-foreground {
+        color: var(--pf-muted-foreground);
+      }
+      .border-muted-foreground {
+        border-color: var(--pf-muted-foreground);
+      }
+      .ring-muted-foreground {
+        --tw-ring-color: var(--pf-muted-foreground);
+      }
+      .bg-border {
+        background-color: var(--pf-border);
+      }
+      .text-border {
+        color: var(--pf-border);
+      }
+      .border-border {
+        border-color: var(--pf-border);
+      }
+      .ring-border {
+        --tw-ring-color: var(--pf-border);
+      }
+      .bg-input {
+        background-color: var(--pf-input);
+      }
+      .text-input {
+        color: var(--pf-input);
+      }
+      .border-input {
+        border-color: var(--pf-input);
+      }
+      .ring-input {
+        --tw-ring-color: var(--pf-input);
+      }
+      .bg-ring {
+        background-color: var(--pf-ring);
+      }
+      .text-ring {
+        color: var(--pf-ring);
+      }
+      .border-ring {
+        border-color: var(--pf-ring);
+      }
+      .ring-ring {
+        --tw-ring-color: var(--pf-ring);
+      }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+  </head>
+  <body class="font-sans antialiased">
+    <div class="app-shell" data-viewport-mode="app-shell">
+      <!-- ============ SIDEBAR ============ -->
+      <aside class="app-sidebar">
+        <!-- Logo -->
+        <div
+          class="flex items-center gap-2.5 px-4"
+          style="height: 56px; border-bottom: 1px solid var(--pf-border)"
+        >
+          <div
+            class="flex items-center justify-center"
+            style="
+              width: 30px;
+              height: 30px;
+              border-radius: 8px;
+              background: linear-gradient(135deg, var(--pf-primary-400), var(--pf-primary-600));
+            "
+          >
+            <i
+              data-lucide="flame"
+              width="16"
+              height="16"
+              style="color: var(--pf-primary-foreground)"
+            ></i>
+          </div>
+          <div class="flex flex-col leading-tight">
+            <span style="font-size: 14px; font-weight: 600; color: var(--pf-foreground)"
+              >PyForge AI</span
+            >
+            <span
+              style="
+                font-size: 11px;
+                color: var(--pf-muted-foreground);
+                font-family: var(--pf-font-mono);
+              "
+              >v2.4.0</span
+            >
+          </div>
+        </div>
+
+        <!-- Nav -->
+        <nav class="flex-1 flex flex-col gap-1" style="padding: 12px">
+          <a class="nav-item" data-dom-id="nav-dashboard"
+            ><i data-lucide="layout-dashboard" width="18" height="18"></i><span>控制台</span></a
+          >
+          <a class="nav-item" data-dom-id="nav-python-versions"
+            ><i data-lucide="boxes" width="18" height="18"></i><span>Python 版本</span></a
+          >
+          <a class="nav-item" data-dom-id="nav-environments"
+            ><i data-lucide="layers" width="18" height="18"></i><span>虚拟环境</span></a
+          >
+          <a class="nav-item" data-dom-id="nav-packages"
+            ><i data-lucide="package" width="18" height="18"></i><span>包与镜像源</span></a
+          >
+          <a class="nav-item" data-dom-id="nav-ai-deploy"
+            ><i data-lucide="sparkles" width="18" height="18"></i><span>AI 智能部署</span></a
+          >
+          <a class="nav-item active" data-dom-id="nav-settings"
+            ><i data-lucide="settings" width="18" height="18"></i><span>设置</span></a
+          >
+        </nav>
+
+        <!-- Bottom: AI button + profile -->
+        <div style="padding: 12px; border-top: 1px solid var(--pf-border)">
+          <button class="ai-btn">
+            <i data-lucide="sparkles" width="15" height="15"></i>
+            <span>AI 助手</span>
+          </button>
+          <div
+            class="flex items-center gap-2.5"
+            style="margin-top: 12px; padding: 6px 4px; border-radius: 8px"
+          >
+            <div
+              class="flex items-center justify-center"
+              style="
+                width: 30px;
+                height: 30px;
+                border-radius: 9999px;
+                background: var(--pf-muted);
+                border: 1px solid var(--pf-border);
+                font-size: 12px;
+                font-weight: 600;
+                color: var(--pf-primary);
+              "
+            >
+              DY
+            </div>
+            <div class="flex flex-col leading-tight" style="min-width: 0">
+              <span style="font-size: 13px; color: var(--pf-foreground)">Dev User</span>
+              <span style="font-size: 11px; color: var(--pf-muted-foreground)">dev@pyforge.ai</span>
+            </div>
+            <i
+              data-lucide="chevron-up"
+              width="14"
+              height="14"
+              style="color: var(--pf-muted-foreground); margin-left: auto"
+            ></i>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ============ MAIN ============ -->
+      <div class="app-main">
+        <!-- ===== Top Bar ===== -->
+        <header class="app-topbar px-6">
+          <h1
+            style="
+              font-size: 18px;
+              font-weight: 600;
+              color: var(--pf-foreground);
+              white-space: nowrap;
+            "
+          >
+            设置
+          </h1>
+
+          <!-- Center search -->
+          <div class="flex-1 flex justify-center">
+            <div
+              class="flex items-center gap-2"
+              style="
+                width: 100%;
+                max-width: 380px;
+                height: 32px;
+                background: var(--pf-muted);
+                border: 1px solid var(--pf-border);
+                border-radius: 8px;
+                padding: 0 12px;
+              "
+            >
+              <i
+                data-lucide="search"
+                width="14"
+                height="14"
+                style="color: var(--pf-muted-foreground)"
+              ></i>
+              <input
+                type="text"
+                placeholder="搜索设置..."
+                style="
+                  background: transparent;
+                  border: none;
+                  outline: none;
+                  font-size: 13px;
+                  color: var(--pf-foreground);
+                  width: 100%;
+                "
+              />
+              <span class="kbd-badge" style="font-size: 11px; padding: 1px 6px">⌘K</span>
+            </div>
+          </div>
+
+          <!-- Right actions -->
+          <div class="flex items-center gap-4">
+            <div class="flex items-center gap-1.5" title="服务在线">
+              <span
+                style="
+                  width: 8px;
+                  height: 8px;
+                  border-radius: 9999px;
+                  background: var(--state-success);
+                  box-shadow: 0 0 0 3px color-mix(in srgb, var(--state-success) 20%, transparent);
+                "
+              ></span>
+            </div>
+            <button
+              class="flex items-center justify-center"
+              style="
+                width: 32px;
+                height: 32px;
+                border-radius: 8px;
+                color: var(--pf-muted-foreground);
+                background: transparent;
+                border: none;
+                cursor: pointer;
+              "
+              title="通知"
+            >
+              <i data-lucide="bell" width="18" height="18"></i>
+            </button>
+            <button
+              class="flex items-center gap-1.5"
+              style="
+                height: 32px;
+                padding: 0 14px;
+                border-radius: 8px;
+                background: var(--pf-primary);
+                color: var(--pf-primary-foreground);
+                font-size: 13px;
+                font-weight: 500;
+                border: none;
+                cursor: pointer;
+              "
+            >
+              <i data-lucide="rocket" width="14" height="14"></i>
+              <span>快速部署</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- ===== Content ===== -->
+        <main class="app-content overflow-y-auto" data-scroll-region="primary">
+          <div class="settings-layout">
+            <!-- ===== Left: Settings Tab Nav ===== -->
+            <div class="settings-tabnav">
+              <div
+                style="
+                  background: var(--pf-card);
+                  border: 1px solid var(--pf-border);
+                  border-radius: 12px;
+                  padding: 12px;
+                "
+              >
+                <div class="tab-item active">
+                  <i data-lucide="settings" width="18" height="18"></i><span>通用</span>
+                </div>
+                <div class="tab-item">
+                  <i data-lucide="palette" width="18" height="18"></i><span>外观</span>
+                </div>
+                <div class="tab-item">
+                  <i data-lucide="folder" width="18" height="18"></i><span>路径</span>
+                </div>
+                <div class="tab-item">
+                  <i data-lucide="brain" width="18" height="18"></i><span>AI 配置</span>
+                </div>
+                <div class="tab-item">
+                  <i data-lucide="bell" width="18" height="18"></i><span>通知</span>
+                </div>
+                <div class="tab-item">
+                  <i data-lucide="info" width="18" height="18"></i><span>关于</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ===== Right: Settings Content ===== -->
+            <div class="settings-content">
+              <!-- Section 1: 基本设置 -->
+              <section
+                style="
+                  background: var(--pf-card);
+                  border: 1px solid var(--pf-border);
+                  border-radius: 12px;
+                  padding: 24px;
+                "
+              >
+                <div class="flex items-center gap-2" style="margin-bottom: 4px">
+                  <i
+                    data-lucide="sliders-horizontal"
+                    width="16"
+                    height="16"
+                    style="color: var(--pf-primary)"
+                  ></i>
+                  <h2 style="font-size: 16px; font-weight: 600; color: var(--pf-foreground)">
+                    基本设置
+                  </h2>
+                </div>
+
+                <div>
+                  <!-- 语言 -->
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">语言</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >界面显示语言</span
+                      >
+                    </div>
+                    <div class="pf-select">
+                      <span>简体中文</span
+                      ><i
+                        data-lucide="chevron-down"
+                        width="14"
+                        height="14"
+                        style="color: var(--pf-muted-foreground)"
+                      ></i>
+                    </div>
+                  </div>
+
+                  <!-- 启动时打开 -->
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">启动时打开</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >应用启动时自动打开控制台</span
+                      >
+                    </div>
+                    <div class="toggle on" role="switch" aria-checked="true"></div>
+                  </div>
+
+                  <!-- 自动检查更新 -->
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">自动检查更新</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >定期检查新版本</span
+                      >
+                    </div>
+                    <div class="toggle on" role="switch" aria-checked="true"></div>
+                  </div>
+
+                  <!-- 遥测数据 -->
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">遥测数据</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >发送匿名使用数据帮助改进</span
+                      >
+                    </div>
+                    <div class="toggle off" role="switch" aria-checked="false"></div>
+                  </div>
+
+                  <!-- 默认 Python 版本 -->
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)"
+                        >默认 Python 版本</span
+                      >
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >创建新环境时的默认版本</span
+                      >
+                    </div>
+                    <div class="pf-select">
+                      <span style="font-family: var(--pf-font-mono)">Python 3.12.4</span
+                      ><i
+                        data-lucide="chevron-down"
+                        width="14"
+                        height="14"
+                        style="color: var(--pf-muted-foreground)"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Section 2: 环境默认配置 -->
+              <section
+                style="
+                  background: var(--pf-card);
+                  border: 1px solid var(--pf-border);
+                  border-radius: 12px;
+                  padding: 24px;
+                "
+              >
+                <div class="flex items-center gap-2" style="margin-bottom: 4px">
+                  <i
+                    data-lucide="boxes"
+                    width="16"
+                    height="16"
+                    style="color: var(--pf-primary)"
+                  ></i>
+                  <h2 style="font-size: 16px; font-weight: 600; color: var(--pf-foreground)">
+                    环境默认配置
+                  </h2>
+                </div>
+
+                <div>
+                  <!-- 默认镜像源 -->
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">默认镜像源</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >新环境使用的 pip 镜像源</span
+                      >
+                    </div>
+                    <div class="pf-select">
+                      <span>清华大学</span
+                      ><i
+                        data-lucide="chevron-down"
+                        width="14"
+                        height="14"
+                        style="color: var(--pf-muted-foreground)"
+                      ></i>
+                    </div>
+                  </div>
+
+                  <!-- 自动激活环境 -->
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">自动激活环境</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >打开终端时自动激活最近环境</span
+                      >
+                    </div>
+                    <div class="toggle on" role="switch" aria-checked="true"></div>
+                  </div>
+
+                  <!-- 环境隔离级别 -->
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">环境隔离级别</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >虚拟环境隔离策略</span
+                      >
+                    </div>
+                    <div class="pf-select">
+                      <span>标准隔离</span
+                      ><i
+                        data-lucide="chevron-down"
+                        width="14"
+                        height="14"
+                        style="color: var(--pf-muted-foreground)"
+                      ></i>
+                    </div>
+                  </div>
+
+                  <!-- 缓存策略 -->
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">缓存策略</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >包缓存大小限制</span
+                      >
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <div class="pf-select">
+                        <span>2 GB</span
+                        ><i
+                          data-lucide="chevron-down"
+                          width="14"
+                          height="14"
+                          style="color: var(--pf-muted-foreground)"
+                        ></i>
+                      </div>
+                      <a
+                        style="
+                          font-size: 12px;
+                          color: var(--pf-primary);
+                          cursor: pointer;
+                          text-decoration: none;
+                          display: inline-flex;
+                          align-items: center;
+                          gap: 4px;
+                        "
+                        onmouseover="this.style.textDecoration = 'underline'"
+                        onmouseout="this.style.textDecoration = 'none'"
+                      >
+                        <i data-lucide="trash-2" width="12" height="12"></i>清理缓存
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Section 3: 终端配置 -->
+              <section
+                style="
+                  background: var(--pf-card);
+                  border: 1px solid var(--pf-border);
+                  border-radius: 12px;
+                  padding: 24px;
+                "
+              >
+                <div class="flex items-center gap-2" style="margin-bottom: 4px">
+                  <i
+                    data-lucide="terminal"
+                    width="16"
+                    height="16"
+                    style="color: var(--pf-primary)"
+                  ></i>
+                  <h2 style="font-size: 16px; font-weight: 600; color: var(--pf-foreground)">
+                    终端配置
+                  </h2>
+                </div>
+
+                <div>
+                  <!-- 默认 Shell -->
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">默认 Shell</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >终端使用的 Shell 程序</span
+                      >
+                    </div>
+                    <div class="pf-select">
+                      <span style="font-family: var(--pf-font-mono)">zsh</span
+                      ><i
+                        data-lucide="chevron-down"
+                        width="14"
+                        height="14"
+                        style="color: var(--pf-muted-foreground)"
+                      ></i>
+                    </div>
+                  </div>
+
+                  <!-- 字体 -->
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">字体</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >终端字体</span
+                      >
+                    </div>
+                    <div class="pf-select">
+                      <span style="font-family: var(--pf-font-mono)">JetBrains Mono</span
+                      ><i
+                        data-lucide="chevron-down"
+                        width="14"
+                        height="14"
+                        style="color: var(--pf-muted-foreground)"
+                      ></i>
+                    </div>
+                  </div>
+
+                  <!-- 字体大小 -->
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">字体大小</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >终端字体大小</span
+                      >
+                    </div>
+                    <div class="pf-select">
+                      <span>14px</span
+                      ><i
+                        data-lucide="chevron-down"
+                        width="14"
+                        height="14"
+                        style="color: var(--pf-muted-foreground)"
+                      ></i>
+                    </div>
+                  </div>
+
+                  <!-- 配色方案 -->
+                  <div class="settings-row">
+                    <div class="flex flex-col" style="gap: 2px">
+                      <span style="font-size: 14px; color: var(--pf-foreground)">配色方案</span>
+                      <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+                        >终端颜色主题</span
+                      >
+                    </div>
+                    <div class="flex items-center" style="gap: 14px">
+                      <div class="flex flex-col items-center" style="gap: 6px">
+                        <div
+                          class="color-swatch active"
+                          style="background: var(--pf-neutral-800)"
+                          title="Dark+"
+                        ></div>
+                        <span style="font-size: 11px; color: var(--pf-primary); font-weight: 500"
+                          >Dark+</span
+                        >
+                      </div>
+                      <div class="flex flex-col items-center" style="gap: 6px">
+                        <div
+                          class="color-swatch"
+                          style="background: var(--state-warning)"
+                          title="Monokai"
+                        ></div>
+                        <span style="font-size: 11px; color: var(--pf-muted-foreground)"
+                          >Monokai</span
+                        >
+                      </div>
+                      <div class="flex flex-col items-center" style="gap: 6px">
+                        <div
+                          class="color-swatch"
+                          style="background: var(--state-info)"
+                          title="Solarized Dark"
+                        ></div>
+                        <span style="font-size: 11px; color: var(--pf-muted-foreground)"
+                          >Solarized</span
+                        >
+                      </div>
+                      <div class="flex flex-col items-center" style="gap: 6px">
+                        <div
+                          class="color-swatch"
+                          style="background: var(--pf-primary-600)"
+                          title="One Dark"
+                        ></div>
+                        <span style="font-size: 11px; color: var(--pf-muted-foreground)"
+                          >One Dark</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Section 4: 快捷键 -->
+              <section
+                style="
+                  background: var(--pf-card);
+                  border: 1px solid var(--pf-border);
+                  border-radius: 12px;
+                  padding: 24px;
+                "
+              >
+                <div class="flex items-center gap-2" style="margin-bottom: 4px">
+                  <i
+                    data-lucide="keyboard"
+                    width="16"
+                    height="16"
+                    style="color: var(--pf-primary)"
+                  ></i>
+                  <h2 style="font-size: 16px; font-weight: 600; color: var(--pf-foreground)">
+                    快捷键
+                  </h2>
+                </div>
+
+                <div>
+                  <div class="settings-row">
+                    <span style="font-size: 14px; color: var(--pf-foreground)">打开控制台</span>
+                    <span class="kbd-badge">⌘ + 1</span>
+                  </div>
+                  <div class="settings-row">
+                    <span style="font-size: 14px; color: var(--pf-foreground)">创建环境</span>
+                    <span class="kbd-badge">⌘ + N</span>
+                  </div>
+                  <div class="settings-row">
+                    <span style="font-size: 14px; color: var(--pf-foreground)">AI 助手</span>
+                    <span class="kbd-badge">⌘ + Shift + A</span>
+                  </div>
+                  <div class="settings-row">
+                    <span style="font-size: 14px; color: var(--pf-foreground)">搜索</span>
+                    <span class="kbd-badge">⌘ + F</span>
+                  </div>
+                  <div class="settings-row">
+                    <span style="font-size: 14px; color: var(--pf-foreground)">快速部署</span>
+                    <span class="kbd-badge">⌘ + D</span>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Bottom action bar -->
+              <div class="flex items-center" style="gap: 12px; padding-top: 4px">
+                <button class="btn-primary">
+                  <i data-lucide="save" width="15" height="15"></i>
+                  <span>保存设置</span>
+                </button>
+                <button class="btn-ghost">
+                  <i data-lucide="rotate-ccw" width="15" height="15"></i>
+                  <span>恢复默认</span>
+                </button>
+                <button class="btn-outline" style="margin-left: auto">
+                  <i data-lucide="refresh-cw" width="15" height="15"></i>
+                  <span>应用并重启</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <footer
+            class="flex items-center justify-between"
+            style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--pf-border)"
+          >
+            <span
+              style="
+                font-size: 12px;
+                color: var(--pf-muted-foreground);
+                font-family: var(--pf-font-mono);
+              "
+              >PyForge AI v2.4.0 · 构建 2024.08.07</span
+            >
+            <span style="font-size: 12px; color: var(--pf-muted-foreground)"
+              >© 2024 PyForge AI</span
+            >
+          </footer>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      lucide.createIcons();
+    </script>
+
+    <style id="critical-layout">
+      /* ===== App shell: sidebar + main ===== */
+      .app-shell {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
+      .app-sidebar {
+        width: 240px;
+        flex-shrink: 0;
+        background: var(--pf-sidebar-bg);
+        border-right: 1px solid var(--pf-border);
+        display: flex;
+        flex-direction: column;
+      }
+      .app-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+      .app-topbar {
+        height: 56px;
+        flex-shrink: 0;
+        border-bottom: 1px solid var(--pf-border);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .app-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+      }
+
+      /* ===== Sidebar nav ===== */
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 9px 12px;
+        border-radius: 8px;
+        font-size: 14px;
+        color: var(--pf-sidebar-item);
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          color 0.15s;
+        position: relative;
+        text-decoration: none;
+      }
+      .nav-item:hover {
+        background: var(--pf-sidebar-item-hover);
+        color: var(--pf-foreground);
+      }
+      .nav-item.active {
+        color: var(--pf-sidebar-item-active);
+        background: var(--pf-sidebar-item-hover);
+        font-weight: 500;
+      }
+      .nav-item.active::before {
+        content: '';
+        position: absolute;
+        left: -12px;
+        top: 7px;
+        bottom: 7px;
+        width: 2px;
+        border-radius: 2px;
+        background: var(--pf-primary);
+      }
+
+      /* ===== Settings layout ===== */
+      .settings-layout {
+        display: flex;
+        gap: 24px;
+        align-items: flex-start;
+      }
+      .settings-tabnav {
+        width: 200px;
+        flex-shrink: 0;
+      }
+      .settings-content {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      /* ===== Vertical tab nav ===== */
+      .tab-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        color: var(--pf-muted-foreground);
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          color 0.15s;
+      }
+      .tab-item:hover {
+        background: var(--pf-sidebar-item-hover);
+        color: var(--pf-foreground);
+      }
+      .tab-item.active {
+        background: color-mix(in srgb, var(--pf-primary) 14%, transparent);
+        color: var(--pf-primary);
+        font-weight: 600;
+      }
+
+      /* ===== Settings rows ===== */
+      .settings-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 16px 0;
+        border-bottom: 1px solid var(--pf-border);
+      }
+      .settings-row:last-child {
+        border-bottom: none;
+      }
+
+      /* ===== Select control ===== */
+      .pf-select {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--pf-muted);
+        border: 1px solid var(--pf-border);
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 13px;
+        color: var(--pf-foreground);
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .pf-select:hover {
+        border-color: var(--pf-primary);
+      }
+
+      /* ===== Toggle switch ===== */
+      .toggle {
+        width: 38px;
+        height: 22px;
+        border-radius: 9999px;
+        position: relative;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: background 0.2s;
+      }
+      .toggle::after {
+        content: '';
+        position: absolute;
+        top: 3px;
+        width: 16px;
+        height: 16px;
+        border-radius: 9999px;
+        transition:
+          left 0.2s,
+          background 0.2s;
+      }
+      .toggle.on {
+        background: var(--pf-primary);
+      }
+      .toggle.on::after {
+        left: 19px;
+        background: var(--pf-neutral-50);
+      }
+      .toggle.off {
+        background: var(--pf-muted);
+      }
+      .toggle.off::after {
+        left: 3px;
+        background: var(--pf-muted-foreground);
+      }
+
+      /* ===== Color swatch ===== */
+      .color-swatch {
+        width: 30px;
+        height: 30px;
+        border-radius: 9999px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition:
+          border-color 0.15s,
+          transform 0.15s;
+      }
+      .color-swatch:hover {
+        transform: scale(1.08);
+      }
+      .color-swatch.active {
+        border-color: var(--pf-primary);
+      }
+
+      /* ===== Shortcut badge ===== */
+      .kbd-badge {
+        background: var(--pf-muted);
+        border: 1px solid var(--pf-border);
+        border-radius: 4px;
+        padding: 2px 8px;
+        font-family: var(--pf-font-mono);
+        font-size: 12px;
+        color: var(--pf-foreground);
+        white-space: nowrap;
+      }
+
+      /* ===== Buttons ===== */
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 36px;
+        padding: 0 20px;
+        border-radius: 8px;
+        background: var(--pf-primary);
+        color: var(--pf-primary-foreground);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        transition: opacity 0.15s;
+      }
+      .btn-primary:hover {
+        opacity: 0.9;
+      }
+      .btn-ghost {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 36px;
+        padding: 0 16px;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--pf-muted-foreground);
+        font-size: 13px;
+        cursor: pointer;
+        border: none;
+        transition: color 0.15s;
+      }
+      .btn-ghost:hover {
+        color: var(--pf-foreground);
+      }
+      .btn-outline {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 36px;
+        padding: 0 16px;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--pf-foreground);
+        font-size: 13px;
+        cursor: pointer;
+        border: 1px solid var(--pf-border);
+        transition: border-color 0.15s;
+      }
+      .btn-outline:hover {
+        border-color: var(--pf-primary);
+      }
+
+      /* ===== AI gradient button ===== */
+      .ai-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        height: 36px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, var(--pf-primary-400), var(--pf-primary-600));
+        color: var(--pf-primary-foreground);
+        font-size: 13px;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition: opacity 0.15s;
+      }
+      .ai-btn:hover {
+        opacity: 0.92;
+      }
+
+      /* ===== Lucide sizing helper ===== */
+      [data-lucide] {
+        display: inline-block;
+        vertical-align: middle;
+        flex-shrink: 0;
+      }
+    </style>
+  </body>
+</html>

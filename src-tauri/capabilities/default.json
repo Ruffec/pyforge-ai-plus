@@ -1,0 +1,75 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Default capabilities for PyForge AI",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        { "name": "python", "cmd": "python" },
+        { "name": "python3", "cmd": "python3" },
+        { "name": "pip", "cmd": "pip" },
+        { "name": "pip3", "cmd": "pip3" }
+      ]
+    },
+    {
+      "identifier": "fs:allow-read-file",
+      "allow": [
+        { "path": "$HOME/**" },
+        { "path": "$APPDATA/**" },
+        { "path": "$CONFIG/**" },
+        { "path": "$RESOURCE/**" }
+      ]
+    },
+    {
+      "identifier": "fs:allow-read-dir",
+      "allow": [
+        { "path": "$HOME/**" },
+        { "path": "$APPDATA/**" },
+        { "path": "$CONFIG/**" },
+        { "path": "$RESOURCE/**" }
+      ]
+    },
+    {
+      "identifier": "fs:allow-write-file",
+      "allow": [
+        { "path": "$HOME/**" },
+        { "path": "$APPDATA/**" },
+        { "path": "$CONFIG/**" },
+        { "path": "$RESOURCE/**" }
+      ]
+    },
+    {
+      "identifier": "fs:allow-mkdir",
+      "allow": [
+        { "path": "$HOME/**" },
+        { "path": "$APPDATA/**" },
+        { "path": "$CONFIG/**" },
+        { "path": "$RESOURCE/**" }
+      ]
+    },
+    {
+      "identifier": "fs:allow-remove",
+      "allow": [
+        { "path": "$HOME/**" },
+        { "path": "$APPDATA/**" },
+        { "path": "$CONFIG/**" },
+        { "path": "$RESOURCE/**" }
+      ]
+    },
+    "dialog:allow-open",
+    "dialog:allow-save",
+    "process:allow-restart",
+    {
+      "identifier": "http:default",
+      "allow": [
+        { "url": "https://pypi.org" },
+        { "url": "https://*.pypi.org" },
+        { "url": "https://api.openai.com" }
+      ]
+    },
+    "updater:default"
+  ]
+}

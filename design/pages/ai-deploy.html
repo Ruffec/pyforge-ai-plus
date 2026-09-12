@@ -1,0 +1,1598 @@
+<!doctype html>
+<html lang="zh" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI 智能部署</title>
+    <style id="theme-vars">
+      /* ==========================================================================
+   PyForge AI — Brand Design Tokens
+   Dark Developer Theme · Teal-Cyan Primary · AI-Forward
+   ========================================================================== */
+
+      /* --------------------------------------------------------------------------
+   Brand Prefix: pf
+   Default = Light Mode · .dark = Dark Mode (primary design)
+   -------------------------------------------------------------------------- */
+      :root {
+        /* ---- Primary Scale (Teal-Cyan) ---- */
+        --pf-primary-50: #ecfdfb;
+        --pf-primary-100: #cffeed;
+        --pf-primary-200: #9ff8dd;
+        --pf-primary-300: #5fecce;
+        --pf-primary-400: #2dd4bf;
+        --pf-primary-500: #14b8a6;
+        --pf-primary-600: #0d9488;
+        --pf-primary-700: #0f766e;
+        --pf-primary-800: #115e56;
+        --pf-primary-900: #134e48;
+
+        /* ---- Neutral Scale ---- */
+        --pf-neutral-50: #f6f8fa;
+        --pf-neutral-100: #e6edf3;
+        --pf-neutral-200: #c9d1d9;
+        --pf-neutral-300: #8b949e;
+        --pf-neutral-400: #6e7681;
+        --pf-neutral-500: #484f58;
+        --pf-neutral-600: #30363d;
+        --pf-neutral-700: #21262d;
+        --pf-neutral-800: #161b22;
+        --pf-neutral-900: #0d1117;
+        --pf-neutral-950: #0a0e14;
+
+        /* ---- Semantic Aliases (Light Mode Default) ---- */
+        --pf-background: #ffffff;
+        --pf-foreground: #0d1117;
+        --pf-card: #f6f8fa;
+        --pf-card-foreground: #0d1117;
+        --pf-popover: #ffffff;
+        --pf-popover-foreground: #0d1117;
+        --pf-primary: #0d9488;
+        --pf-primary-foreground: #ffffff;
+        --pf-muted: #f6f8fa;
+        --pf-muted-foreground: #6e7681;
+        --pf-border: #d0d7de;
+        --pf-input: #d0d7de;
+        --pf-ring: #0d9488;
+
+        /* ---- Radius Scale ---- */
+        --pf-radius-small: 4px;
+        --pf-radius-medium: 8px;
+        --pf-radius-large: 12px;
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-full: 9999px;
+
+        /* ---- State Colors ---- */
+        --state-success: #1a7f37;
+        --state-warning: #9a6700;
+        --state-error: #cf222e;
+        --state-info: #0969da;
+
+        /* ---- Typography ---- */
+        --pf-font-sans:
+          'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        --pf-font-mono:
+          'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', Consolas, monospace;
+
+        /* ---- Surface Depth ---- */
+        --pf-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+        --pf-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --pf-shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.05);
+
+        /* ---- Sidebar ---- */
+        --pf-sidebar-bg: #f6f8fa;
+        --pf-sidebar-item: #6e7681;
+        --pf-sidebar-item-active: #0d9488;
+        --pf-sidebar-item-hover: #e6edf3;
+      }
+
+      /* --------------------------------------------------------------------------
+   Dark Mode (Primary Design)
+   -------------------------------------------------------------------------- */
+      :root.dark {
+        --pf-background: #0a0e14;
+        --pf-foreground: #e6edf3;
+        --pf-card: #0d1117;
+        --pf-card-foreground: #e6edf3;
+        --pf-popover: #161b22;
+        --pf-popover-foreground: #e6edf3;
+        --pf-primary: #2dd4bf;
+        --pf-primary-foreground: #0a0e14;
+        --pf-muted: #161b22;
+        --pf-muted-foreground: #8b949e;
+        --pf-border: #21262d;
+        --pf-input: #21262d;
+        --pf-ring: #2dd4bf;
+
+        --state-success: #3fb950;
+        --state-warning: #d29922;
+        --state-error: #f85149;
+        --state-info: #58a6ff;
+
+        --pf-sidebar-bg: #0a0e14;
+        --pf-sidebar-item: #8b949e;
+        --pf-sidebar-item-active: #2dd4bf;
+        --pf-sidebar-item-hover: #161b22;
+
+        --pf-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+        --pf-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --pf-shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.05);
+      }
+
+      /* --------------------------------------------------------------------------
+   Typography Classes
+   -------------------------------------------------------------------------- */
+      .pf-text-display {
+        font-family: var(--pf-font-sans);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+      }
+
+      .pf-text-heading {
+        font-family: var(--pf-font-sans);
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        line-height: 1.3;
+      }
+
+      .pf-text-body {
+        font-family: var(--pf-font-sans);
+        font-weight: 400;
+        line-height: 1.6;
+      }
+
+      .pf-text-mono {
+        font-family: var(--pf-font-mono);
+        font-weight: 400;
+        letter-spacing: -0.02em;
+      }
+
+      .pf-text-label {
+        font-family: var(--pf-font-sans);
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+      @theme inline {
+        --color-background: var(--pf-background);
+        --color-foreground: var(--pf-foreground);
+        --color-card: var(--pf-card);
+        --color-card-foreground: var(--pf-card-foreground);
+        --color-popover: var(--pf-popover);
+        --color-popover-foreground: var(--pf-popover-foreground);
+        --color-primary: var(--pf-primary);
+        --color-primary-foreground: var(--pf-primary-foreground);
+        --color-muted: var(--pf-muted);
+        --color-muted-foreground: var(--pf-muted-foreground);
+        --color-border: var(--pf-border);
+        --color-input: var(--pf-input);
+        --color-ring: var(--pf-ring);
+        --radius-sm: var(--pf-radius-small);
+        --radius-md: var(--pf-radius-medium);
+        --radius-lg: var(--pf-radius-large);
+      }
+      @layer base {
+        body {
+          background: var(--pf-background);
+          color: var(--pf-foreground);
+        }
+        td,
+        th {
+          @apply break-words;
+          word-break: break-all;
+          word-break: auto-phrase;
+        }
+        th {
+          @apply whitespace-nowrap;
+        }
+      }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background {
+        background-color: var(--pf-background);
+      }
+      .text-background {
+        color: var(--pf-background);
+      }
+      .border-background {
+        border-color: var(--pf-background);
+      }
+      .ring-background {
+        --tw-ring-color: var(--pf-background);
+      }
+      .bg-foreground {
+        background-color: var(--pf-foreground);
+      }
+      .text-foreground {
+        color: var(--pf-foreground);
+      }
+      .border-foreground {
+        border-color: var(--pf-foreground);
+      }
+      .ring-foreground {
+        --tw-ring-color: var(--pf-foreground);
+      }
+      .bg-card {
+        background-color: var(--pf-card);
+      }
+      .text-card {
+        color: var(--pf-card);
+      }
+      .border-card {
+        border-color: var(--pf-card);
+      }
+      .ring-card {
+        --tw-ring-color: var(--pf-card);
+      }
+      .bg-card-foreground {
+        background-color: var(--pf-card-foreground);
+      }
+      .text-card-foreground {
+        color: var(--pf-card-foreground);
+      }
+      .border-card-foreground {
+        border-color: var(--pf-card-foreground);
+      }
+      .ring-card-foreground {
+        --tw-ring-color: var(--pf-card-foreground);
+      }
+      .bg-popover {
+        background-color: var(--pf-popover);
+      }
+      .text-popover {
+        color: var(--pf-popover);
+      }
+      .border-popover {
+        border-color: var(--pf-popover);
+      }
+      .ring-popover {
+        --tw-ring-color: var(--pf-popover);
+      }
+      .bg-popover-foreground {
+        background-color: var(--pf-popover-foreground);
+      }
+      .text-popover-foreground {
+        color: var(--pf-popover-foreground);
+      }
+      .border-popover-foreground {
+        border-color: var(--pf-popover-foreground);
+      }
+      .ring-popover-foreground {
+        --tw-ring-color: var(--pf-popover-foreground);
+      }
+      .bg-primary {
+        background-color: var(--pf-primary);
+      }
+      .text-primary {
+        color: var(--pf-primary);
+      }
+      .border-primary {
+        border-color: var(--pf-primary);
+      }
+      .ring-primary {
+        --tw-ring-color: var(--pf-primary);
+      }
+      .bg-primary-foreground {
+        background-color: var(--pf-primary-foreground);
+      }
+      .text-primary-foreground {
+        color: var(--pf-primary-foreground);
+      }
+      .border-primary-foreground {
+        border-color: var(--pf-primary-foreground);
+      }
+      .ring-primary-foreground {
+        --tw-ring-color: var(--pf-primary-foreground);
+      }
+      .bg-muted {
+        background-color: var(--pf-muted);
+      }
+      .text-muted {
+        color: var(--pf-muted);
+      }
+      .border-muted {
+        border-color: var(--pf-muted);
+      }
+      .ring-muted {
+        --tw-ring-color: var(--pf-muted);
+      }
+      .bg-muted-foreground {
+        background-color: var(--pf-muted-foreground);
+      }
+      .text-muted-foreground {
+        color: var(--pf-muted-foreground);
+      }
+      .border-muted-foreground {
+        border-color: var(--pf-muted-foreground);
+      }
+      .ring-muted-foreground {
+        --tw-ring-color: var(--pf-muted-foreground);
+      }
+      .bg-border {
+        background-color: var(--pf-border);
+      }
+      .text-border {
+        color: var(--pf-border);
+      }
+      .border-border {
+        border-color: var(--pf-border);
+      }
+      .ring-border {
+        --tw-ring-color: var(--pf-border);
+      }
+      .bg-input {
+        background-color: var(--pf-input);
+      }
+      .text-input {
+        color: var(--pf-input);
+      }
+      .border-input {
+        border-color: var(--pf-input);
+      }
+      .ring-input {
+        --tw-ring-color: var(--pf-input);
+      }
+      .bg-ring {
+        background-color: var(--pf-ring);
+      }
+      .text-ring {
+        color: var(--pf-ring);
+      }
+      .border-ring {
+        border-color: var(--pf-ring);
+      }
+      .ring-ring {
+        --tw-ring-color: var(--pf-ring);
+      }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+  </head>
+  <body class="font-sans antialiased">
+    <div class="pf-app" data-viewport-mode="app-shell">
+      <!-- ===== Sidebar ===== -->
+      <aside class="pf-sidebar">
+        <div class="pf-sidebar-brand">
+          <div class="pf-logo-mark"><i data-lucide="flame"></i></div>
+          <span class="pf-logo-name">PyForge AI</span>
+          <span class="pf-logo-ver">v2.4.0</span>
+        </div>
+        <nav class="pf-sidebar-nav">
+          <div class="pf-nav-section">工作区</div>
+          <div class="pf-nav-item" data-dom-id="nav-dashboard">
+            <i data-lucide="layout-dashboard"></i><span>控制台</span>
+          </div>
+          <div class="pf-nav-item" data-dom-id="nav-python-versions">
+            <i data-lucide="boxes"></i><span>Python 版本</span>
+          </div>
+          <div class="pf-nav-item" data-dom-id="nav-environments">
+            <i data-lucide="layers"></i><span>虚拟环境</span>
+          </div>
+          <div class="pf-nav-item" data-dom-id="nav-packages">
+            <i data-lucide="package"></i><span>包与镜像源</span>
+          </div>
+          <div class="pf-nav-item active" data-dom-id="nav-ai-deploy">
+            <i data-lucide="sparkles"></i><span>AI 智能部署</span>
+          </div>
+          <div class="pf-nav-item" data-dom-id="nav-settings">
+            <i data-lucide="settings"></i><span>设置</span>
+          </div>
+        </nav>
+        <div class="pf-sidebar-foot">
+          <button class="pf-ai-btn"><i data-lucide="sparkles"></i> AI 助手</button>
+          <div class="pf-user">
+            <div class="pf-avatar">YL</div>
+            <div class="pf-user-meta">
+              <span class="pf-user-name">余 林</span>
+              <span class="pf-user-role">开发者</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ===== Main Area ===== -->
+      <div class="pf-main-area">
+        <header class="pf-topbar">
+          <div class="pf-topbar-title">AI 智能部署</div>
+          <div class="pf-topbar-center">
+            <div class="pf-search">
+              <i data-lucide="search"></i>
+              <input type="text" placeholder="搜索项目、环境、包..." />
+              <span class="pf-kbd">⌘K</span>
+            </div>
+          </div>
+          <div class="pf-topbar-right">
+            <span class="pf-status-dot" title="在线"></span>
+            <span class="pf-icon-btn" title="通知"><i data-lucide="bell"></i></span>
+            <button class="pf-quick-deploy"><i data-lucide="zap"></i> 快速部署</button>
+          </div>
+        </header>
+
+        <main class="pf-main overflow-y-auto" data-scroll-region="primary">
+          <div class="pf-stack">
+            <!-- ===== Hero Banner ===== -->
+            <section class="pf-hero">
+              <div class="pf-hero-left">
+                <span class="pf-badge"><i data-lucide="sparkles"></i> AI 驱动</span>
+                <h1 class="pf-hero-title">AI 智能部署</h1>
+                <p class="pf-hero-sub">智能分析项目依赖，一键构建最优 Python 开发环境</p>
+                <p class="pf-hero-desc">
+                  AI 助手将扫描您的项目文件，自动识别依赖关系，推荐最佳 Python
+                  版本、虚拟环境配置和镜像源方案。
+                </p>
+                <div class="pf-hero-cta">
+                  <button class="pf-cta-primary"><i data-lucide="rocket"></i> 开始智能部署</button>
+                  <button class="pf-cta-ghost"><i data-lucide="book-open"></i> 查看文档</button>
+                </div>
+              </div>
+              <div class="pf-brain" aria-hidden="true">
+                <div class="pf-brain-orbit">
+                  <span class="pf-brain-dot d1"></span>
+                  <span class="pf-brain-dot d2"></span>
+                  <span class="pf-brain-dot d3"></span>
+                  <span class="pf-brain-dot d4"></span>
+                </div>
+                <div class="pf-brain-core"><i data-lucide="sparkles"></i></div>
+              </div>
+            </section>
+
+            <!-- ===== Deployment Wizard Stepper ===== -->
+            <section class="pf-card">
+              <div class="pf-stepper">
+                <div class="pf-step completed">
+                  <div class="pf-step-circle"><i data-lucide="check"></i></div>
+                  <div class="pf-step-label">项目分析</div>
+                  <div class="pf-step-sub">扫描项目文件</div>
+                </div>
+                <div class="pf-step-connector done"></div>
+                <div class="pf-step completed">
+                  <div class="pf-step-circle"><i data-lucide="check"></i></div>
+                  <div class="pf-step-label">AI 推荐</div>
+                  <div class="pf-step-sub">生成配置方案</div>
+                </div>
+                <div class="pf-step-connector done"></div>
+                <div class="pf-step active">
+                  <div class="pf-step-circle"><i data-lucide="loader"></i></div>
+                  <div class="pf-step-label">一键部署</div>
+                  <div class="pf-step-sub">正在部署...</div>
+                </div>
+                <div class="pf-step-connector"></div>
+                <div class="pf-step pending">
+                  <div class="pf-step-circle"><i data-lucide="circle"></i></div>
+                  <div class="pf-step-label">完成</div>
+                  <div class="pf-step-sub">环境就绪</div>
+                </div>
+              </div>
+              <div class="pf-progress">
+                <div class="pf-progress-bar"><div class="pf-progress-fill"></div></div>
+                <div class="pf-progress-meta">
+                  <span class="pf-mono">65%</span>
+                  <span>正在安装依赖包...</span>
+                </div>
+              </div>
+            </section>
+
+            <!-- ===== Two Column Layout ===== -->
+            <div class="pf-two-col">
+              <!-- ===== Left Column ===== -->
+              <div class="pf-col">
+                <!-- Project Analysis -->
+                <section class="pf-card">
+                  <div class="pf-card-head">
+                    <div class="pf-card-title"><i data-lucide="file-search"></i> 项目分析结果</div>
+                    <span class="pf-badge"><i data-lucide="check"></i> 已完成</span>
+                  </div>
+                  <div class="pf-analysis-grid">
+                    <div class="pf-analysis-cell">
+                      <span class="pf-analysis-label">项目名称</span
+                      ><span class="pf-analysis-value mono">web-api-project</span>
+                    </div>
+                    <div class="pf-analysis-cell">
+                      <span class="pf-analysis-label">项目类型</span
+                      ><span class="pf-analysis-value">Flask Web 应用</span>
+                    </div>
+                    <div class="pf-analysis-cell">
+                      <span class="pf-analysis-label">Python 版本</span
+                      ><span class="pf-analysis-value mono">3.12.4</span>
+                    </div>
+                    <div class="pf-analysis-cell">
+                      <span class="pf-analysis-label">依赖文件</span
+                      ><span class="pf-analysis-value mono">requirements.txt</span>
+                    </div>
+                    <div class="pf-analysis-cell">
+                      <span class="pf-analysis-label">依赖包数</span
+                      ><span class="pf-analysis-value">23 个</span>
+                    </div>
+                    <div class="pf-analysis-cell">
+                      <span class="pf-analysis-label">项目大小</span
+                      ><span class="pf-analysis-value">45.2 MB</span>
+                    </div>
+                  </div>
+                  <div class="pf-deps">
+                    <div class="pf-deps-title">检测到的依赖</div>
+                    <div class="pf-dep-list">
+                      <div class="pf-dep"><span class="pf-pkg">flask</span>==3.0.3</div>
+                      <div class="pf-dep"><span class="pf-pkg">sqlalchemy</span>==2.0.30</div>
+                      <div class="pf-dep"><span class="pf-pkg">redis</span>==5.0.7</div>
+                      <div class="pf-dep"><span class="pf-pkg">celery</span>==5.4.0</div>
+                      <div class="pf-dep"><span class="pf-pkg">gunicorn</span>==22.0.0</div>
+                      <div class="pf-dep-more">...还有 18 个</div>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- Deployment Terminal -->
+                <section class="pf-terminal">
+                  <div class="pf-terminal-head">
+                    <i data-lucide="terminal"></i>
+                    <span class="pf-term-title">部署日志</span>
+                    <span class="pf-live"><span class="pf-live-dot"></span> 实时</span>
+                  </div>
+                  <pre><span class="pf-t-cmd">$ pyforge ai-deploy --project ./web-api-project</span>
+<span class="pf-t-mute">→ AI 正在分析项目结构...</span>
+<span class="pf-t-ok">✓ 检测到 Flask Web 应用</span>
+<span class="pf-t-ok">✓ 识别 23 个依赖包</span>
+<span class="pf-t-info">→ AI 推荐: Python 3.12.4 + 清华镜像源</span>
+<span class="pf-t-mute">→ 创建虚拟环境 'web-api-env'...</span>
+<span class="pf-t-ok">✓ 虚拟环境创建成功</span>
+<span class="pf-t-mute">→ 安装依赖包 [15/23]...</span>
+<span class="pf-t-mute">  → 安装 flask-3.0.3...</span>
+<span class="pf-t-mute">  → 安装 sqlalchemy-2.0.30...</span>
+<span class="pf-t-mute">  → 安装 redis-5.0.7...</span>
+<span class="pf-cursor">▌</span></pre>
+                </section>
+              </div>
+
+              <!-- ===== Right Column ===== -->
+              <div class="pf-col">
+                <!-- AI Recommendations -->
+                <section class="pf-card">
+                  <div class="pf-card-head">
+                    <div class="pf-card-title pf-glow">
+                      <i data-lucide="sparkles"></i> AI 智能推荐
+                    </div>
+                    <span class="pf-badge">5 项推荐</span>
+                  </div>
+                  <div class="pf-rec-list">
+                    <div class="pf-rec-item">
+                      <div class="pf-rec-icon glow"><i data-lucide="zap"></i></div>
+                      <div class="pf-rec-body">
+                        <div class="pf-rec-title">使用 Python 3.12.4</div>
+                        <div class="pf-rec-desc">最佳性能与兼容性</div>
+                      </div>
+                      <span class="pf-rec-action applied"><i data-lucide="check"></i> 已应用</span>
+                    </div>
+                    <div class="pf-rec-item">
+                      <div class="pf-rec-icon"><i data-lucide="globe"></i></div>
+                      <div class="pf-rec-body">
+                        <div class="pf-rec-title">配置清华镜像源</div>
+                        <div class="pf-rec-desc">下载速度提升 10x</div>
+                      </div>
+                      <span class="pf-rec-action applied"><i data-lucide="check"></i> 已应用</span>
+                    </div>
+                    <div class="pf-rec-item">
+                      <div class="pf-rec-icon"><i data-lucide="layers"></i></div>
+                      <div class="pf-rec-body">
+                        <div class="pf-rec-title">创建独立虚拟环境</div>
+                        <div class="pf-rec-desc">隔离依赖避免冲突</div>
+                      </div>
+                      <span class="pf-rec-action applied"><i data-lucide="check"></i> 已应用</span>
+                    </div>
+                    <div class="pf-rec-item">
+                      <div class="pf-rec-icon"><i data-lucide="shield"></i></div>
+                      <div class="pf-rec-body">
+                        <div class="pf-rec-title">安装安全更新</div>
+                        <div class="pf-rec-desc">3 个包有安全漏洞</div>
+                      </div>
+                      <span class="pf-rec-action apply">应用</span>
+                    </div>
+                    <div class="pf-rec-item">
+                      <div class="pf-rec-icon"><i data-lucide="gauge"></i></div>
+                      <div class="pf-rec-body">
+                        <div class="pf-rec-title">优化启动配置</div>
+                        <div class="pf-rec-desc">添加 Gunicorn 生产配置</div>
+                      </div>
+                      <span class="pf-rec-action apply">应用</span>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- AI Chat Panel -->
+                <section class="pf-card pf-chat-card">
+                  <div class="pf-card-head">
+                    <div class="pf-card-title">
+                      <i data-lucide="message-circle"></i> AI 助手对话
+                    </div>
+                    <span class="pf-badge"><span class="pf-live-dot"></span> 在线</span>
+                  </div>
+                  <div class="pf-chat-body">
+                    <div class="pf-chat-msg pf-chat-user">这个项目需要什么 Python 版本？</div>
+                    <div class="pf-chat-msg pf-chat-ai">
+                      根据 requirements.txt 分析，您的项目使用了 Flask 3.0.3 和 SQLAlchemy
+                      2.0.30，推荐使用 Python 3.12.4 以获得最佳性能。同时检测到您使用了 async/await
+                      语法，3.12+ 版本对此有显著优化。
+                    </div>
+                    <div class="pf-chat-msg pf-chat-user">镜像源用哪个最快？</div>
+                    <div class="pf-chat-msg pf-chat-ai">
+                      根据速度测试，清华大学镜像源延迟最低 (12ms)，比官方源快 13
+                      倍。已自动为您配置。
+                    </div>
+                  </div>
+                  <div class="pf-chat-input">
+                    <input type="text" placeholder="询问 AI 助手..." />
+                    <button class="pf-chat-send"><i data-lucide="send"></i></button>
+                  </div>
+                </section>
+              </div>
+            </div>
+
+            <!-- ===== Footer ===== -->
+            <footer class="pf-footer">
+              <span
+                >PyForge AI <span class="pf-mono">v2.4.0</span> · 构建
+                <span class="pf-mono">2024.08.07</span></span
+              >
+              <span>© 2024 PyForge AI</span>
+            </footer>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script>
+      lucide.createIcons();
+    </script>
+
+    <style id="critical-layout">
+      /* ===== Base ===== */
+      html,
+      body {
+        margin: 0;
+      }
+      body {
+        font-family: var(--pf-font-sans);
+        -webkit-font-smoothing: antialiased;
+      }
+      .pf-mono {
+        font-family: var(--pf-font-mono);
+      }
+
+      /* ===== App Shell ===== */
+      .pf-app {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+        background: var(--pf-background);
+      }
+      .pf-sidebar {
+        width: 240px;
+        flex-shrink: 0;
+        background: var(--pf-sidebar-bg);
+        border-right: 1px solid var(--pf-border);
+        display: flex;
+        flex-direction: column;
+      }
+      .pf-sidebar-brand {
+        padding: 15px 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-bottom: 1px solid var(--pf-border);
+      }
+      .pf-logo-mark {
+        width: 30px;
+        height: 30px;
+        border-radius: 7px;
+        background: linear-gradient(135deg, var(--pf-primary-400), var(--pf-primary-600));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--pf-primary-foreground);
+        flex-shrink: 0;
+      }
+      .pf-logo-mark svg.lucide {
+        width: 17px;
+        height: 17px;
+      }
+      .pf-logo-name {
+        font-size: 14.5px;
+        font-weight: 700;
+        color: var(--pf-foreground);
+        letter-spacing: -0.01em;
+      }
+      .pf-logo-ver {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--pf-muted-foreground);
+        background: var(--pf-muted);
+        padding: 2px 6px;
+        border-radius: 4px;
+        margin-left: auto;
+        font-family: var(--pf-font-mono);
+      }
+      .pf-sidebar-nav {
+        flex: 1;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        overflow-y: auto;
+      }
+      .pf-nav-section {
+        font-size: 10.5px;
+        font-weight: 600;
+        color: var(--pf-muted-foreground);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        padding: 12px 12px 6px;
+      }
+      .pf-nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border-radius: 6px;
+        color: var(--pf-sidebar-item);
+        font-size: 13.5px;
+        font-weight: 500;
+        cursor: pointer;
+        border-left: 2px solid transparent;
+      }
+      .pf-nav-item:hover {
+        background: var(--pf-sidebar-item-hover);
+      }
+      .pf-nav-item.active {
+        color: var(--pf-sidebar-item-active);
+        background: var(--pf-sidebar-item-hover);
+        border-left-color: var(--pf-primary);
+      }
+      .pf-nav-item svg.lucide {
+        width: 17px;
+        height: 17px;
+        flex-shrink: 0;
+      }
+      .pf-sidebar-foot {
+        padding: 12px;
+        border-top: 1px solid var(--pf-border);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .pf-ai-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 9px 12px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, var(--pf-primary-400), var(--pf-primary-600));
+        color: var(--pf-primary-foreground);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 0 24px rgba(45, 212, 191, 0.18);
+      }
+      .pf-ai-btn svg.lucide {
+        width: 15px;
+        height: 15px;
+      }
+      .pf-user {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 4px;
+      }
+      .pf-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--pf-neutral-600), var(--pf-neutral-800));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--pf-foreground);
+        flex-shrink: 0;
+      }
+      .pf-user-meta {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.25;
+      }
+      .pf-user-name {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--pf-foreground);
+      }
+      .pf-user-role {
+        font-size: 10.5px;
+        color: var(--pf-muted-foreground);
+      }
+
+      /* ===== Main Area ===== */
+      .pf-main-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+      .pf-topbar {
+        height: 56px;
+        flex-shrink: 0;
+        border-bottom: 1px solid var(--pf-border);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 0 24px;
+        background: var(--pf-background);
+      }
+      .pf-topbar-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--pf-foreground);
+        letter-spacing: -0.01em;
+        white-space: nowrap;
+      }
+      .pf-topbar-center {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+      }
+      .pf-search {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        max-width: 420px;
+        background: var(--pf-muted);
+        border: 1px solid var(--pf-border);
+        border-radius: 8px;
+        padding: 6px 10px;
+      }
+      .pf-search svg.lucide {
+        width: 15px;
+        height: 15px;
+        color: var(--pf-muted-foreground);
+        flex-shrink: 0;
+      }
+      .pf-search input {
+        flex: 1;
+        min-width: 0;
+        background: transparent;
+        border: 0;
+        outline: 0;
+        color: var(--pf-foreground);
+        font-size: 13px;
+      }
+      .pf-search input::placeholder {
+        color: var(--pf-muted-foreground);
+      }
+      .pf-kbd {
+        font-family: var(--pf-font-mono);
+        font-size: 11px;
+        color: var(--pf-muted-foreground);
+        border: 1px solid var(--pf-border);
+        border-radius: 4px;
+        padding: 1px 5px;
+      }
+      .pf-topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .pf-status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--state-success);
+        box-shadow: 0 0 8px rgba(63, 185, 80, 0.5);
+      }
+      .pf-icon-btn {
+        color: var(--pf-muted-foreground);
+        cursor: pointer;
+        display: flex;
+      }
+      .pf-icon-btn svg.lucide {
+        width: 17px;
+        height: 17px;
+      }
+      .pf-quick-deploy {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--pf-primary);
+        color: var(--pf-primary-foreground);
+        font-size: 13px;
+        font-weight: 600;
+        padding: 7px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        box-shadow: 0 0 18px rgba(45, 212, 191, 0.18);
+      }
+      .pf-quick-deploy svg.lucide {
+        width: 14px;
+        height: 14px;
+      }
+      .pf-main {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+      }
+      .pf-main::-webkit-scrollbar {
+        width: 8px;
+      }
+      .pf-main::-webkit-scrollbar-thumb {
+        background: var(--pf-border);
+        border-radius: 4px;
+      }
+      .pf-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      /* ===== Card ===== */
+      .pf-card {
+        background: var(--pf-card);
+        border: 1px solid var(--pf-border);
+        border-radius: 12px;
+        padding: 20px;
+      }
+      .pf-card-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+      .pf-card-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--pf-foreground);
+      }
+      .pf-card-title svg.lucide {
+        width: 15px;
+        height: 15px;
+        color: var(--pf-primary);
+      }
+      .pf-card-title.pf-glow svg.lucide {
+        filter: drop-shadow(0 0 5px rgba(45, 212, 191, 0.55));
+      }
+      .pf-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(45, 212, 191, 0.14);
+        color: var(--pf-primary);
+        font-size: 11px;
+        font-weight: 600;
+        padding: 3px 9px;
+        border-radius: 9999px;
+        white-space: nowrap;
+      }
+      .pf-badge svg.lucide {
+        width: 12px;
+        height: 12px;
+      }
+      .pf-live-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--pf-primary);
+        box-shadow: 0 0 8px rgba(45, 212, 191, 0.6);
+        display: inline-block;
+      }
+
+      /* ===== Hero ===== */
+      .pf-hero {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+        background: var(--pf-card);
+        border: 1px solid var(--pf-border);
+        border-left: 3px solid var(--pf-primary);
+        border-radius: 12px;
+        padding: 28px;
+        box-shadow:
+          0 0 0 1px rgba(45, 212, 191, 0.04),
+          0 0 48px rgba(45, 212, 191, 0.06);
+      }
+      .pf-hero-left {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        min-width: 0;
+      }
+      .pf-hero-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--pf-foreground);
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+        margin: 2px 0 0;
+      }
+      .pf-hero-sub {
+        font-size: 15px;
+        color: var(--pf-muted-foreground);
+        margin: 0;
+      }
+      .pf-hero-desc {
+        font-size: 13px;
+        color: var(--pf-muted-foreground);
+        line-height: 1.6;
+        max-width: 560px;
+        margin: 0;
+      }
+      .pf-hero-cta {
+        display: flex;
+        gap: 10px;
+        margin-top: 8px;
+      }
+      .pf-cta-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: var(--pf-primary);
+        color: var(--pf-primary-foreground);
+        font-size: 13.5px;
+        font-weight: 600;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        box-shadow: 0 0 24px rgba(45, 212, 191, 0.22);
+      }
+      .pf-cta-primary svg.lucide {
+        width: 15px;
+        height: 15px;
+      }
+      .pf-cta-ghost {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: transparent;
+        border: 1px solid var(--pf-border);
+        color: var(--pf-foreground);
+        font-size: 13.5px;
+        font-weight: 500;
+        padding: 10px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .pf-cta-ghost svg.lucide {
+        width: 15px;
+        height: 15px;
+      }
+
+      /* ===== AI Brain ===== */
+      .pf-brain {
+        position: relative;
+        width: 168px;
+        height: 168px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .pf-brain-core {
+        width: 92px;
+        height: 92px;
+        border-radius: 50%;
+        background: rgba(45, 212, 191, 0.08);
+        border: 1px solid rgba(45, 212, 191, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--pf-primary);
+        animation: pf-pulse-glow 3s ease-in-out infinite;
+        position: relative;
+        z-index: 2;
+      }
+      .pf-brain-core svg.lucide {
+        width: 40px;
+        height: 40px;
+      }
+      .pf-brain-orbit {
+        position: absolute;
+        inset: 0;
+        animation: pf-orbit 14s linear infinite;
+        z-index: 1;
+      }
+      .pf-brain-dot {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--pf-primary);
+        box-shadow: 0 0 10px rgba(45, 212, 191, 0.6);
+        top: 50%;
+        left: 50%;
+        margin: -4px 0 0 -4px;
+      }
+      .pf-brain-dot.d1 {
+        transform: rotate(0deg) translateY(-74px);
+      }
+      .pf-brain-dot.d2 {
+        transform: rotate(90deg) translateY(-74px);
+      }
+      .pf-brain-dot.d3 {
+        transform: rotate(180deg) translateY(-74px);
+      }
+      .pf-brain-dot.d4 {
+        transform: rotate(270deg) translateY(-74px);
+      }
+
+      /* ===== Stepper ===== */
+      .pf-stepper {
+        display: flex;
+        align-items: flex-start;
+      }
+      .pf-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+        width: 118px;
+        text-align: center;
+      }
+      .pf-step-circle {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--pf-border);
+        background: var(--pf-muted);
+        color: var(--pf-muted-foreground);
+      }
+      .pf-step-circle svg.lucide {
+        width: 16px;
+        height: 16px;
+      }
+      .pf-step.completed .pf-step-circle {
+        background: rgba(45, 212, 191, 0.12);
+        border-color: rgba(45, 212, 191, 0.4);
+        color: var(--pf-primary);
+      }
+      .pf-step.active .pf-step-circle {
+        background: var(--pf-primary);
+        border-color: var(--pf-primary);
+        color: var(--pf-primary-foreground);
+        box-shadow:
+          0 0 0 4px rgba(45, 212, 191, 0.15),
+          0 0 22px rgba(45, 212, 191, 0.35);
+      }
+      .pf-step.active .pf-step-circle svg.lucide {
+        animation: pf-spin 1s linear infinite;
+      }
+      .pf-step.pending .pf-step-circle {
+        color: var(--pf-muted-foreground);
+      }
+      .pf-step-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--pf-foreground);
+      }
+      .pf-step.active .pf-step-label {
+        color: var(--pf-primary);
+      }
+      .pf-step.pending .pf-step-label {
+        color: var(--pf-muted-foreground);
+      }
+      .pf-step-sub {
+        font-size: 11px;
+        color: var(--pf-muted-foreground);
+      }
+      .pf-step-connector {
+        flex: 1;
+        height: 2px;
+        background: var(--pf-border);
+        margin: 18px 6px 0;
+        border-radius: 2px;
+        min-width: 20px;
+      }
+      .pf-step-connector.done {
+        background: var(--pf-primary);
+      }
+      .pf-progress {
+        margin-top: 18px;
+      }
+      .pf-progress-bar {
+        height: 6px;
+        background: var(--pf-muted);
+        border-radius: 9999px;
+        overflow: hidden;
+      }
+      .pf-progress-fill {
+        height: 100%;
+        width: 65%;
+        background: var(--pf-primary);
+        border-radius: 9999px;
+        box-shadow: 0 0 12px rgba(45, 212, 191, 0.4);
+      }
+      .pf-progress-meta {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 8px;
+        font-size: 12px;
+        color: var(--pf-muted-foreground);
+      }
+      .pf-progress-meta .pf-mono {
+        font-family: var(--pf-font-mono);
+        color: var(--pf-primary);
+      }
+
+      /* ===== Two Column ===== */
+      .pf-two-col {
+        display: grid;
+        grid-template-columns: 3fr 2fr;
+        gap: 24px;
+        align-items: start;
+      }
+      .pf-col {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        min-width: 0;
+      }
+
+      /* ===== Analysis Grid ===== */
+      .pf-analysis-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .pf-analysis-cell {
+        background: var(--pf-muted);
+        border: 1px solid var(--pf-border);
+        border-radius: 8px;
+        padding: 11px 13px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .pf-analysis-label {
+        font-size: 11px;
+        color: var(--pf-muted-foreground);
+      }
+      .pf-analysis-value {
+        font-size: 13.5px;
+        color: var(--pf-foreground);
+        font-weight: 600;
+      }
+      .pf-analysis-value.mono {
+        font-family: var(--pf-font-mono);
+        font-weight: 500;
+      }
+      .pf-deps {
+        margin-top: 16px;
+      }
+      .pf-deps-title {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--pf-muted-foreground);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .pf-dep-list {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .pf-dep {
+        font-family: var(--pf-font-mono);
+        font-size: 12px;
+        color: var(--pf-foreground);
+        padding: 5px 9px;
+        background: var(--pf-muted);
+        border: 1px solid var(--pf-border);
+        border-radius: 6px;
+      }
+      .pf-dep .pf-pkg {
+        color: var(--pf-primary);
+      }
+      .pf-dep-more {
+        font-family: var(--pf-font-mono);
+        font-size: 11.5px;
+        color: var(--pf-muted-foreground);
+        padding: 5px 9px 0;
+      }
+
+      /* ===== Terminal ===== */
+      .pf-terminal {
+        background: var(--pf-card);
+        border: 1px solid var(--pf-border);
+        border-radius: 12px;
+        padding: 16px;
+      }
+      .pf-terminal-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .pf-term-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--pf-muted-foreground);
+      }
+      .pf-terminal-head svg.lucide {
+        width: 14px;
+        height: 14px;
+        color: var(--pf-muted-foreground);
+      }
+      .pf-live {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-left: auto;
+        font-size: 11px;
+        color: var(--pf-primary);
+      }
+      .pf-live .pf-live-dot {
+        animation: pf-blink 1.4s ease-in-out infinite;
+      }
+      .pf-terminal pre {
+        font-family: var(--pf-font-mono);
+        font-size: 12px;
+        line-height: 1.75;
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-all;
+        color: var(--pf-muted-foreground);
+      }
+      .pf-t-cmd {
+        color: var(--pf-primary);
+      }
+      .pf-t-ok {
+        color: var(--state-success);
+      }
+      .pf-t-info {
+        color: var(--pf-primary);
+      }
+      .pf-t-mute {
+        color: var(--pf-muted-foreground);
+      }
+      .pf-cursor {
+        color: var(--pf-primary);
+        animation: pf-blink 1s step-end infinite;
+        font-weight: 700;
+      }
+
+      /* ===== Recommendations ===== */
+      .pf-rec-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .pf-rec-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: var(--pf-muted);
+        border: 1px solid var(--pf-border);
+        border-radius: 10px;
+      }
+      .pf-rec-icon {
+        width: 34px;
+        height: 34px;
+        flex-shrink: 0;
+        border-radius: 8px;
+        background: rgba(45, 212, 191, 0.1);
+        color: var(--pf-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .pf-rec-icon.glow {
+        box-shadow: 0 0 16px rgba(45, 212, 191, 0.18);
+      }
+      .pf-rec-icon svg.lucide {
+        width: 16px;
+        height: 16px;
+      }
+      .pf-rec-body {
+        flex: 1;
+        min-width: 0;
+      }
+      .pf-rec-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--pf-foreground);
+      }
+      .pf-rec-desc {
+        font-size: 12px;
+        color: var(--pf-muted-foreground);
+        margin-top: 2px;
+      }
+      .pf-rec-action {
+        font-size: 12px;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 7px;
+        cursor: pointer;
+        white-space: nowrap;
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .pf-rec-action.applied {
+        color: var(--state-success);
+        background: rgba(63, 185, 80, 0.1);
+        border: 1px solid rgba(63, 185, 80, 0.25);
+      }
+      .pf-rec-action.applied svg.lucide {
+        width: 13px;
+        height: 13px;
+      }
+      .pf-rec-action.apply {
+        color: var(--pf-primary);
+        background: transparent;
+        border: 1px solid var(--pf-primary);
+      }
+
+      /* ===== Chat ===== */
+      .pf-chat-card {
+        display: flex;
+        flex-direction: column;
+      }
+      .pf-chat-body {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: 260px;
+        overflow-y: auto;
+        padding-right: 4px;
+      }
+      .pf-chat-body::-webkit-scrollbar {
+        width: 6px;
+      }
+      .pf-chat-body::-webkit-scrollbar-thumb {
+        background: var(--pf-border);
+        border-radius: 3px;
+      }
+      .pf-chat-msg {
+        max-width: 88%;
+        padding: 10px 12px;
+        font-size: 13px;
+        line-height: 1.55;
+        border-radius: 10px;
+      }
+      .pf-chat-user {
+        align-self: flex-end;
+        background: var(--pf-muted);
+        color: var(--pf-foreground);
+        border: 1px solid var(--pf-border);
+      }
+      .pf-chat-ai {
+        align-self: flex-start;
+        background: rgba(45, 212, 191, 0.08);
+        border: 1px solid rgba(45, 212, 191, 0.2);
+        color: var(--pf-foreground);
+      }
+      .pf-chat-input {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .pf-chat-input input {
+        flex: 1;
+        min-width: 0;
+        background: var(--pf-muted);
+        border: 1px solid var(--pf-border);
+        border-radius: 8px;
+        padding: 9px 12px;
+        color: var(--pf-foreground);
+        font-size: 13px;
+        outline: 0;
+      }
+      .pf-chat-input input::placeholder {
+        color: var(--pf-muted-foreground);
+      }
+      .pf-chat-send {
+        width: 38px;
+        height: 38px;
+        flex-shrink: 0;
+        border-radius: 8px;
+        background: var(--pf-primary);
+        color: var(--pf-primary-foreground);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 0 16px rgba(45, 212, 191, 0.25);
+      }
+      .pf-chat-send svg.lucide {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* ===== Footer ===== */
+      .pf-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 0 4px;
+        font-size: 12px;
+        color: var(--pf-muted-foreground);
+        border-top: 1px solid var(--pf-border);
+        margin-top: 8px;
+      }
+      .pf-footer .pf-mono {
+        font-family: var(--pf-font-mono);
+      }
+
+      /* ===== Animations ===== */
+      @keyframes pf-orbit {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes pf-spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes pf-blink {
+        0%,
+        50% {
+          opacity: 1;
+        }
+        51%,
+        100% {
+          opacity: 0;
+        }
+      }
+      @keyframes pf-pulse-glow {
+        0%,
+        100% {
+          box-shadow: 0 0 40px rgba(45, 212, 191, 0.15);
+        }
+        50% {
+          box-shadow: 0 0 58px rgba(45, 212, 191, 0.3);
+        }
+      }
+    </style>
+  </body>
+</html>

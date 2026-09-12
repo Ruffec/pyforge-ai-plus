@@ -1,0 +1,1352 @@
+<!doctype html>
+<html lang="zh" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Python 版本管理</title>
+    <style id="theme-vars">
+      /* ==========================================================================
+   PyForge AI — Brand Design Tokens
+   Dark Developer Theme · Teal-Cyan Primary · AI-Forward
+   ========================================================================== */
+
+      /* --------------------------------------------------------------------------
+   Brand Prefix: pf
+   Default = Light Mode · .dark = Dark Mode (primary design)
+   -------------------------------------------------------------------------- */
+      :root {
+        /* ---- Primary Scale (Teal-Cyan) ---- */
+        --pf-primary-50: #ecfdfb;
+        --pf-primary-100: #cffeed;
+        --pf-primary-200: #9ff8dd;
+        --pf-primary-300: #5fecce;
+        --pf-primary-400: #2dd4bf;
+        --pf-primary-500: #14b8a6;
+        --pf-primary-600: #0d9488;
+        --pf-primary-700: #0f766e;
+        --pf-primary-800: #115e56;
+        --pf-primary-900: #134e48;
+
+        /* ---- Neutral Scale ---- */
+        --pf-neutral-50: #f6f8fa;
+        --pf-neutral-100: #e6edf3;
+        --pf-neutral-200: #c9d1d9;
+        --pf-neutral-300: #8b949e;
+        --pf-neutral-400: #6e7681;
+        --pf-neutral-500: #484f58;
+        --pf-neutral-600: #30363d;
+        --pf-neutral-700: #21262d;
+        --pf-neutral-800: #161b22;
+        --pf-neutral-900: #0d1117;
+        --pf-neutral-950: #0a0e14;
+
+        /* ---- Semantic Aliases (Light Mode Default) ---- */
+        --pf-background: #ffffff;
+        --pf-foreground: #0d1117;
+        --pf-card: #f6f8fa;
+        --pf-card-foreground: #0d1117;
+        --pf-popover: #ffffff;
+        --pf-popover-foreground: #0d1117;
+        --pf-primary: #0d9488;
+        --pf-primary-foreground: #ffffff;
+        --pf-muted: #f6f8fa;
+        --pf-muted-foreground: #6e7681;
+        --pf-border: #d0d7de;
+        --pf-input: #d0d7de;
+        --pf-ring: #0d9488;
+
+        /* ---- Radius Scale ---- */
+        --pf-radius-small: 4px;
+        --pf-radius-medium: 8px;
+        --pf-radius-large: 12px;
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-full: 9999px;
+
+        /* ---- State Colors ---- */
+        --state-success: #1a7f37;
+        --state-warning: #9a6700;
+        --state-error: #cf222e;
+        --state-info: #0969da;
+
+        /* ---- Typography ---- */
+        --pf-font-sans:
+          'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        --pf-font-mono:
+          'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', Consolas, monospace;
+
+        /* ---- Surface Depth ---- */
+        --pf-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+        --pf-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --pf-shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.06);
+
+        /* ---- Sidebar ---- */
+        --pf-sidebar-bg: #f6f8fa;
+        --pf-sidebar-item: #6e7681;
+        --pf-sidebar-item-active: #0d9488;
+        --pf-sidebar-item-hover: #e6edf3;
+      }
+
+      /* --------------------------------------------------------------------------
+   Dark Mode (Primary Design)
+   -------------------------------------------------------------------------- */
+      :root.dark {
+        --pf-background: #0a0e14;
+        --pf-foreground: #e6edf3;
+        --pf-card: #0d1117;
+        --pf-card-foreground: #e6edf3;
+        --pf-popover: #161b22;
+        --pf-popover-foreground: #e6edf3;
+        --pf-primary: #2dd4bf;
+        --pf-primary-foreground: #0a0e14;
+        --pf-muted: #161b22;
+        --pf-muted-foreground: #8b949e;
+        --pf-border: #21262d;
+        --pf-input: #21262d;
+        --pf-ring: #2dd4bf;
+
+        --state-success: #3fb950;
+        --state-warning: #d29922;
+        --state-error: #f85149;
+        --state-info: #58a6ff;
+
+        --pf-sidebar-bg: #0a0e14;
+        --pf-sidebar-item: #8b949e;
+        --pf-sidebar-item-active: #2dd4bf;
+        --pf-sidebar-item-hover: #161b22;
+
+        --pf-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+        --pf-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --pf-shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.06);
+      }
+
+      /* --------------------------------------------------------------------------
+   Typography Classes
+   -------------------------------------------------------------------------- */
+      .pf-text-display {
+        font-family: var(--pf-font-sans);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+      }
+
+      .pf-text-heading {
+        font-family: var(--pf-font-sans);
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        line-height: 1.3;
+      }
+
+      .pf-text-body {
+        font-family: var(--pf-font-sans);
+        font-weight: 400;
+        line-height: 1.6;
+      }
+
+      .pf-text-mono {
+        font-family: var(--pf-font-mono);
+        font-weight: 400;
+        letter-spacing: -0.02em;
+      }
+
+      .pf-text-label {
+        font-family: var(--pf-font-sans);
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+      @theme inline {
+        --color-background: var(--pf-background);
+        --color-foreground: var(--pf-foreground);
+        --color-card: var(--pf-card);
+        --color-card-foreground: var(--pf-card-foreground);
+        --color-popover: var(--pf-popover);
+        --color-popover-foreground: var(--pf-popover-foreground);
+        --color-primary: var(--pf-primary);
+        --color-primary-foreground: var(--pf-primary-foreground);
+        --color-muted: var(--pf-muted);
+        --color-muted-foreground: var(--pf-muted-foreground);
+        --color-border: var(--pf-border);
+        --color-input: var(--pf-input);
+        --color-ring: var(--pf-ring);
+        --radius-sm: var(--pf-radius-small);
+        --radius-md: var(--pf-radius-medium);
+        --radius-lg: var(--pf-radius-large);
+      }
+      @layer base {
+        body {
+          background: var(--pf-background);
+          color: var(--pf-foreground);
+        }
+        td,
+        th {
+          @apply break-words;
+          word-break: break-all;
+          word-break: auto-phrase;
+        }
+        th {
+          @apply whitespace-nowrap;
+        }
+      }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background {
+        background-color: var(--pf-background);
+      }
+      .text-background {
+        color: var(--pf-background);
+      }
+      .border-background {
+        border-color: var(--pf-background);
+      }
+      .ring-background {
+        --tw-ring-color: var(--pf-background);
+      }
+      .bg-foreground {
+        background-color: var(--pf-foreground);
+      }
+      .text-foreground {
+        color: var(--pf-foreground);
+      }
+      .border-foreground {
+        border-color: var(--pf-foreground);
+      }
+      .ring-foreground {
+        --tw-ring-color: var(--pf-foreground);
+      }
+      .bg-card {
+        background-color: var(--pf-card);
+      }
+      .text-card {
+        color: var(--pf-card);
+      }
+      .border-card {
+        border-color: var(--pf-card);
+      }
+      .ring-card {
+        --tw-ring-color: var(--pf-card);
+      }
+      .bg-card-foreground {
+        background-color: var(--pf-card-foreground);
+      }
+      .text-card-foreground {
+        color: var(--pf-card-foreground);
+      }
+      .border-card-foreground {
+        border-color: var(--pf-card-foreground);
+      }
+      .ring-card-foreground {
+        --tw-ring-color: var(--pf-card-foreground);
+      }
+      .bg-popover {
+        background-color: var(--pf-popover);
+      }
+      .text-popover {
+        color: var(--pf-popover);
+      }
+      .border-popover {
+        border-color: var(--pf-popover);
+      }
+      .ring-popover {
+        --tw-ring-color: var(--pf-popover);
+      }
+      .bg-popover-foreground {
+        background-color: var(--pf-popover-foreground);
+      }
+      .text-popover-foreground {
+        color: var(--pf-popover-foreground);
+      }
+      .border-popover-foreground {
+        border-color: var(--pf-popover-foreground);
+      }
+      .ring-popover-foreground {
+        --tw-ring-color: var(--pf-popover-foreground);
+      }
+      .bg-primary {
+        background-color: var(--pf-primary);
+      }
+      .text-primary {
+        color: var(--pf-primary);
+      }
+      .border-primary {
+        border-color: var(--pf-primary);
+      }
+      .ring-primary {
+        --tw-ring-color: var(--pf-primary);
+      }
+      .bg-primary-foreground {
+        background-color: var(--pf-primary-foreground);
+      }
+      .text-primary-foreground {
+        color: var(--pf-primary-foreground);
+      }
+      .border-primary-foreground {
+        border-color: var(--pf-primary-foreground);
+      }
+      .ring-primary-foreground {
+        --tw-ring-color: var(--pf-primary-foreground);
+      }
+      .bg-muted {
+        background-color: var(--pf-muted);
+      }
+      .text-muted {
+        color: var(--pf-muted);
+      }
+      .border-muted {
+        border-color: var(--pf-muted);
+      }
+      .ring-muted {
+        --tw-ring-color: var(--pf-muted);
+      }
+      .bg-muted-foreground {
+        background-color: var(--pf-muted-foreground);
+      }
+      .text-muted-foreground {
+        color: var(--pf-muted-foreground);
+      }
+      .border-muted-foreground {
+        border-color: var(--pf-muted-foreground);
+      }
+      .ring-muted-foreground {
+        --tw-ring-color: var(--pf-muted-foreground);
+      }
+      .bg-border {
+        background-color: var(--pf-border);
+      }
+      .text-border {
+        color: var(--pf-border);
+      }
+      .border-border {
+        border-color: var(--pf-border);
+      }
+      .ring-border {
+        --tw-ring-color: var(--pf-border);
+      }
+      .bg-input {
+        background-color: var(--pf-input);
+      }
+      .text-input {
+        color: var(--pf-input);
+      }
+      .border-input {
+        border-color: var(--pf-input);
+      }
+      .ring-input {
+        --tw-ring-color: var(--pf-input);
+      }
+      .bg-ring {
+        background-color: var(--pf-ring);
+      }
+      .text-ring {
+        color: var(--pf-ring);
+      }
+      .border-ring {
+        border-color: var(--pf-ring);
+      }
+      .ring-ring {
+        --tw-ring-color: var(--pf-ring);
+      }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+  </head>
+  <body class="font-sans antialiased">
+    <style id="critical-layout">
+      /* ===== App shell flex layout ===== */
+      .pf-app-shell {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+        width: 100%;
+      }
+      .pf-sidebar {
+        width: 240px;
+        flex-shrink: 0;
+        background: var(--pf-sidebar-bg);
+        border-right: 1px solid var(--pf-border);
+        display: flex;
+        flex-direction: column;
+      }
+      .pf-main-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+      .pf-topbar {
+        height: 56px;
+        flex-shrink: 0;
+        background: var(--pf-background);
+        border-bottom: 1px solid var(--pf-border);
+        display: flex;
+        align-items: center;
+        padding: 0 24px;
+        gap: 16px;
+      }
+      .pf-content {
+        flex: 1;
+        padding: 24px;
+        background: var(--pf-background);
+        overflow-y: auto;
+      }
+      .pf-two-col {
+        display: grid;
+        grid-template-columns: minmax(0, 65fr) minmax(0, 35fr);
+        gap: 24px;
+        align-items: start;
+      }
+      .pf-card-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .lucide {
+        flex-shrink: 0;
+      }
+
+      /* ===== Sidebar ===== */
+      .pf-sidebar-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 18px 16px;
+        border-bottom: 1px solid var(--pf-border);
+      }
+      .pf-sidebar-logo .lucide {
+        width: 22px;
+        height: 22px;
+        color: var(--pf-primary);
+      }
+      .pf-logo-text {
+        color: var(--pf-foreground);
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .pf-logo-badge {
+        color: var(--pf-muted-foreground);
+        font-size: 11px;
+        font-family: var(--pf-font-mono);
+        background: var(--pf-muted);
+        padding: 2px 6px;
+        border-radius: var(--pf-radius-small);
+        border: 1px solid var(--pf-border);
+      }
+      .pf-sidebar-nav {
+        flex: 1;
+        padding: 12px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        overflow-y: auto;
+      }
+      .pf-nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 16px;
+        border-radius: var(--pf-radius-medium);
+        color: var(--pf-sidebar-item);
+        font-size: 14px;
+        text-decoration: none;
+        cursor: pointer;
+        border-left: 2px solid transparent;
+        transition:
+          background 0.15s ease,
+          color 0.15s ease;
+      }
+      .pf-nav-item:hover {
+        background: var(--pf-sidebar-item-hover);
+        color: var(--pf-foreground);
+      }
+      .pf-nav-item.active {
+        color: var(--pf-sidebar-item-active);
+        border-left: 2px solid var(--pf-primary);
+        background: var(--pf-sidebar-item-hover);
+      }
+      .pf-nav-item .lucide {
+        width: 20px;
+        height: 20px;
+      }
+      .pf-sidebar-bottom {
+        padding: 12px;
+        border-top: 1px solid var(--pf-border);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .pf-ai-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px;
+        border-radius: var(--pf-radius-medium);
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--pf-primary-foreground);
+        background: linear-gradient(135deg, var(--pf-primary-400), var(--pf-primary-600));
+        transition: opacity 0.15s ease;
+      }
+      .pf-ai-btn:hover {
+        opacity: 0.9;
+      }
+      .pf-ai-btn .lucide {
+        width: 16px;
+        height: 16px;
+      }
+      .pf-user-profile {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 4px;
+      }
+      .pf-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-full);
+        background: var(--pf-primary);
+        color: var(--pf-primary-foreground);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+      .pf-user-name {
+        color: var(--pf-foreground);
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .pf-user-role {
+        color: var(--pf-muted-foreground);
+        font-size: 11px;
+      }
+
+      /* ===== Topbar ===== */
+      .pf-topbar-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--pf-foreground);
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .pf-topbar-center {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        min-width: 0;
+      }
+      .pf-search {
+        width: 320px;
+        max-width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--pf-muted);
+        border: 1px solid var(--pf-border);
+        border-radius: var(--pf-radius-medium);
+        padding: 7px 12px;
+        transition: border-color 0.15s ease;
+      }
+      .pf-search:focus-within {
+        border-color: var(--pf-primary);
+      }
+      .pf-search .lucide {
+        width: 16px;
+        height: 16px;
+        color: var(--pf-muted-foreground);
+      }
+      .pf-search input {
+        flex: 1;
+        min-width: 0;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--pf-foreground);
+        font-size: 13px;
+      }
+      .pf-search input::placeholder {
+        color: var(--pf-muted-foreground);
+      }
+      .pf-topbar-right {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .pf-status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        color: var(--pf-muted-foreground);
+      }
+      .pf-icon-btn {
+        background: transparent;
+        border: none;
+        color: var(--pf-muted-foreground);
+        cursor: pointer;
+        padding: 6px;
+        border-radius: var(--pf-radius-small);
+        display: inline-flex;
+        transition:
+          color 0.15s ease,
+          background 0.15s ease;
+      }
+      .pf-icon-btn:hover {
+        color: var(--pf-foreground);
+        background: var(--pf-muted);
+      }
+      .pf-icon-btn .lucide {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* ===== Status dots ===== */
+      .pf-status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: var(--radius-full);
+        display: inline-block;
+        flex-shrink: 0;
+      }
+      .pf-dot-active {
+        background: var(--state-success);
+      }
+      .pf-dot-idle {
+        background: var(--pf-muted-foreground);
+      }
+
+      /* ===== Buttons ===== */
+      .pf-btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--pf-primary);
+        color: var(--pf-primary-foreground);
+        border: none;
+        border-radius: var(--pf-radius-medium);
+        padding: 8px 14px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: opacity 0.15s ease;
+      }
+      .pf-btn-primary:hover {
+        opacity: 0.9;
+      }
+      .pf-btn-primary .lucide {
+        width: 16px;
+        height: 16px;
+      }
+      .pf-btn-sm {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+      .pf-btn-ghost {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: transparent;
+        color: var(--pf-muted-foreground);
+        border: 1px solid var(--pf-border);
+        border-radius: var(--pf-radius-medium);
+        padding: 8px 14px;
+        font-size: 13px;
+        cursor: pointer;
+        transition:
+          color 0.15s ease,
+          border-color 0.15s ease;
+      }
+      .pf-btn-ghost:hover {
+        color: var(--pf-foreground);
+        border-color: var(--pf-muted-foreground);
+      }
+      .pf-btn-ghost .lucide {
+        width: 16px;
+        height: 16px;
+      }
+      .pf-text-btn {
+        background: transparent;
+        border: none;
+        color: var(--pf-muted-foreground);
+        font-size: 13px;
+        cursor: pointer;
+        padding: 2px 0;
+        transition: color 0.15s ease;
+      }
+      .pf-text-btn:hover {
+        color: var(--pf-foreground);
+      }
+      .pf-text-btn.primary {
+        color: var(--pf-primary);
+      }
+      .pf-text-btn.primary:hover {
+        opacity: 0.85;
+      }
+      .pf-text-btn:disabled {
+        color: var(--pf-border);
+        cursor: not-allowed;
+      }
+
+      /* ===== Status bar ===== */
+      .pf-status-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .pf-status-left {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+      }
+      .pf-status-label {
+        font-size: 12px;
+        color: var(--pf-muted-foreground);
+      }
+      .pf-status-version {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--pf-foreground);
+      }
+      .pf-status-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      /* ===== Sections ===== */
+      .pf-section {
+        margin-bottom: 24px;
+      }
+      .pf-section-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .pf-section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--pf-foreground);
+      }
+      .pf-link {
+        font-size: 12px;
+        color: var(--pf-primary);
+        cursor: pointer;
+        margin-left: auto;
+        transition: opacity 0.15s ease;
+      }
+      .pf-link:hover {
+        opacity: 0.85;
+      }
+
+      /* ===== Badges ===== */
+      .pf-badge {
+        display: inline-flex;
+        align-items: center;
+        font-size: 12px;
+        font-weight: 500;
+        padding: 2px 8px;
+        border-radius: var(--radius-full);
+        line-height: 1.4;
+      }
+      .pf-badge-primary {
+        background: var(--pf-primary);
+        color: var(--pf-primary-foreground);
+      }
+      .pf-badge-outline {
+        border: 1px solid var(--pf-primary);
+        color: var(--pf-primary);
+        background: transparent;
+      }
+      .pf-badge-neutral {
+        border: 1px solid var(--pf-border);
+        color: var(--pf-muted-foreground);
+        background: transparent;
+      }
+      .pf-badge-warning {
+        border: 1px solid var(--state-warning);
+        color: var(--state-warning);
+        background: transparent;
+      }
+      .pf-badge-count {
+        background: var(--pf-primary);
+        color: var(--pf-primary-foreground);
+        min-width: 20px;
+        height: 20px;
+        border-radius: var(--radius-full);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 0 6px;
+      }
+
+      /* ===== Version cards ===== */
+      .pf-version-card {
+        background: var(--pf-card);
+        border: 1px solid var(--pf-border);
+        border-radius: var(--pf-radius-medium);
+        padding: 16px;
+        transition: border-color 0.15s ease;
+      }
+      .pf-version-card:hover {
+        border-color: var(--pf-muted-foreground);
+      }
+      .pf-version-card.default {
+        border-left: 3px solid var(--pf-primary);
+      }
+      .pf-card-top {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+      .pf-version-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--pf-foreground);
+      }
+      .pf-card-middle {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .pf-path {
+        font-size: 12px;
+        color: var(--pf-muted-foreground);
+      }
+      .pf-size {
+        font-size: 12px;
+        color: var(--pf-muted-foreground);
+      }
+      .pf-card-bottom {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .pf-card-meta {
+        margin-left: auto;
+        color: var(--pf-muted-foreground);
+        font-size: 12px;
+      }
+      .pf-card-sep {
+        color: var(--pf-border);
+      }
+
+      /* ===== Available version cards ===== */
+      .pf-avail-card {
+        background: var(--pf-card);
+        border: 1px solid var(--pf-border);
+        border-radius: var(--pf-radius-medium);
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        transition: border-color 0.15s ease;
+      }
+      .pf-avail-card:hover {
+        border-color: var(--pf-muted-foreground);
+      }
+      .pf-avail-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .pf-avail-card .pf-version-name {
+        font-size: 14px;
+      }
+      .pf-avail-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--pf-muted-foreground);
+        margin-left: auto;
+      }
+
+      /* ===== Mono utility ===== */
+      .pf-mono {
+        font-family: var(--pf-font-mono);
+      }
+
+      /* ===== Right column: detail card ===== */
+      .pf-detail-card {
+        background: var(--pf-card);
+        border: 1px solid var(--pf-border);
+        border-radius: var(--pf-radius-medium);
+        padding: 20px;
+        margin-bottom: 16px;
+      }
+      .pf-detail-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--pf-border);
+      }
+      .pf-detail-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--pf-foreground);
+      }
+      .pf-detail-version {
+        font-size: 13px;
+        color: var(--pf-primary);
+      }
+      .pf-info-list {
+        display: flex;
+        flex-direction: column;
+      }
+      .pf-info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 7px 0;
+        font-size: 13px;
+      }
+      .pf-info-label {
+        color: var(--pf-muted-foreground);
+      }
+      .pf-info-value {
+        color: var(--pf-foreground);
+      }
+      .pf-deps {
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px solid var(--pf-border);
+      }
+      .pf-deps-header {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--pf-foreground);
+        margin-bottom: 10px;
+      }
+      .pf-dep-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .pf-dep {
+        font-size: 12px;
+        color: var(--pf-muted-foreground);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .pf-dep .lucide {
+        width: 13px;
+        height: 13px;
+        color: var(--pf-primary);
+      }
+
+      /* ===== Terminal ===== */
+      .pf-terminal {
+        background: var(--pf-card);
+        border: 1px solid var(--pf-border);
+        border-radius: var(--pf-radius-medium);
+        padding: 16px;
+      }
+      .pf-terminal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--pf-border);
+      }
+      .pf-terminal-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--pf-muted-foreground);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .pf-terminal-header .lucide {
+        width: 14px;
+        height: 14px;
+        color: var(--pf-muted-foreground);
+      }
+      .pf-terminal-body {
+        font-family: var(--pf-font-mono);
+        font-size: 12px;
+        line-height: 1.6;
+      }
+      .pf-terminal-cmd {
+        color: var(--pf-primary);
+      }
+      .pf-terminal-muted {
+        color: var(--pf-muted-foreground);
+      }
+      .pf-terminal-success {
+        color: var(--state-success);
+      }
+      .pf-cursor {
+        display: inline-block;
+        width: 7px;
+        height: 13px;
+        background: var(--pf-primary);
+        vertical-align: text-bottom;
+        animation: pf-blink 1s step-end infinite;
+      }
+      @keyframes pf-blink {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      /* ===== Footer ===== */
+      .pf-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 24px;
+        margin-top: 8px;
+        border-top: 1px solid var(--pf-border);
+        font-size: 12px;
+        color: var(--pf-muted-foreground);
+      }
+    </style>
+    <main>
+      <div class="pf-app-shell" data-viewport-mode="app-shell">
+        <!-- ============ SIDEBAR ============ -->
+        <aside class="pf-sidebar">
+          <div class="pf-sidebar-logo">
+            <i data-lucide="terminal-square"></i>
+            <span class="pf-logo-text">PyForge AI</span>
+            <span class="pf-logo-badge">v2.4.0</span>
+          </div>
+          <nav class="pf-sidebar-nav">
+            <a class="pf-nav-item" data-dom-id="nav-dashboard">
+              <i data-lucide="layout-dashboard"></i>
+              <span>控制台</span>
+            </a>
+            <a class="pf-nav-item active" data-dom-id="nav-python-versions">
+              <i data-lucide="boxes"></i>
+              <span>Python 版本</span>
+            </a>
+            <a class="pf-nav-item" data-dom-id="nav-environments">
+              <i data-lucide="layers"></i>
+              <span>虚拟环境</span>
+            </a>
+            <a class="pf-nav-item" data-dom-id="nav-packages">
+              <i data-lucide="package"></i>
+              <span>包与镜像源</span>
+            </a>
+            <a class="pf-nav-item" data-dom-id="nav-ai-deploy">
+              <i data-lucide="sparkles"></i>
+              <span>AI 智能部署</span>
+            </a>
+            <a class="pf-nav-item" data-dom-id="nav-settings">
+              <i data-lucide="settings"></i>
+              <span>设置</span>
+            </a>
+          </nav>
+          <div class="pf-sidebar-bottom">
+            <button class="pf-ai-btn">
+              <i data-lucide="sparkles"></i>
+              <span>AI 助手</span>
+            </button>
+            <div class="pf-user-profile">
+              <div class="pf-avatar">D</div>
+              <div>
+                <div class="pf-user-name">Developer</div>
+                <div class="pf-user-role">Pro User</div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- ============ MAIN AREA ============ -->
+        <div class="pf-main-area">
+          <!-- ===== Topbar ===== -->
+          <header class="pf-topbar">
+            <div class="pf-topbar-title">Python 版本管理</div>
+            <div class="pf-topbar-center">
+              <div class="pf-search">
+                <i data-lucide="search"></i>
+                <input type="text" placeholder="搜索版本..." />
+              </div>
+            </div>
+            <div class="pf-topbar-right">
+              <span class="pf-status-pill">
+                <span class="pf-status-dot pf-dot-active"></span>
+                <span>系统正常</span>
+              </span>
+              <button class="pf-icon-btn"><i data-lucide="bell"></i></button>
+              <button class="pf-btn-primary"><i data-lucide="zap"></i><span>快速部署</span></button>
+            </div>
+          </header>
+
+          <!-- ===== Content ===== -->
+          <div class="pf-content overflow-y-auto" data-scroll-region="primary">
+            <!-- Status Bar -->
+            <div class="pf-status-bar">
+              <div class="pf-status-left">
+                <span class="pf-status-label">当前默认版本</span>
+                <span class="pf-status-version pf-mono">Python 3.12.4</span>
+                <span class="pf-status-pill">
+                  <span class="pf-status-dot pf-dot-active"></span>
+                  <span>活跃</span>
+                </span>
+              </div>
+              <div class="pf-status-right">
+                <button class="pf-btn-primary">
+                  <i data-lucide="plus"></i><span>安装新版本</span>
+                </button>
+                <button class="pf-btn-ghost">
+                  <i data-lucide="refresh-cw"></i><span>刷新</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Two-Column Layout -->
+            <div class="pf-two-col">
+              <!-- ===== Left Column ===== -->
+              <div>
+                <!-- Installed Versions -->
+                <section class="pf-section">
+                  <div class="pf-section-header">
+                    <h2 class="pf-section-title">已安装版本</h2>
+                    <span class="pf-badge-count">3</span>
+                  </div>
+                  <div class="pf-card-stack">
+                    <!-- Card 1: Default -->
+                    <div class="pf-version-card default">
+                      <div class="pf-card-top">
+                        <span class="pf-version-name pf-mono">Python 3.12.4</span>
+                        <span class="pf-badge pf-badge-primary">默认</span>
+                        <span class="pf-status-pill">
+                          <span class="pf-status-dot pf-dot-active"></span>
+                          <span>活跃</span>
+                        </span>
+                      </div>
+                      <div class="pf-card-middle">
+                        <span class="pf-path pf-mono">/usr/local/python3.12.4/bin/python</span>
+                        <span class="pf-card-sep">·</span>
+                        <span class="pf-size">89.2 MB</span>
+                      </div>
+                      <div class="pf-card-bottom">
+                        <button class="pf-text-btn" disabled>设为默认</button>
+                        <button class="pf-text-btn">卸载</button>
+                        <button class="pf-text-btn">打开终端</button>
+                        <span class="pf-card-meta">42 个包</span>
+                      </div>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="pf-version-card">
+                      <div class="pf-card-top">
+                        <span class="pf-version-name pf-mono">Python 3.11.6</span>
+                        <span class="pf-status-pill">
+                          <span class="pf-status-dot pf-dot-idle"></span>
+                          <span>空闲</span>
+                        </span>
+                      </div>
+                      <div class="pf-card-middle">
+                        <span class="pf-path pf-mono">/usr/local/python3.11.6/bin/python</span>
+                        <span class="pf-card-sep">·</span>
+                        <span class="pf-size">76.8 MB</span>
+                      </div>
+                      <div class="pf-card-bottom">
+                        <button class="pf-text-btn primary">设为默认</button>
+                        <button class="pf-text-btn">卸载</button>
+                        <button class="pf-text-btn">打开终端</button>
+                        <span class="pf-card-meta">128 个包</span>
+                      </div>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="pf-version-card">
+                      <div class="pf-card-top">
+                        <span class="pf-version-name pf-mono">Python 3.10.13</span>
+                        <span class="pf-status-pill">
+                          <span class="pf-status-dot pf-dot-idle"></span>
+                          <span>空闲</span>
+                        </span>
+                      </div>
+                      <div class="pf-card-middle">
+                        <span class="pf-path pf-mono">/usr/local/python3.10.13/bin/python</span>
+                        <span class="pf-card-sep">·</span>
+                        <span class="pf-size">71.5 MB</span>
+                      </div>
+                      <div class="pf-card-bottom">
+                        <button class="pf-text-btn primary">设为默认</button>
+                        <button class="pf-text-btn">卸载</button>
+                        <button class="pf-text-btn">打开终端</button>
+                        <span class="pf-card-meta">89 个包</span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- Available Versions -->
+                <section class="pf-section">
+                  <div class="pf-section-header">
+                    <h2 class="pf-section-title">可用版本</h2>
+                    <a class="pf-link">查看更多</a>
+                  </div>
+                  <div class="pf-card-stack">
+                    <div class="pf-avail-card">
+                      <div class="pf-avail-left">
+                        <span class="pf-version-name pf-mono">Python 3.13.0</span>
+                        <span class="pf-badge pf-badge-outline">最新稳定版</span>
+                      </div>
+                      <div class="pf-avail-meta">
+                        <span>2024-10-07</span>
+                        <span class="pf-card-sep">·</span>
+                        <span>92.1 MB</span>
+                      </div>
+                      <button class="pf-btn-primary pf-btn-sm">
+                        <i data-lucide="download"></i><span>安装</span>
+                      </button>
+                    </div>
+                    <div class="pf-avail-card">
+                      <div class="pf-avail-left">
+                        <span class="pf-version-name pf-mono">Python 3.12.5</span>
+                        <span class="pf-badge pf-badge-neutral">Bug 修复</span>
+                      </div>
+                      <div class="pf-avail-meta">
+                        <span>2024-08-06</span>
+                        <span class="pf-card-sep">·</span>
+                        <span>89.5 MB</span>
+                      </div>
+                      <button class="pf-btn-primary pf-btn-sm">
+                        <i data-lucide="download"></i><span>安装</span>
+                      </button>
+                    </div>
+                    <div class="pf-avail-card">
+                      <div class="pf-avail-left">
+                        <span class="pf-version-name pf-mono">Python 3.9.19</span>
+                        <span class="pf-badge pf-badge-warning">安全更新</span>
+                      </div>
+                      <div class="pf-avail-meta">
+                        <span>2024-03-12</span>
+                        <span class="pf-card-sep">·</span>
+                        <span>68.3 MB</span>
+                      </div>
+                      <button class="pf-btn-primary pf-btn-sm">
+                        <i data-lucide="download"></i><span>安装</span>
+                      </button>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <!-- ===== Right Column ===== -->
+              <div>
+                <!-- Version Detail -->
+                <div class="pf-detail-card">
+                  <div class="pf-detail-header">
+                    <h3 class="pf-detail-title">版本详情</h3>
+                    <span class="pf-detail-version pf-mono">Python 3.12.4</span>
+                  </div>
+                  <div class="pf-info-list">
+                    <div class="pf-info-row">
+                      <span class="pf-info-label">版本号</span
+                      ><span class="pf-info-value pf-mono">3.12.4</span>
+                    </div>
+                    <div class="pf-info-row">
+                      <span class="pf-info-label">发布日期</span
+                      ><span class="pf-info-value">2024-06-06</span>
+                    </div>
+                    <div class="pf-info-row">
+                      <span class="pf-info-label">安装路径</span
+                      ><span class="pf-info-value pf-mono">/usr/local/python3.12.4</span>
+                    </div>
+                    <div class="pf-info-row">
+                      <span class="pf-info-label">架构</span
+                      ><span class="pf-info-value">arm64</span>
+                    </div>
+                    <div class="pf-info-row">
+                      <span class="pf-info-label">包管理器</span
+                      ><span class="pf-info-value pf-mono">pip 24.2</span>
+                    </div>
+                    <div class="pf-info-row">
+                      <span class="pf-info-label">关联环境</span
+                      ><span class="pf-info-value">3 个</span>
+                    </div>
+                  </div>
+                  <div class="pf-deps">
+                    <div class="pf-deps-header">依赖包</div>
+                    <div class="pf-dep-list">
+                      <div class="pf-dep">
+                        <i data-lucide="package"></i><span class="pf-mono">pip 24.2</span>
+                      </div>
+                      <div class="pf-dep">
+                        <i data-lucide="package"></i><span class="pf-mono">setuptools 70.0</span>
+                      </div>
+                      <div class="pf-dep">
+                        <i data-lucide="package"></i><span class="pf-mono">wheel 0.43</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Terminal / Install Log -->
+                <div class="pf-terminal">
+                  <div class="pf-terminal-header">
+                    <span class="pf-terminal-title"><i data-lucide="terminal"></i>安装日志</span>
+                  </div>
+                  <div class="pf-terminal-body">
+                    <div class="pf-terminal-cmd">$ pyforge install python 3.12.4</div>
+                    <div class="pf-terminal-muted">→ 正在下载 Python 3.12.4...</div>
+                    <div class="pf-terminal-muted">→ 下载完成 89.2 MB</div>
+                    <div class="pf-terminal-muted">→ 正在验证签名...</div>
+                    <div class="pf-terminal-muted">→ 正在安装到 /usr/local/python3.12.4...</div>
+                    <div class="pf-terminal-success">✓ 安装成功</div>
+                    <div class="pf-terminal-muted">→ 配置 pip 镜像源 (清华)...</div>
+                    <div class="pf-terminal-success">✓ 配置完成</div>
+                    <div class="pf-terminal-cmd">$ <span class="pf-cursor"></span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="pf-footer">
+              <span>PyForge AI v2.4.0 · 构建 2024.08.07</span>
+              <span>© 2024 PyForge AI</span>
+            </footer>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

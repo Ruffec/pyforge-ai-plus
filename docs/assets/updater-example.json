@@ -1,0 +1,23 @@
+{
+  "version": "1.0.1",
+  "notes": "修复若干问题并优化性能。\n\n- 改进环境检测稳定性\n- 优化 AI 部署计划生成速度\n- 修复 Windows 下的路径校验问题",
+  "pub_date": "2026-08-11T00:00:00Z",
+  "platforms": {
+    "windows-x86_64": {
+      "signature": "<BASE64_MINISIGN_SIGNATURE_FOR_WINDOWS_INSTALLER>",
+      "url": "https://github.com/pyforge-ai/pyforge-ai/releases/download/v1.0.1/PyForge_AI_1.0.1_x64-setup.exe"
+    },
+    "darwin-x86_64": {
+      "signature": "<BASE64_MINISIGN_SIGNATURE_FOR_INTEL_MAC_INSTALLER>",
+      "url": "https://github.com/pyforge-ai/pyforge-ai/releases/download/v1.0.1/PyForge_AI_1.0.1_x64.dmg"
+    },
+    "darwin-aarch64": {
+      "signature": "<BASE64_MINISIGN_SIGNATURE_FOR_APPLE_SILICON_INSTALLER>",
+      "url": "https://github.com/pyforge-ai/pyforge-ai/releases/download/v1.0.1/PyForge_AI_1.0.1_aarch64.dmg"
+    },
+    "linux-x86_64": {
+      "signature": "<BASE64_MINISIGN_SIGNATURE_FOR_LINUX_INSTALLER>",
+      "url": "https://github.com/pyforge-ai/pyforge-ai/releases/download/v1.0.1/pyforge-ai_1.0.1_amd64.AppImage"
+    }
+  }
+}

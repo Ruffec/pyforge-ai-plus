@@ -1,0 +1,84 @@
+/* Tailwind CSS v4 engine */
+@import 'tailwindcss';
+
+/* Original brand design tokens and typography classes */
+@import '../design/colors_and_type.css';
+
+/* Map PyForge design tokens into Tailwind's theme */
+@theme inline {
+  /* Brand semantic colors (pf-prefixed) */
+  --color-pf-background: var(--pf-background);
+  --color-pf-foreground: var(--pf-foreground);
+  --color-pf-card: var(--pf-card);
+  --color-pf-card-foreground: var(--pf-card-foreground);
+  --color-pf-popover: var(--pf-popover);
+  --color-pf-popover-foreground: var(--pf-popover-foreground);
+  --color-pf-primary: var(--pf-primary);
+  --color-pf-primary-foreground: var(--pf-primary-foreground);
+  --color-pf-muted: var(--pf-muted);
+  --color-pf-muted-foreground: var(--pf-muted-foreground);
+  --color-pf-border: var(--pf-border);
+  --color-pf-input: var(--pf-input);
+  --color-pf-ring: var(--pf-ring);
+
+  /* Standard semantic aliases */
+  --color-background: var(--pf-background);
+  --color-foreground: var(--pf-foreground);
+  --color-card: var(--pf-card);
+  --color-card-foreground: var(--pf-card-foreground);
+  --color-popover: var(--pf-popover);
+  --color-popover-foreground: var(--pf-popover-foreground);
+  --color-primary: var(--pf-primary);
+  --color-primary-foreground: var(--pf-primary-foreground);
+  --color-muted: var(--pf-muted);
+  --color-muted-foreground: var(--pf-muted-foreground);
+  --color-border: var(--pf-border);
+  --color-input: var(--pf-input);
+  --color-ring: var(--pf-ring);
+
+  /* Destructive / state colors */
+  --color-destructive: var(--state-error);
+  --color-destructive-foreground: #ffffff;
+  --color-success: var(--state-success);
+  --color-warning: var(--state-warning);
+  --color-error: var(--state-error);
+  --color-info: var(--state-info);
+
+  /* State colors (kept for compatibility) */
+  --color-state-success: var(--state-success);
+  --color-state-warning: var(--state-warning);
+  --color-state-error: var(--state-error);
+  --color-state-info: var(--state-info);
+
+  /* Typography */
+  --font-family-sans: var(--pf-font-sans);
+  --font-family-mono: var(--pf-font-mono);
+
+  /* Radius */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-full: var(--radius-full);
+
+  /* Shadows */
+  --shadow-sm: var(--pf-shadow-sm);
+  --shadow-md: var(--pf-shadow-md);
+  --shadow-lg: var(--pf-shadow-lg);
+}
+
+/* Dark mode is the primary design surface for PyForge AI */
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  * {
+    border-color: var(--pf-border);
+  }
+
+  body {
+    font-family: var(--pf-font-sans);
+    background-color: var(--pf-background);
+    color: var(--pf-foreground);
+  }
+}

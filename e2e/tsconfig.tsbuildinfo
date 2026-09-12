@@ -1,0 +1,1 @@
+{"root":["./fixtures.ts","./playwright.config.ts","./specs/dashboard.spec.ts"],"version":"5.7.3"}

@@ -1,0 +1,789 @@
+{
+  "data": [
+    {
+      "id": "page-dashboard",
+      "title": "控制台",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1722988800000,
+      "canvasData": {
+        "x": 0,
+        "y": 0,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-db2b2c72",
+          "measuredAt": 1786073203800
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "design/pages/dashboard.html",
+        "interactions": [
+          {
+            "domId": "nav-dashboard",
+            "targetPageId": "page-dashboard",
+            "hideEdge": true,
+            "transitionLabel": "控制台"
+          },
+          {
+            "domId": "nav-python-versions",
+            "targetPageId": "page-python-versions",
+            "hideEdge": true,
+            "transitionLabel": "Python 版本管理"
+          },
+          {
+            "domId": "nav-environments",
+            "targetPageId": "page-environments",
+            "hideEdge": true,
+            "transitionLabel": "虚拟环境管理"
+          },
+          {
+            "domId": "nav-packages",
+            "targetPageId": "page-packages",
+            "hideEdge": true,
+            "transitionLabel": "包与镜像源"
+          },
+          {
+            "domId": "nav-ai-deploy",
+            "targetPageId": "page-ai-deploy",
+            "hideEdge": true,
+            "transitionLabel": "AI 智能部署"
+          },
+          {
+            "domId": "nav-settings",
+            "targetPageId": "page-settings",
+            "hideEdge": true,
+            "transitionLabel": "设置"
+          },
+          {
+            "domId": "quick-deploy",
+            "targetPageId": "page-ai-deploy",
+            "transitionLabel": "一键部署"
+          },
+          {
+            "domId": "quick-create-env",
+            "targetPageId": "page-environments",
+            "transitionLabel": "创建环境"
+          },
+          {
+            "domId": "quick-install-python",
+            "targetPageId": "page-python-versions",
+            "transitionLabel": "安装 Python"
+          },
+          {
+            "domId": "quick-config-mirror",
+            "targetPageId": "page-packages",
+            "transitionLabel": "配置镜像源"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-dashboard-platform",
+      "title": "控制台 - 平台检测版",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1722988900000,
+      "canvasData": {
+        "x": 0,
+        "y": 754,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-c2fa04ad",
+          "measuredAt": 1786073203800
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "design/pages/dashboard-platform.html",
+        "interactions": [
+          {
+            "domId": "nav-dashboard",
+            "targetPageId": "page-dashboard-platform",
+            "hideEdge": true,
+            "transitionLabel": "控制台"
+          },
+          {
+            "domId": "nav-python-versions",
+            "targetPageId": "page-python-versions",
+            "hideEdge": true,
+            "transitionLabel": "Python 版本管理"
+          },
+          {
+            "domId": "nav-environments",
+            "targetPageId": "page-environments",
+            "hideEdge": true,
+            "transitionLabel": "虚拟环境管理"
+          },
+          {
+            "domId": "nav-packages",
+            "targetPageId": "page-packages",
+            "hideEdge": true,
+            "transitionLabel": "包与镜像源"
+          },
+          {
+            "domId": "nav-ai-deploy",
+            "targetPageId": "page-ai-deploy",
+            "hideEdge": true,
+            "transitionLabel": "AI 智能部署"
+          },
+          {
+            "domId": "nav-settings",
+            "targetPageId": "page-settings-platform",
+            "hideEdge": true,
+            "transitionLabel": "设置"
+          },
+          {
+            "domId": "quick-deploy",
+            "targetPageId": "page-ai-deploy",
+            "transitionLabel": "一键部署"
+          },
+          {
+            "domId": "quick-create-env",
+            "targetPageId": "page-environments",
+            "transitionLabel": "创建环境"
+          },
+          {
+            "domId": "quick-install-python",
+            "targetPageId": "page-python-versions",
+            "transitionLabel": "安装 Python"
+          },
+          {
+            "domId": "quick-config-mirror",
+            "targetPageId": "page-packages",
+            "transitionLabel": "配置镜像源"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-python-versions",
+      "title": "Python 版本管理",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1722988800000,
+      "canvasData": {
+        "x": 620,
+        "y": 754,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-34681e51",
+          "measuredAt": 1786073203800
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "design/pages/python-versions.html",
+        "interactions": [
+          {
+            "domId": "nav-dashboard",
+            "targetPageId": "page-dashboard",
+            "hideEdge": true,
+            "transitionLabel": "控制台"
+          },
+          {
+            "domId": "nav-python-versions",
+            "targetPageId": "page-python-versions",
+            "hideEdge": true,
+            "transitionLabel": "Python 版本管理"
+          },
+          {
+            "domId": "nav-environments",
+            "targetPageId": "page-environments",
+            "hideEdge": true,
+            "transitionLabel": "虚拟环境管理"
+          },
+          {
+            "domId": "nav-packages",
+            "targetPageId": "page-packages",
+            "hideEdge": true,
+            "transitionLabel": "包与镜像源"
+          },
+          {
+            "domId": "nav-ai-deploy",
+            "targetPageId": "page-ai-deploy",
+            "hideEdge": true,
+            "transitionLabel": "AI 智能部署"
+          },
+          {
+            "domId": "nav-settings",
+            "targetPageId": "page-settings",
+            "hideEdge": true,
+            "transitionLabel": "设置"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-environments",
+      "title": "虚拟环境管理",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1722988800000,
+      "canvasData": {
+        "x": 620,
+        "y": 377,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-79299a97",
+          "measuredAt": 1786073203800
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "design/pages/environments.html",
+        "interactions": [
+          {
+            "domId": "nav-dashboard",
+            "targetPageId": "page-dashboard",
+            "hideEdge": true,
+            "transitionLabel": "控制台"
+          },
+          {
+            "domId": "nav-python-versions",
+            "targetPageId": "page-python-versions",
+            "hideEdge": true,
+            "transitionLabel": "Python 版本管理"
+          },
+          {
+            "domId": "nav-environments",
+            "targetPageId": "page-environments",
+            "hideEdge": true,
+            "transitionLabel": "虚拟环境管理"
+          },
+          {
+            "domId": "nav-packages",
+            "targetPageId": "page-packages",
+            "hideEdge": true,
+            "transitionLabel": "包与镜像源"
+          },
+          {
+            "domId": "nav-ai-deploy",
+            "targetPageId": "page-ai-deploy",
+            "hideEdge": true,
+            "transitionLabel": "AI 智能部署"
+          },
+          {
+            "domId": "nav-settings",
+            "targetPageId": "page-settings",
+            "hideEdge": true,
+            "transitionLabel": "设置"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-packages",
+      "title": "包与镜像源",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1722988800000,
+      "canvasData": {
+        "x": 620,
+        "y": 1131,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-22237cb3",
+          "measuredAt": 1786073203800
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "design/pages/packages.html",
+        "interactions": [
+          {
+            "domId": "nav-dashboard",
+            "targetPageId": "page-dashboard",
+            "hideEdge": true,
+            "transitionLabel": "控制台"
+          },
+          {
+            "domId": "nav-python-versions",
+            "targetPageId": "page-python-versions",
+            "hideEdge": true,
+            "transitionLabel": "Python 版本管理"
+          },
+          {
+            "domId": "nav-environments",
+            "targetPageId": "page-environments",
+            "hideEdge": true,
+            "transitionLabel": "虚拟环境管理"
+          },
+          {
+            "domId": "nav-packages",
+            "targetPageId": "page-packages",
+            "hideEdge": true,
+            "transitionLabel": "包与镜像源"
+          },
+          {
+            "domId": "nav-ai-deploy",
+            "targetPageId": "page-ai-deploy",
+            "hideEdge": true,
+            "transitionLabel": "AI 智能部署"
+          },
+          {
+            "domId": "nav-settings",
+            "targetPageId": "page-settings",
+            "hideEdge": true,
+            "transitionLabel": "设置"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-ai-deploy",
+      "title": "AI 智能部署",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1722988800000,
+      "canvasData": {
+        "x": 620,
+        "y": 0,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-34765153",
+          "measuredAt": 1786073203800
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "design/pages/ai-deploy.html",
+        "interactions": [
+          {
+            "domId": "nav-dashboard",
+            "targetPageId": "page-dashboard",
+            "hideEdge": true,
+            "transitionLabel": "控制台"
+          },
+          {
+            "domId": "nav-python-versions",
+            "targetPageId": "page-python-versions",
+            "hideEdge": true,
+            "transitionLabel": "Python 版本管理"
+          },
+          {
+            "domId": "nav-environments",
+            "targetPageId": "page-environments",
+            "hideEdge": true,
+            "transitionLabel": "虚拟环境管理"
+          },
+          {
+            "domId": "nav-packages",
+            "targetPageId": "page-packages",
+            "hideEdge": true,
+            "transitionLabel": "包与镜像源"
+          },
+          {
+            "domId": "nav-ai-deploy",
+            "targetPageId": "page-ai-deploy",
+            "hideEdge": true,
+            "transitionLabel": "AI 智能部署"
+          },
+          {
+            "domId": "nav-settings",
+            "targetPageId": "page-settings",
+            "hideEdge": true,
+            "transitionLabel": "设置"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-settings",
+      "title": "设置",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1722988800000,
+      "canvasData": {
+        "x": 0,
+        "y": 1885,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-1586161a",
+          "measuredAt": 1786073203800
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "design/pages/settings.html",
+        "interactions": [
+          {
+            "domId": "nav-dashboard",
+            "targetPageId": "page-dashboard",
+            "hideEdge": true,
+            "transitionLabel": "控制台"
+          },
+          {
+            "domId": "nav-python-versions",
+            "targetPageId": "page-python-versions",
+            "hideEdge": true,
+            "transitionLabel": "Python 版本管理"
+          },
+          {
+            "domId": "nav-environments",
+            "targetPageId": "page-environments",
+            "hideEdge": true,
+            "transitionLabel": "虚拟环境管理"
+          },
+          {
+            "domId": "nav-packages",
+            "targetPageId": "page-packages",
+            "hideEdge": true,
+            "transitionLabel": "包与镜像源"
+          },
+          {
+            "domId": "nav-ai-deploy",
+            "targetPageId": "page-ai-deploy",
+            "hideEdge": true,
+            "transitionLabel": "AI 智能部署"
+          },
+          {
+            "domId": "nav-settings",
+            "targetPageId": "page-settings",
+            "hideEdge": true,
+            "transitionLabel": "设置"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-settings-platform",
+      "title": "设置 - 平台检测版",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1722988900000,
+      "canvasData": {
+        "x": 620,
+        "y": 1885,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-5ca7fae7",
+          "measuredAt": 1786073203800
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "design/pages/settings-platform.html",
+        "interactions": [
+          {
+            "domId": "nav-dashboard",
+            "targetPageId": "page-dashboard-responsive",
+            "hideEdge": true,
+            "transitionLabel": "控制台"
+          },
+          {
+            "domId": "nav-python-versions",
+            "targetPageId": "page-python-versions",
+            "hideEdge": true,
+            "transitionLabel": "Python 版本管理"
+          },
+          {
+            "domId": "nav-environments",
+            "targetPageId": "page-environments",
+            "hideEdge": true,
+            "transitionLabel": "虚拟环境管理"
+          },
+          {
+            "domId": "nav-packages",
+            "targetPageId": "page-packages",
+            "hideEdge": true,
+            "transitionLabel": "包与镜像源"
+          },
+          {
+            "domId": "nav-ai-deploy",
+            "targetPageId": "page-ai-deploy-responsive",
+            "hideEdge": true,
+            "transitionLabel": "AI 智能部署"
+          },
+          {
+            "domId": "nav-settings",
+            "targetPageId": "page-settings-platform",
+            "hideEdge": true,
+            "transitionLabel": "设置"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-dashboard-responsive",
+      "title": "控制台 - 响应式增强版",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1722989000000,
+      "canvasData": {
+        "x": 0,
+        "y": 377,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-4f59bf7a",
+          "measuredAt": 1786073203800
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "design/pages/dashboard-responsive.html",
+        "interactions": [
+          {
+            "domId": "nav-dashboard",
+            "targetPageId": "page-dashboard-responsive",
+            "hideEdge": true,
+            "transitionLabel": "控制台"
+          },
+          {
+            "domId": "nav-python-versions",
+            "targetPageId": "page-python-versions",
+            "hideEdge": true,
+            "transitionLabel": "Python 版本管理"
+          },
+          {
+            "domId": "nav-environments",
+            "targetPageId": "page-environments",
+            "hideEdge": true,
+            "transitionLabel": "虚拟环境管理"
+          },
+          {
+            "domId": "nav-packages",
+            "targetPageId": "page-packages",
+            "hideEdge": true,
+            "transitionLabel": "包与镜像源"
+          },
+          {
+            "domId": "nav-ai-deploy",
+            "targetPageId": "page-ai-deploy-responsive",
+            "hideEdge": true,
+            "transitionLabel": "AI 智能部署"
+          },
+          {
+            "domId": "nav-settings",
+            "targetPageId": "page-settings-platform",
+            "hideEdge": true,
+            "transitionLabel": "设置"
+          },
+          {
+            "domId": "quick-deploy",
+            "targetPageId": "page-ai-deploy-responsive",
+            "transitionLabel": "一键部署"
+          },
+          {
+            "domId": "quick-create-env",
+            "targetPageId": "page-environments",
+            "transitionLabel": "创建环境"
+          },
+          {
+            "domId": "quick-install-python",
+            "targetPageId": "page-python-versions",
+            "transitionLabel": "安装 Python"
+          },
+          {
+            "domId": "quick-config-mirror",
+            "targetPageId": "page-packages",
+            "transitionLabel": "配置镜像源"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-ai-deploy-responsive",
+      "title": "AI 智能部署 - 响应式增强版",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1722989000000,
+      "canvasData": {
+        "x": 620,
+        "y": 1508,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-3dc75d2d",
+          "measuredAt": 1786073203800
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "design/pages/ai-deploy-responsive.html",
+        "interactions": [
+          {
+            "domId": "nav-dashboard",
+            "targetPageId": "page-dashboard-responsive",
+            "hideEdge": true,
+            "transitionLabel": "控制台"
+          },
+          {
+            "domId": "nav-python-versions",
+            "targetPageId": "page-python-versions",
+            "hideEdge": true,
+            "transitionLabel": "Python 版本管理"
+          },
+          {
+            "domId": "nav-environments",
+            "targetPageId": "page-environments",
+            "hideEdge": true,
+            "transitionLabel": "虚拟环境管理"
+          },
+          {
+            "domId": "nav-packages",
+            "targetPageId": "page-packages",
+            "hideEdge": true,
+            "transitionLabel": "包与镜像源"
+          },
+          {
+            "domId": "nav-ai-deploy",
+            "targetPageId": "page-ai-deploy-responsive",
+            "hideEdge": true,
+            "transitionLabel": "AI 智能部署"
+          },
+          {
+            "domId": "nav-settings",
+            "targetPageId": "page-settings-platform",
+            "hideEdge": true,
+            "transitionLabel": "设置"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-platform-diff",
+      "title": "平台差异化适配",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1722989100000,
+      "canvasData": {
+        "x": 1240,
+        "y": 1885,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-8dcba487",
+          "measuredAt": 1786074758617
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "design/pages/platform-diff.html",
+        "interactions": [
+          {
+            "domId": "nav-dashboard",
+            "targetPageId": "page-dashboard-responsive",
+            "hideEdge": true,
+            "transitionLabel": "控制台"
+          },
+          {
+            "domId": "nav-python-versions",
+            "targetPageId": "page-python-versions",
+            "hideEdge": true,
+            "transitionLabel": "Python 版本管理"
+          },
+          {
+            "domId": "nav-environments",
+            "targetPageId": "page-environments",
+            "hideEdge": true,
+            "transitionLabel": "虚拟环境管理"
+          },
+          {
+            "domId": "nav-packages",
+            "targetPageId": "page-packages",
+            "hideEdge": true,
+            "transitionLabel": "包与镜像源"
+          },
+          {
+            "domId": "nav-ai-deploy",
+            "targetPageId": "page-ai-deploy-responsive",
+            "hideEdge": true,
+            "transitionLabel": "AI 智能部署"
+          },
+          {
+            "domId": "nav-settings",
+            "targetPageId": "page-app-properties",
+            "hideEdge": true,
+            "transitionLabel": "软件属性配置"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-app-properties",
+      "title": "软件属性配置",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1722989100000,
+      "canvasData": {
+        "x": 1860,
+        "y": 1885,
+        "group": 0,
+        "layoutSnapshot": {
+          "version": 1,
+          "contentHeight": 900,
+          "viewportWidth": 1440,
+          "sourceHash": "fnv1a-61e12a27",
+          "measuredAt": 1786074758617
+        }
+      },
+      "devMetadata": {
+        "htmlSrc": "design/pages/app-properties.html",
+        "interactions": [
+          {
+            "domId": "nav-dashboard",
+            "targetPageId": "page-dashboard-responsive",
+            "hideEdge": true,
+            "transitionLabel": "控制台"
+          },
+          {
+            "domId": "nav-python-versions",
+            "targetPageId": "page-python-versions",
+            "hideEdge": true,
+            "transitionLabel": "Python 版本管理"
+          },
+          {
+            "domId": "nav-environments",
+            "targetPageId": "page-environments",
+            "hideEdge": true,
+            "transitionLabel": "虚拟环境管理"
+          },
+          {
+            "domId": "nav-packages",
+            "targetPageId": "page-packages",
+            "hideEdge": true,
+            "transitionLabel": "包与镜像源"
+          },
+          {
+            "domId": "nav-ai-deploy",
+            "targetPageId": "page-ai-deploy-responsive",
+            "hideEdge": true,
+            "transitionLabel": "AI 智能部署"
+          },
+          {
+            "domId": "nav-settings",
+            "targetPageId": "page-app-properties",
+            "hideEdge": true,
+            "transitionLabel": "软件属性配置"
+          }
+        ]
+      }
+    }
+  ],
+  "config": {
+    "autoLayout": true,
+    "deviceType": "desktop",
+    "projectName": "PyForge AI — Python 环境管理工具"
+  }
+}
