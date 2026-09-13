@@ -105,13 +105,12 @@ jobs:
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
-          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
-          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          # 注意：未配置 Apple/Windows 开发者证书。tauri-bundler 只要检测到
+          # APPLE_CERTIFICATE 变量存在（即使为空）就会走证书导入路径并失败，
+          # 因此这些变量在配置正式证书前不能传入。届时在此恢复：
+          #   APPLE_CERTIFICATE / APPLE_CERTIFICATE_PASSWORD /
+          #   APPLE_ID / APPLE_PASSWORD / APPLE_TEAM_ID
+          #   WINDOWS_CERTIFICATE / WINDOWS_CERTIFICATE_PASSWORD
         with:
           tagName: ${{ github.ref_name }}
           releaseName: 'PyForge AI ${{ github.ref_name }}'
