@@ -122,30 +122,6 @@ jobs:
           includeUpdaterJson: true
           args: ${{ matrix.args }}
 
-      - name: Sign Linux packages (optional)
-        if: matrix.platform == 'linux'
-        shell: bash
-        env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        run: |
-          if [ -z "$GPG_PRIVATE_KEY" ]; then
-            echo "GPG_PRIVATE_KEY secret not set; skipping Linux GPG signing."
-            exit 0
-          fi
-          echo "$GPG_PRIVATE_KEY" | gpg --batch --yes --import
-          for f in src-tauri/target/release/bundle/*.{AppImage,deb,rpm}; do
-            [ -e "$f" ] || continue
-            gpg --batch --yes --armor --detach-sign \
-              --passphrase "$GPG_PASSPHRASE" --pinentry-mode loopback "$f"
-          done
-
-      - name: Upload Linux GPG signatures
-        if: matrix.platform == 'linux' && secrets.GPG_PRIVATE_KEY != ''
-        uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          files: src-tauri/target/**/bundle/*.asc
-          tag_name: ${{ github.ref_name }}
-          fail_on_unmatched_files: false
+      # Linux GPG 签名为可选加强（与 Tauri updater 无关）。未配置 GPG key，
+      # 且 step 级 if 不允许引用 secrets 上下文，故整体移除。如需恢复，
+      # 用 shell 内判断 GPG_PRIVATE_KEY 的独立 job 或 action 实现，勿在 if 中引用 secrets。
