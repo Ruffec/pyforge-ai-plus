@@ -41,6 +41,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # .cargo/config.toml 的 USTC 镜像仅为本地沙箱服务；GitHub 的海外 runner
+      # 直连官方 crates.io 更快更稳（曾因镜像超时导致 macOS 构建失败）。
+      - name: Use official crates.io registry in CI
+        shell: bash
+        run: rm -f .cargo/config.toml
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
