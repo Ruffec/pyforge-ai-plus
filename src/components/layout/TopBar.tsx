@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Sun, Moon, Search, Bell, Download, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { useUpdateStore } from '@/store/useUpdateStore';
 
 export interface TopBarProps {
@@ -80,37 +81,36 @@ export const TopBar: React.FC<TopBarProps> = ({
       <div className="flex items-center gap-1">
         {/* 更新入口：发现新版本时出现，点击直接下载安装 */}
         {updateStatus === 'available' && updateVersion && (
-          <button
-            type="button"
-            onClick={() => void installUpdate()}
-            title={`发现新版本 ${updateVersion}，点击下载并安装`}
-            className="mr-1 inline-flex h-7 items-center gap-1.5 rounded-full bg-pf-primary/10 px-2.5 text-[11px] font-medium text-pf-primary transition-colors hover:bg-pf-primary/20"
-          >
-            <Download className="h-3 w-3" />
-            更新 {updateVersion}
-          </button>
+          <Tooltip content={`发现新版本 ${updateVersion}，点击下载并安装`} side="bottom">
+            <button
+              type="button"
+              onClick={() => void installUpdate()}
+              className="mr-1 inline-flex h-7 items-center gap-1.5 rounded-full bg-pf-primary/10 px-2.5 text-[11px] font-medium text-pf-primary transition-colors hover:bg-pf-primary/20"
+            >
+              <Download className="h-3 w-3" />
+              更新 {updateVersion}
+            </button>
+          </Tooltip>
         )}
 
         {/* 更新下载进度 */}
         {updateStatus === 'downloading' && (
-          <div
-            className="mr-1 inline-flex h-7 items-center gap-1.5 rounded-full bg-pf-primary/10 px-2.5 text-[11px] font-medium text-pf-primary"
-            title={`正在下载更新 ${Math.round(updateProgress)}%`}
-          >
-            <Loader2 className="h-3 w-3 animate-spin" />
-            {Math.round(updateProgress)}%
-          </div>
+          <Tooltip content={`正在下载更新 ${Math.round(updateProgress)}%`} side="bottom">
+            <div className="mr-1 inline-flex h-7 cursor-default items-center gap-1.5 rounded-full bg-pf-primary/10 px-2.5 text-[11px] font-medium text-pf-primary">
+              <Loader2 className="h-3 w-3 animate-spin" />
+              {Math.round(updateProgress)}%
+            </div>
+          </Tooltip>
         )}
 
         {/* 更新安装中 */}
         {updateStatus === 'installing' && (
-          <div
-            className="mr-1 inline-flex h-7 items-center gap-1.5 rounded-full bg-pf-primary/10 px-2.5 text-[11px] font-medium text-pf-primary"
-            title="正在安装更新，完成后将自动重启"
-          >
-            <Loader2 className="h-3 w-3 animate-spin" />
-            安装中
-          </div>
+          <Tooltip content="正在安装更新，完成后将自动重启" side="bottom">
+            <div className="mr-1 inline-flex h-7 cursor-default items-center gap-1.5 rounded-full bg-pf-primary/10 px-2.5 text-[11px] font-medium text-pf-primary">
+              <Loader2 className="h-3 w-3 animate-spin" />
+              安装中
+            </div>
+          </Tooltip>
         )}
 
         {/* 通知按钮 */}
