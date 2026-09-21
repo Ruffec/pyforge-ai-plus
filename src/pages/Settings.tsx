@@ -1,43 +1,46 @@
-import React, { useContext, useState, useCallback, useEffect } from 'react';
-import {
-  Settings as SettingsIcon,
-  Palette,
-  FolderOpen,
-  Brain,
-  Info,
-  ChevronDown,
-  Folder,
-  RotateCcw,
-  Save,
-  RefreshCw,
-  ExternalLink,
-  Sun,
-  Moon,
-  Monitor,
-  Loader2,
-  AlertCircle,
-} from 'lucide-react';
-import { Tabs, TabsContent, TabsContext } from '@/components/ui/Tabs';
-import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { Card, CardContent } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
-import { Switch } from '@/components/ui/Switch';
 import { Select, SelectItem } from '@/components/ui/Select';
+import { Switch } from '@/components/ui/Switch';
+import { Tabs, TabsContent, TabsContext } from '@/components/ui/Tabs';
+import { formatBytes, useAppUpdate } from '@/hooks/useAppUpdate';
 import { useTheme } from '@/hooks/useTheme';
-import { formatPlatform, getPlatformInfo, mockAppInfo, getConfig, updateConfig } from '@/lib/tauri-api';
 import type { PlatformInfo } from '@/lib/tauri-api';
+import { formatPlatform, getConfig, getPlatformInfo, mockAppInfo, updateConfig } from '@/lib/tauri-api';
 import { useErrorNotification, useSuccessNotification } from '@/store/useAppStore';
 import type {
   AccentColor,
+  AISettings,
   ApiProvider,
   AppearanceSettings,
-  AISettings,
   GeneralSettings,
   Language,
   PathSettings,
   SettingsState,
   ThemeMode,
 } from '@/types/settings';
+import {
+  AlertCircle,
+  Brain,
+  CheckCircle2,
+  ChevronDown,
+  Download,
+  ExternalLink,
+  Folder,
+  FolderOpen,
+  Info,
+  Loader2,
+  Monitor,
+  Moon,
+  Palette,
+  RefreshCw,
+  RotateCcw,
+  Save,
+  Settings as SettingsIcon,
+  Sun,
+} from 'lucide-react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 const TAB_ITEMS: Array<{ value: string; label: string; icon: React.ElementType }> = [
   { value: 'general', label: '通用', icon: SettingsIcon },
@@ -333,9 +336,19 @@ export const Settings: React.FC = () => {
     }
   }, [settings, showError, showSuccess]);
 
-  const handleCheckForUpdates = useCallback(() => {
-    // Placeholder for Tauri updater integration.
-  }, []);
+  const {
+    status: updateStatus,
+    info: updateInfo,
+    progress: updateProgress,
+    downloadedBytes: updateDownloaded,
+    totalBytes: updateTotal,
+    error: updateError,
+    checkForUpdate,
+    installUpdate,
+  } = useAppUpdate();
+
+  const updateInProgress =
+    updateStatus === 'checking' || updateStatus === 'downloading' || updateStatus === 'installing';
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
@@ -739,8 +752,12 @@ export const Settings: React.FC = () => {
                   </div>
 
                   <div className="flex flex-wrap items-center gap-3 pt-2">
-                    <Button onClick={handleCheckForUpdates}>
-                      <RefreshCw className="mr-1.5 h-4 w-4" />
+                    <Button onClick={() => void checkForUpdate()} disabled={updateInProgress}>
+                      {updateStatus === 'checking' ? (
+                        <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                      ) : (
+                        <RefreshCw className="mr-1.5 h-4 w-4" />
+                      )}
                       检查更新
                     </Button>
                     <Button
@@ -753,6 +770,70 @@ export const Settings: React.FC = () => {
                       开源许可证
                     </Button>
                   </div>
+
+                  {updateStatus === 'available' && updateInfo && (
+                    <div className="flex flex-col gap-3 rounded-lg border border-pf-primary/40 bg-pf-primary/5 p-4">
+                      <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-pf-foreground">
+                        <Download className="h-4 w-4 text-pf-primary" />
+                        发现新版本 {updateInfo.version}
+                        <span className="text-pf-muted-foreground">
+                          （当前 {updateInfo.currentVersion}）
+                        </span>
+                      </div>
+                      {updateInfo.notes && (
+                        <p className="whitespace-pre-wrap text-xs leading-relaxed text-pf-muted-foreground">
+                          {updateInfo.notes}
+                        </p>
+                      )}
+                      <Button className="w-fit" onClick={() => void installUpdate()}>
+                        <Download className="mr-1.5 h-4 w-4" />
+                        下载并安装
+                      </Button>
+                    </div>
+                  )}
+
+                  {updateStatus === 'downloading' && (
+                    <div className="flex flex-col gap-2 rounded-lg border border-pf-border p-4">
+                      <div className="flex items-center justify-between gap-4 text-xs text-pf-muted-foreground">
+                        <span className="inline-flex items-center gap-1.5">
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                          正在下载更新...
+                        </span>
+                        <span>
+                          {updateTotal > 0
+                            ? `${formatBytes(updateDownloaded)} / ${formatBytes(updateTotal)}`
+                            : formatBytes(updateDownloaded)}
+                        </span>
+                      </div>
+                      <div className="h-2 w-full overflow-hidden rounded-full bg-pf-muted">
+                        <div
+                          className="h-full rounded-full bg-pf-primary transition-all duration-200"
+                          style={{ width: `${Math.max(3, updateProgress)}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {updateStatus === 'installing' && (
+                    <div className="flex items-center gap-2 rounded-lg border border-pf-primary/40 bg-pf-primary/5 p-3 text-xs text-pf-foreground">
+                      <Loader2 className="h-4 w-4 animate-spin text-pf-primary" />
+                      更新包已就绪，正在安装并重启应用（Windows 上安装器启动后应用会自动退出）...
+                    </div>
+                  )}
+
+                  {updateStatus === 'up-to-date' && (
+                    <div className="flex items-center gap-2 text-xs text-pf-muted-foreground">
+                      <CheckCircle2 className="h-4 w-4 text-state-success" />
+                      当前已是最新版本
+                    </div>
+                  )}
+
+                  {updateStatus === 'error' && updateError && (
+                    <div className="flex items-center gap-2 rounded-lg border border-state-error/50 bg-state-error/10 p-3 text-xs text-state-error">
+                      <AlertCircle className="h-4 w-4" />
+                      {updateError}
+                    </div>
+                  )}
                 </div>
               </SectionCard>
             </TabsContent>
