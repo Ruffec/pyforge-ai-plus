@@ -6,6 +6,7 @@ src-tauri/target
 .cargo-home/
 .local-appdata/
 .tauri-tools/
+.trae/
 
 # Build outputs
 dist
