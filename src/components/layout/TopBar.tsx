@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Sun, Moon, Search, Bell } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Sun, Moon, Search, Bell, Download, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { useUpdateStore } from '@/store/useUpdateStore';
 
 export interface TopBarProps {
   title?: string;
@@ -12,6 +13,17 @@ export const TopBar: React.FC<TopBarProps> = ({
   onMenuToggle,
   menuOpen,
 }) => {
+  const updateStatus = useUpdateStore((s) => s.status);
+  const updateVersion = useUpdateStore((s) => s.info?.version);
+  const updateProgress = useUpdateStore((s) => s.progress);
+  const startupCheck = useUpdateStore((s) => s.startupCheck);
+  const installUpdate = useUpdateStore((s) => s.installUpdate);
+
+  // 应用启动后静默检查一次更新（仅 Tauri 环境生效，store 内部有去重）
+  useEffect(() => {
+    void startupCheck();
+  }, [startupCheck]);
+
   const [isDark, setIsDark] = useState(() => {
     if (typeof window !== 'undefined') {
       return document.documentElement.classList.contains('dark');
@@ -66,6 +78,41 @@ export const TopBar: React.FC<TopBarProps> = ({
 
       {/* 右侧：操作按钮 */}
       <div className="flex items-center gap-1">
+        {/* 更新入口：发现新版本时出现，点击直接下载安装 */}
+        {updateStatus === 'available' && updateVersion && (
+          <button
+            type="button"
+            onClick={() => void installUpdate()}
+            title={`发现新版本 ${updateVersion}，点击下载并安装`}
+            className="mr-1 inline-flex h-7 items-center gap-1.5 rounded-full bg-pf-primary/10 px-2.5 text-[11px] font-medium text-pf-primary transition-colors hover:bg-pf-primary/20"
+          >
+            <Download className="h-3 w-3" />
+            更新 {updateVersion}
+          </button>
+        )}
+
+        {/* 更新下载进度 */}
+        {updateStatus === 'downloading' && (
+          <div
+            className="mr-1 inline-flex h-7 items-center gap-1.5 rounded-full bg-pf-primary/10 px-2.5 text-[11px] font-medium text-pf-primary"
+            title={`正在下载更新 ${Math.round(updateProgress)}%`}
+          >
+            <Loader2 className="h-3 w-3 animate-spin" />
+            {Math.round(updateProgress)}%
+          </div>
+        )}
+
+        {/* 更新安装中 */}
+        {updateStatus === 'installing' && (
+          <div
+            className="mr-1 inline-flex h-7 items-center gap-1.5 rounded-full bg-pf-primary/10 px-2.5 text-[11px] font-medium text-pf-primary"
+            title="正在安装更新，完成后将自动重启"
+          >
+            <Loader2 className="h-3 w-3 animate-spin" />
+            安装中
+          </div>
+        )}
+
         {/* 通知按钮 */}
         <button
           type="button"
