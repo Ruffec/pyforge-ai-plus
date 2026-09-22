@@ -210,6 +210,12 @@ fn clear_python_scan_cache() -> AppResult<()> {
     Ok(())
 }
 
+/// 从 python.org 官方 API 获取 Python 3 稳定版本列表（过滤预发布版，按版本倒序）。
+#[tauri::command]
+async fn fetch_python_org_releases_command() -> AppResult<Vec<python::PythonOrgRelease>> {
+    Ok(python::fetch_python_org_releases().await?)
+}
+
 // ============================================================================
 // 虚拟环境管理命令
 // ============================================================================
@@ -879,6 +885,7 @@ fn main() {
             get_python_sys_path,
             get_python_stdlib_modules,
             check_package_compatibility,
+            fetch_python_org_releases_command,
             // 虚拟环境
             list_venvs,
             create_venv_command,

@@ -22,3 +22,11 @@ export interface PythonVersion {
   dependencies?: InstalledPackage[];
   envVars?: EnvironmentVariable[];
 }
+
+/** python.org 官方发布的稳定版本（已过滤预发布版） */
+export interface PythonOrgRelease {
+  version: string;
+  releaseDate: string;
+  releasePageUrl: string;
+  isLatest: boolean;
+}

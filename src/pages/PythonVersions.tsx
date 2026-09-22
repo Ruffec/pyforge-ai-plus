@@ -1,21 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import {
-  AlertCircle,
-  Boxes,
-  Check,
-  Download,
-  FolderOpen,
-  Loader2,
-  ScanLine,
-  Terminal,
-  Trash2,
-  Clock,
-  HardDrive,
-  RefreshCw,
-  Plus,
-} from 'lucide-react';
-import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import {
   Dialog,
   DialogContent,
@@ -26,14 +11,41 @@ import {
 } from '@/components/ui/Dialog';
 import { Input } from '@/components/ui/Input';
 import { Select, SelectItem } from '@/components/ui/Select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import {
   availablePythonVersions,
+  fetchPythonReleases,
   getPythonDetails,
   scanPythonVersions,
-  setDefaultPython,
+  setDefaultPython
 } from '@/lib/tauri-api';
-import type { PythonVersion } from '@/types/python-versions';
+import type { PythonOrgRelease, PythonVersion } from '@/types/python-versions';
+import {
+  AlertCircle,
+  Boxes,
+  Check,
+  Clock,
+  Download,
+  FolderOpen,
+  HardDrive,
+  Loader2,
+  Plus,
+  RefreshCw,
+  ScanLine,
+  Terminal,
+  Trash2,
+} from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+
+/** 「可安装版本」条目：优先来自 python.org 官方 API，失败时回退到本地静态列表 */
+export interface InstallablePythonVersion {
+  version: string;
+  label: string;
+  releaseDate: string;
+  size?: string;
+}
+
+/** 最多展示的官方稳定版本数量（python.org 历史版本较多） */
+const MAX_INSTALLABLE_VERSIONS = 12;
 
 export const PythonVersions: React.FC = () => {
   const [versions, setVersions] = useState<PythonVersion[]>([]);
@@ -49,11 +61,46 @@ export const PythonVersions: React.FC = () => {
   const [customVersion, setCustomVersion] = useState('');
   const [selectedPlatform, setSelectedPlatform] = useState<'windows' | 'macos' | 'linux'>('windows');
   const [copiedPath, setCopiedPath] = useState<string | null>(null);
+  const [pythonReleases, setPythonReleases] = useState<PythonOrgRelease[]>([]);
+  const [releasesError, setReleasesError] = useState<string | null>(null);
 
   const activeVersion = useMemo(
     () => versions.find((v) => v.isActive) ?? versions[0] ?? null,
     [versions]
   );
+
+  // python.org 官方稳定版本列表（预发布版本已由后端过滤）；失败时回退到本地静态列表
+  useEffect(() => {
+    let mounted = true;
+    fetchPythonReleases()
+      .then((releases) => {
+        if (!mounted) return;
+        setPythonReleases(releases);
+        // 官方列表到达后，默认选中最新稳定版
+        if (releases.length > 0) {
+          setInstallVersion(releases[0].version);
+        }
+      })
+      .catch((err) => {
+        if (mounted) {
+          setReleasesError(err instanceof Error ? err.message : '获取官方版本列表失败');
+        }
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const installableVersions: InstallablePythonVersion[] = useMemo(() => {
+    if (pythonReleases.length === 0) {
+      return availablePythonVersions;
+    }
+    return pythonReleases.slice(0, MAX_INSTALLABLE_VERSIONS).map((r) => ({
+      version: r.version,
+      label: r.isLatest ? '最新稳定版' : '稳定版',
+      releaseDate: r.releaseDate,
+    }));
+  }, [pythonReleases]);
 
   useEffect(() => {
     let mounted = true;
@@ -481,8 +528,32 @@ export const PythonVersions: React.FC = () => {
           </div>
         </div>
 
+        {/* 数据来源说明 */}
+        {releasesError ? (
+          <div className="mb-3 flex items-center gap-2 rounded-lg border border-state-error/40 bg-state-error/10 px-3 py-2 text-xs text-state-error">
+            <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+            <span>
+              获取 python.org 官方版本列表失败，已回退到内置版本列表：
+              {releasesError}
+            </span>
+          </div>
+        ) : pythonReleases.length > 0 ? (
+          <div className="mb-3 flex items-center gap-2 text-xs text-pf-muted-foreground">
+            <Check className="h-3.5 w-3.5 text-state-success" />
+            <span>
+              数据来自 python.org 官方发布，已过滤预发布版本（alpha / beta / rc），
+              仅列出稳定的 Python 3 版本，按发布时间倒序显示前 {installableVersions.length} 个。
+            </span>
+          </div>
+        ) : (
+          <div className="mb-3 flex items-center gap-2 text-xs text-pf-muted-foreground">
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            <span>正在从 python.org 获取官方稳定版本列表...</span>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-          {availablePythonVersions.map((item) => (
+          {installableVersions.map((item) => (
             <div
               key={item.version}
               className="flex flex-col gap-3 rounded-lg border border-pf-border bg-pf-card p-4 transition-colors hover:border-pf-muted-foreground min-w-0"
@@ -636,7 +707,7 @@ export const PythonVersions: React.FC = () => {
                 onChange={(e) => setInstallVersion(e.target.value)}
                 disabled={!!customVersion}
               >
-                {availablePythonVersions.map((item) => (
+                {installableVersions.map((item) => (
                   <SelectItem key={item.version} value={item.version}>
                     Python {item.version} ({item.label})
                   </SelectItem>

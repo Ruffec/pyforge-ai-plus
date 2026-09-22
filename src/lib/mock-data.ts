@@ -1,4 +1,10 @@
 import type {
+  ChatMessage,
+  DeploymentPlan,
+  ProjectAnalysis,
+  Recommendation,
+} from '@/types/ai-deploy';
+import type {
   ActivityItem,
   EnvironmentSummary,
   QuickAction,
@@ -6,14 +12,8 @@ import type {
 } from '@/types/dashboard';
 import type { VirtualEnvironment } from '@/types/environments';
 import type { Package, PipMirror } from '@/types/packages';
-import type { PythonVersion } from '@/types/python-versions';
+import type { PythonOrgRelease, PythonVersion } from '@/types/python-versions';
 import type { AppInfo } from '@/types/settings';
-import type {
-  ChatMessage,
-  DeploymentPlan,
-  ProjectAnalysis,
-  Recommendation,
-} from '@/types/ai-deploy';
 
 export const mockStats: StatCardData[] = [
   { label: 'Python 版本数', value: '3', suffix: '已安装', icon: 'Boxes', trend: '+1 本月' },
@@ -187,6 +187,15 @@ export const availablePythonVersions = [
   { version: '3.13.0', label: '最新稳定版', releaseDate: '2024-10-07', size: '92.1 MB' },
   { version: '3.12.5', label: 'Bug 修复', releaseDate: '2024-08-06', size: '89.5 MB' },
   { version: '3.9.19', label: '安全更新', releaseDate: '2024-03-12', size: '68.3 MB' },
+];
+
+/** 浏览器预览环境的 python.org 稳定版本 fallback 数据 */
+export const mockPythonOrgReleases: PythonOrgRelease[] = [
+  { version: '3.14.0', releaseDate: '2025-10-07', releasePageUrl: 'https://www.python.org/downloads/release/python-3140/', isLatest: true },
+  { version: '3.13.9', releaseDate: '2025-10-14', releasePageUrl: 'https://www.python.org/downloads/release/python-1399/', isLatest: false },
+  { version: '3.13.8', releaseDate: '2025-08-27', releasePageUrl: 'https://www.python.org/downloads/release/python-1388/', isLatest: false },
+  { version: '3.12.11', releaseDate: '2025-06-03', releasePageUrl: 'https://www.python.org/downloads/release/python-12111/', isLatest: false },
+  { version: '3.11.13', releaseDate: '2025-04-08', releasePageUrl: 'https://www.python.org/downloads/release/python-11113/', isLatest: false },
 ];
 
 export const pythonVersionOptions = ['3.12.4', '3.11.6', '3.10.13', '3.9.18'];

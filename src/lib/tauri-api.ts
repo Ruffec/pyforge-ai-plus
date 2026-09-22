@@ -1,7 +1,7 @@
-import { invoke } from '@tauri-apps/api/core';
 import type { DependencyNode, VirtualEnvironment } from '@/types/environments';
 import type { Package, PipMirror } from '@/types/packages';
-import type { PythonVersion } from '@/types/python-versions';
+import type { PythonOrgRelease, PythonVersion } from '@/types/python-versions';
+import { invoke } from '@tauri-apps/api/core';
 import {
   aiDeployQuickActions,
   availablePythonVersions,
@@ -14,6 +14,7 @@ import {
   mockInstalledPackages,
   mockMirrors,
   mockProjectAnalysis,
+  mockPythonOrgReleases,
   mockPythonVersions,
   mockQuickActions,
   mockRecommendations,
@@ -256,6 +257,30 @@ export async function scanPythonVersions(): Promise<PythonVersion[]> {
   }
   const resp = await tauriInvoke<PythonInfoResponse[]>('scan_python_versions_command');
   return resp.map(mapPythonInfo);
+}
+
+interface PythonOrgReleaseResponse {
+  version: string;
+  release_date: string;
+  release_page_url: string;
+  is_latest: boolean;
+}
+
+/**
+ * 从 python.org 官方 API 获取 Python 3 稳定版本列表。
+ * 后端已过滤预发布版本并按版本号倒序排列。
+ */
+export async function fetchPythonReleases(): Promise<PythonOrgRelease[]> {
+  if (!isTauri()) {
+    return Promise.resolve(mockPythonOrgReleases);
+  }
+  const resp = await tauriInvoke<PythonOrgReleaseResponse[]>('fetch_python_org_releases_command');
+  return resp.map((r) => ({
+    version: r.version,
+    releaseDate: r.release_date,
+    releasePageUrl: r.release_page_url,
+    isLatest: r.is_latest,
+  }));
 }
 
 export async function setDefaultPython(path: string): Promise<void> {
@@ -660,6 +685,7 @@ export {
   mockInstalledPackages,
   mockMirrors,
   mockProjectAnalysis,
+  mockPythonOrgReleases,
   mockPythonVersions,
   mockQuickActions,
   mockRecommendations,
@@ -667,5 +693,6 @@ export {
   mockTerminalLines,
   mockVirtualEnvironments,
   pythonVersionOptions,
-  quickPackages,
+  quickPackages
 };
+

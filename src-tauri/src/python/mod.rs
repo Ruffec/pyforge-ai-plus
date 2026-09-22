@@ -13,7 +13,7 @@ use std::sync::Mutex;
 use once_cell::sync::Lazy;
 use rayon::prelude::*;
 use regex::Regex;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::platform::{get_adapter, PlatformAdapter};
 use crate::security;
@@ -689,6 +689,89 @@ pub fn get_stdlib_modules(path: &Path) -> Result<Vec<String>, PythonError> {
     let modules: Vec<String> = serde_json::from_str(text.trim())
         .map_err(|e| PythonError::Parse(format!("解析标准模块列表失败: {e}")))?;
     Ok(modules)
+}
+
+// ============================================================================
+// python.org 官方发布版本
+// ============================================================================
+
+/// 可安装的 Python 官方稳定版本（来自 python.org）。
+#[derive(Debug, Clone, Serialize)]
+pub struct PythonOrgRelease {
+    pub version: String,
+    pub release_date: String,
+    pub release_page_url: String,
+    pub is_latest: bool,
+}
+
+#[derive(Debug, Deserialize)]
+struct ReleaseVersionEntry {
+    version: String,
+    #[serde(default)]
+    is_latest: bool,
+}
+
+#[derive(Debug, Deserialize)]
+struct ReleaseEntry {
+    #[serde(default)]
+    pre_release: bool,
+    #[serde(default)]
+    release_date: String,
+    #[serde(default)]
+    release_page_url: String,
+    #[serde(default)]
+    release_version: Option<ReleaseVersionEntry>,
+}
+
+/// 提取 (major, minor, micro) 元组用于排序比较。
+fn version_key(version: &str) -> (u64, u64, u64) {
+    let parts: Vec<u64> = version
+        .split('.')
+        .filter_map(|p| p.trim().parse().ok())
+        .collect();
+    (
+        parts.first().copied().unwrap_or(0),
+        parts.get(1).copied().unwrap_or(0),
+        parts.get(2).copied().unwrap_or(0),
+    )
+}
+
+/// 从 python.org 官方 API 拉取已发布的 Python 3 稳定版本列表（过滤预发布版），
+/// 按版本号从新到旧排序。
+pub async fn fetch_python_org_releases() -> Result<Vec<PythonOrgRelease>, reqwest::Error> {
+    let client = reqwest::Client::builder()
+        .timeout(std::time::Duration::from_secs(15))
+        .user_agent("PyForgeAI/0.1")
+        .build()?;
+
+    let entries: Vec<ReleaseEntry> = client
+        .get("https://www.python.org/api/v2/downloads/release/?is_published=true")
+        .send()
+        .await?
+        .error_for_status()?
+        .json()
+        .await?;
+
+    let mut releases: Vec<PythonOrgRelease> = entries
+        .into_iter()
+        .filter(|entry| !entry.pre_release)
+        .filter_map(|entry| {
+            let rv = entry.release_version?;
+            // 只保留 Python 3 且非预发布的稳定版本
+            if !rv.version.starts_with('3') {
+                return None;
+            }
+            Some(PythonOrgRelease {
+                version: rv.version,
+                release_date: entry.release_date,
+                release_page_url: entry.release_page_url,
+                is_latest: rv.is_latest,
+            })
+        })
+        .collect();
+
+    releases.sort_by(|a, b| version_key(&b.version).cmp(&version_key(&a.version)));
+    Ok(releases)
 }
 
 #[cfg(test)]
