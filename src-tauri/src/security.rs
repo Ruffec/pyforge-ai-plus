@@ -242,8 +242,11 @@ mod tests {
     #[test]
     fn validate_path_rejects_outside_allowed_root() {
         let root = std::env::current_dir().unwrap();
-        let outside = root.parent().unwrap_or(&root);
-        assert!(validate_path(outside, &[root]).is_err());
+        let outside = root
+            .parent()
+            .map(|p| p.to_path_buf())
+            .unwrap_or_else(|| root.clone());
+        assert!(validate_path(&outside, &[root]).is_err());
     }
 
     #[test]

@@ -705,22 +705,25 @@ pub struct PythonOrgRelease {
 }
 
 #[derive(Debug, Deserialize)]
-struct ReleaseVersionEntry {
-    version: String,
+struct ReleaseEntry {
+    #[serde(default)]
+    name: String,
+    #[serde(default)]
+    slug: String,
     #[serde(default)]
     is_latest: bool,
-}
-
-#[derive(Debug, Deserialize)]
-struct ReleaseEntry {
     #[serde(default)]
     pre_release: bool,
     #[serde(default)]
     release_date: String,
-    #[serde(default)]
-    release_page_url: String,
-    #[serde(default)]
-    release_version: Option<ReleaseVersionEntry>,
+}
+
+/// 从 "Python 3.14.0" 之类的名称中剥离前缀得到纯版本号。
+fn strip_python_prefix(name: &str) -> String {
+    name.strip_prefix("Python ")
+        .unwrap_or(name)
+        .trim()
+        .to_string()
 }
 
 /// 提取 (major, minor, micro) 元组用于排序比较。
@@ -756,16 +759,19 @@ pub async fn fetch_python_org_releases() -> Result<Vec<PythonOrgRelease>, reqwes
         .into_iter()
         .filter(|entry| !entry.pre_release)
         .filter_map(|entry| {
-            let rv = entry.release_version?;
+            let version = strip_python_prefix(&entry.name);
             // 只保留 Python 3 且非预发布的稳定版本
-            if !rv.version.starts_with('3') {
+            if !version.starts_with('3') {
                 return None;
             }
             Some(PythonOrgRelease {
-                version: rv.version,
-                release_date: entry.release_date,
-                release_page_url: entry.release_page_url,
-                is_latest: rv.is_latest,
+                version,
+                release_date: entry.release_date.chars().take(10).collect(),
+                release_page_url: format!(
+                    "https://www.python.org/downloads/release/{}/",
+                    entry.slug
+                ),
+                is_latest: entry.is_latest,
             })
         })
         .collect();
@@ -777,6 +783,28 @@ pub async fn fetch_python_org_releases() -> Result<Vec<PythonOrgRelease>, reqwes
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// 真实调用 python.org 官方 API 的集成测试（依赖网络可用）。
+    #[tokio::test]
+    async fn fetch_python_org_releases_returns_stable_py3() {
+        let releases = fetch_python_org_releases()
+            .await
+            .expect("调用 python.org API 失败");
+
+        assert!(!releases.is_empty(), "官方返回的稳定版本列表不应为空");
+        // 最新版本在最前，且为 Python 3
+        assert!(releases[0].version.starts_with('3'));
+        // 全部为稳定版本：不含 rc / b / a 预发布后缀
+        for release in &releases {
+            assert!(
+                !release.version.contains("rc")
+                    && !release.version.contains(".b")
+                    && !release.version.ends_with('a'),
+                "发现预发布版本混入: {}",
+                release.version
+            );
+        }
+    }
 
     #[test]
     fn parse_python_version_string_full() {
