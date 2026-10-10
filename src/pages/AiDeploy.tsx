@@ -38,8 +38,7 @@ import {
   type StreamChatCallbacks,
 } from '@/lib/tauri-api';
 import type { ChatMessage, DeploymentStep } from '@/types/ai-deploy';
-import { useConfigStore } from '@/store/useAppStore';
-import { useErrorNotification } from '@/store/useAppStore';
+import { useConfigStore, useErrorNotification } from '@/store/useAppStore';
 
 const recommendationIcons: Record<string, React.ElementType> = {
   Zap,

@@ -82,3 +82,61 @@
     color: var(--pf-foreground);
   }
 }
+
+/* ============================================================================
+ * 细柱状自动隐藏滚动条
+ * 默认完全透明隐藏；鼠标悬停所在滚动容器时显现为 6px 细柱，可直接拖动。
+ * 原生滚动条轨道保留命中区域，拖拽行为由浏览器原生支持，无 JS 开销。
+ * ========================================================================== */
+@layer base {
+  /* Firefox：细滚动条 + 透明，悬停时显色 */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+
+  *:hover {
+    scrollbar-color: rgb(0 0 0 / 0.25) transparent;
+  }
+
+  .dark *:hover {
+    scrollbar-color: rgb(255 255 255 / 0.25) transparent;
+  }
+
+  /* WebKit（WebView2 / Chromium）：8px 轨道保证拖拽命中，拇指默认透明 */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 9999px;
+    background-clip: padding-box;
+    border: 1px solid transparent;
+  }
+
+  /* 悬停容器时显现细柱 */
+  *:hover::-webkit-scrollbar-thumb {
+    background: rgb(0 0 0 / 0.25);
+  }
+
+  .dark *:hover::-webkit-scrollbar-thumb {
+    background: rgb(255 255 255 / 0.25);
+  }
+
+  /* 直接悬停/拖动拇指时加深反馈 */
+  ::-webkit-scrollbar-thumb:hover,
+  ::-webkit-scrollbar-thumb:active {
+    background: rgb(0 0 0 / 0.42);
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover,
+  .dark ::-webkit-scrollbar-thumb:active {
+    background: rgb(255 255 255 / 0.42);
+  }
+}

@@ -50,7 +50,7 @@ function AppContent() {
 
       <main className="min-h-screen pt-14 transition-all lg:pl-[240px]">
         <div
-          className="min-h-[calc(100vh-3.5rem)] overflow-auto p-4 sm:p-6"
+          className="min-h-[calc(100vh-3.5rem)] overflow-auto p-3 sm:p-4"
         >
           <Suspense fallback={<PageLoader />}>
             <Routes>

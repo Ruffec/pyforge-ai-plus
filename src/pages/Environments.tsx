@@ -184,12 +184,12 @@ const EnvironmentActions: React.FC<EnvironmentActionsProps> = ({
 }) => {
   const isCorrupted = env.status === 'corrupted';
   return (
-    <div className={`flex items-center gap-1 ${className}`}>
+    <div className={`flex flex-wrap items-center gap-x-1 gap-y-1 ${className}`}>
       <Tooltip content={env.isActive ? '当前已激活' : '激活该环境'}>
         <Button
           variant="ghost"
           size="sm"
-          className="text-pf-primary hover:text-pf-primary"
+          className="whitespace-nowrap text-pf-primary hover:text-pf-primary"
           disabled={env.isActive || isCorrupted}
           onClick={onActivate}
         >
@@ -203,19 +203,19 @@ const EnvironmentActions: React.FC<EnvironmentActionsProps> = ({
       </Tooltip>
       <span className="text-pf-border">|</span>
       <Tooltip content="复制路径">
-        <Button variant="ghost" size="sm" onClick={onCopyPath}>
+        <Button variant="ghost" size="sm" className="whitespace-nowrap" onClick={onCopyPath}>
           {copied ? <Check className="mr-1 h-3 w-3" /> : <Copy className="mr-1 h-3 w-3" />}
           {copied ? '已复制' : '复制路径'}
         </Button>
       </Tooltip>
       <Tooltip content="导出环境">
-        <Button variant="ghost" size="sm" onClick={onExport}>
+        <Button variant="ghost" size="sm" className="whitespace-nowrap" onClick={onExport}>
           <Download className="mr-1 h-3 w-3" />
           导出
         </Button>
       </Tooltip>
       <Tooltip content="查看依赖树">
-        <Button variant="ghost" size="sm" onClick={onViewTree}>
+        <Button variant="ghost" size="sm" className="whitespace-nowrap" onClick={onViewTree}>
           <GitBranch className="mr-1 h-3 w-3" />
           依赖树
         </Button>
@@ -224,7 +224,7 @@ const EnvironmentActions: React.FC<EnvironmentActionsProps> = ({
         <Button
           variant="ghost"
           size="sm"
-          className="ml-auto text-state-error hover:text-state-error"
+          className="ml-auto whitespace-nowrap text-state-error hover:text-state-error"
           onClick={onDelete}
         >
           <Trash2 className="mr-1 h-3 w-3" />

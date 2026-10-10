@@ -1,14 +1,14 @@
+import {
+  Boxes,
+  Code2,
+  FolderGit2,
+  LayoutDashboard,
+  Package,
+  Settings,
+  Sparkles,
+} from 'lucide-react';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import {
-  LayoutDashboard,
-  Code2,
-  Boxes,
-  Package,
-  Sparkles,
-  Settings,
-  FolderGit2,
-} from 'lucide-react';
 
 export interface NavItem {
   label: string;
@@ -106,10 +106,10 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({ onItemClick }) => {
         ))}
       </div>
 
-      {/* 底部版本信息 */}
+      {/* 底部版权信息：年份取当前系统时间，跨年自动切换，无需手动维护 */}
       <div className="border-t border-pf-border px-4 py-3">
         <span className="text-[10px] text-pf-muted-foreground">
-          PyForge AI <span className="font-mono">v2.4.0</span>
+          © {new Date().getFullYear()} PyForge AI，Ruffec
         </span>
       </div>
     </nav>

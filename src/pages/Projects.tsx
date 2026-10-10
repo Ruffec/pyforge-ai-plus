@@ -12,8 +12,11 @@ import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Dialog';
-import { useSelectionStore } from '@/store/useAppStore';
-import { useSuccessNotification, useErrorNotification } from '@/store/useAppStore';
+import {
+  useSelectionStore,
+  useSuccessNotification,
+  useErrorNotification,
+} from '@/store/useAppStore';
 import type { ProjectInfo, ProjectScanResult } from '@/types/app-types';
 import { isTauri } from '@/lib/tauri-api';
 import { invoke } from '@tauri-apps/api/core';
@@ -58,11 +61,6 @@ export function Projects() {
   const setSelectedProjectStore = useSelectionStore((s) => s.setSelectedProject);
   const showSuccess = useSuccessNotification();
   const showError = useErrorNotification();
-
-  // 加载最近项目
-  useEffect(() => {
-    loadRecentProjects();
-  }, []);
 
   const loadRecentProjects = useCallback(async () => {
     if (!isTauri()) {
@@ -116,6 +114,11 @@ export function Projects() {
       console.error('加载最近项目失败:', err);
     }
   }, []);
+
+  // 加载最近项目：回调为稳定引用，仅挂载时执行一次
+  useEffect(() => {
+    void loadRecentProjects();
+  }, [loadRecentProjects]);
 
   const handleScan = useCallback(async () => {
     if (!scanPath.trim()) {

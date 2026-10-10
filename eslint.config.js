@@ -1,10 +1,10 @@
 import js from '@eslint/js';
-import tsParser from '@typescript-eslint/parser';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
+import prettier from 'eslint-config-prettier';
+import importPlugin from 'eslint-plugin-import';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
-import importPlugin from 'eslint-plugin-import';
-import prettier from 'eslint-config-prettier';
 
 const tsBaseConfig = {
   languageOptions: {
@@ -47,7 +47,17 @@ const tsBaseConfig = {
 
 export default [
   {
-    ignores: ['dist/**', 'node_modules/**', 'src-tauri/target/**', 'src-tauri/gen/**'],
+    ignores: [
+      'dist/**',
+      'node_modules/**',
+      'src-tauri/target/**',
+      'src-tauri/gen/**',
+      '.cargo-home/**',
+      '.tauri-tools/**',
+      '.local-appdata/**',
+      '.trae/**',
+      '.verify-shots/**',
+    ],
   },
 
   {
@@ -119,6 +129,7 @@ export default [
       globals: {
         console: 'readonly',
         Buffer: 'readonly',
+        process: 'readonly',
       },
     },
   },

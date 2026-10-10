@@ -1,5 +1,6 @@
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { isTauri } from '@/lib/tauri-api';
 import type { ThemeMode } from '@/types/settings';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 type ResolvedTheme = 'light' | 'dark';
 
@@ -43,6 +44,22 @@ function applyTheme(theme: ResolvedTheme): void {
   }
 }
 
+/**
+ * 将前端主题同步到原生窗口：Windows/macOS 原生标题栏随主题深浅联动。
+ * system 模式传 null 交回系统跟随；同步失败静默降级，不影响前端主题。
+ */
+async function syncNativeTheme(theme: ThemeMode): Promise<void> {
+  if (!isTauri()) {
+    return;
+  }
+  try {
+    const { getCurrentWindow } = await import('@tauri-apps/api/window');
+    await getCurrentWindow().setTheme(theme === 'system' ? null : theme);
+  } catch {
+    // 原生窗口主题接口不可用（权限缺失或平台差异）时忽略
+  }
+}
+
 export interface UseThemeReturn {
   theme: ThemeMode;
   resolvedTheme: ResolvedTheme;
@@ -58,6 +75,7 @@ export function useTheme(): UseThemeReturn {
   useEffect(() => {
     applyTheme(resolvedTheme);
     window.localStorage.setItem(STORAGE_KEY, theme);
+    void syncNativeTheme(theme);
   }, [theme, resolvedTheme]);
 
   useEffect(() => {
