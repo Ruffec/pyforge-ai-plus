@@ -1,32 +1,48 @@
-# Dependencies
-node_modules
-src-tauri/target
+# ===== Dependencies（依赖目录：本地必需，不入库） =====
+node_modules/
+src-tauri/target/
 
-# Local tool caches
+# ===== Local tool caches（本地工具链缓存） =====
 .cargo-home/
 .local-appdata/
 .tauri-tools/
 .trae/
+.verify-shots/
 
-# Build outputs
-dist
+# ===== Local-only build config（本地构建配置，如镜像源；CI 不依赖） =====
+.cargo/config.toml
+
+# ===== Build outputs（编译产物，可再生） =====
+dist/
 *.tsbuildinfo
 
-# Environment & secrets
+# ===== Tauri generated（构建时由 tauri-build 自动再生） =====
+src-tauri/gen/
+
+# ===== Docs & design（本地文档与设计产物，不入库） =====
+docs/
+
+# ===== Environment & secrets（环境与密钥，严禁入库） =====
 .env
 .env.*
 *.key
-*.key.pub
-src-tauri/updater/*.key
+src-tauri/updates/
 
-# Generated reports
+# ===== Generated design artifacts（设计管线生成产物） =====
+design/
 stats.html
-design/artifacts/stats.html
+
+# ===== Logs（日志） =====
+*.log
+logs/
+
+# ===== E2E test artifacts（Playwright 运行产物） =====
 e2e/test-results/
 e2e/playwright-report/
 
-# OS / Editor
+# ===== OS / Editor（系统与编辑器文件） =====
 .DS_Store
 Thumbs.db
-.idea
+desktop.ini
+.idea/
 .vscode/settings.json
