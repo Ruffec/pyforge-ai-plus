@@ -84,22 +84,54 @@
 }
 
 /* ============================================================================
- * 细柱状自动隐藏滚动条
- * 默认完全透明隐藏；鼠标悬停所在滚动容器时显现为 6px 细柱，可直接拖动。
- * 原生滚动条轨道保留命中区域，拖拽行为由浏览器原生支持，无 JS 开销。
+ * 主题切换平滑过渡
+ * 仅在切换瞬间（html.theme-transitioning）对颜色类属性启用过渡动画，
+ * 平时无常驻 transition 开销，避免影响滚动/交互性能与布局稳定性。
  * ========================================================================== */
 @layer base {
-  /* Firefox：细滚动条 + 透明，悬停时显色 */
+  html.theme-transitioning,
+  html.theme-transitioning *,
+  html.theme-transitioning *::before,
+  html.theme-transitioning *::after {
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease,
+      border-color 0.3s ease,
+      fill 0.3s ease,
+      stroke 0.3s ease,
+      box-shadow 0.3s ease !important;
+    transition-delay: 0s !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html.theme-transitioning,
+    html.theme-transitioning *,
+    html.theme-transitioning *::before,
+    html.theme-transitioning *::after {
+      transition: none !important;
+    }
+  }
+}
+
+/* ============================================================================
+ * 细柱状自动隐藏滚动条
+ * 默认完全透明隐藏；出现滚动活动（body.pf-scrolling，3 秒无滚动自动移除）
+ * 或鼠标悬停所在滚动容器时，显现为 8px 细柱，支持原生抓手拖拽。
+ * ========================================================================== */
+@layer base {
+  /* Firefox：细滚动条 + 透明，滚动/悬停时显色 */
   * {
     scrollbar-width: thin;
     scrollbar-color: transparent transparent;
   }
 
-  *:hover {
+  *:hover,
+  body.pf-scrolling * {
     scrollbar-color: rgb(0 0 0 / 0.25) transparent;
   }
 
-  .dark *:hover {
+  .dark *:hover,
+  .dark body.pf-scrolling * {
     scrollbar-color: rgb(255 255 255 / 0.25) transparent;
   }
 
@@ -120,12 +152,14 @@
     border: 1px solid transparent;
   }
 
-  /* 悬停容器时显现细柱 */
-  *:hover::-webkit-scrollbar-thumb {
+  /* 悬停容器或滚动活动期间显现细柱 */
+  *:hover::-webkit-scrollbar-thumb,
+  body.pf-scrolling *::-webkit-scrollbar-thumb {
     background: rgb(0 0 0 / 0.25);
   }
 
-  .dark *:hover::-webkit-scrollbar-thumb {
+  .dark *:hover::-webkit-scrollbar-thumb,
+  .dark body.pf-scrolling *::-webkit-scrollbar-thumb {
     background: rgb(255 255 255 / 0.25);
   }
 
@@ -138,5 +172,226 @@
   .dark ::-webkit-scrollbar-thumb:hover,
   .dark ::-webkit-scrollbar-thumb:active {
     background: rgb(255 255 255 / 0.42);
+  }
+}
+
+/* ============================================================================
+ * 控制台 KPI 3D 卡片
+ * 深度多层阴影营造立体感；悬停上浮 + 阴影加深（200ms，≤300ms 规范），
+ * 颜色取主题令牌，亮暗主题自动适配；prefers-reduced-motion 时禁用位移。
+ * ========================================================================== */
+.pf-card-3d {
+  transform-style: preserve-3d;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.08),
+    0 10px 24px -10px rgb(0 0 0 / 0.35),
+    0 20px 44px -18px rgb(0 0 0 / 0.22);
+  transition:
+    transform 0.22s ease-out,
+    box-shadow 0.22s ease-out,
+    border-color 0.22s ease-out,
+    background-color 0.15s ease-out,
+    color 0.15s ease-out;
+  will-change: transform;
+}
+
+.pf-card-3d:hover {
+  transform: translateY(-6px) rotateX(2.2deg);
+  box-shadow:
+    0 2px 4px rgb(0 0 0 / 0.1),
+    0 18px 36px -12px rgb(0 0 0 / 0.42),
+    0 32px 64px -20px rgb(0 0 0 / 0.28);
+}
+
+.pf-card-3d:focus-within {
+  transform: translateY(-6px) rotateX(2.2deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-card-3d,
+  .pf-card-3d:hover,
+  .pf-3d-title,
+  .pf-3d-title:hover,
+  .pf-card-3d:hover .pf-3d-title,
+  .pf-3d-value,
+  .pf-3d-icon {
+    transform: none;
+  }
+}
+
+/* 3D 卡片顶部高光渐层（立体感来源之一，悬停时增强） */
+.pf-card-3d-sheen {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--pf-primary) 10%, transparent) 0%,
+    transparent 45%
+  );
+  opacity: 0.7;
+  transition: opacity 0.2s ease-out;
+  pointer-events: none;
+}
+
+.pf-card-3d:hover .pf-card-3d-sheen {
+  opacity: 1;
+}
+
+/* ============================================================================
+ * 控制台 3D 功能卡片（真实物理质感 + 悬挂式立体标题）
+ * - 场景容器提供 perspective，卡片内元素 translateZ 分层悬浮，形成真实纵深；
+ * - 标题悬挂式立体呈现：浮出卡面 + 多层 text-shadow 挤出立体字与下垂落影；
+ * - 全部动效 ≤300ms；阴影随亮暗主题自适应。
+ * ========================================================================== */
+.pf-3d-scene {
+  perspective: 1100px;
+}
+
+/* 悬挂式 3D 立体标题 */
+.pf-3d-title {
+  transform: translateZ(26px);
+  text-shadow:
+    0 1px 0 rgb(0 0 0 / 0.18),
+    0 2px 0 rgb(0 0 0 / 0.14),
+    0 3px 0 rgb(0 0 0 / 0.1),
+    0 9px 14px rgb(0 0 0 / 0.28);
+  transition:
+    transform 0.25s ease-out,
+    text-shadow 0.25s ease-out;
+  will-change: transform;
+}
+
+.pf-card-3d:hover .pf-3d-title,
+.pf-card-3d:focus-within .pf-3d-title {
+  transform: translateZ(42px) translateY(-1px);
+  text-shadow:
+    0 1px 0 rgb(0 0 0 / 0.2),
+    0 2px 0 rgb(0 0 0 / 0.16),
+    0 3px 0 rgb(0 0 0 / 0.12),
+    0 14px 20px rgb(0 0 0 / 0.32);
+}
+
+/* 暗色主题：阴影更柔，加一道微弱高光缘，避免纯黑阴影糊在暗色卡面上 */
+.dark .pf-3d-title {
+  text-shadow:
+    0 1px 0 rgb(0 0 0 / 0.55),
+    0 2px 0 rgb(0 0 0 / 0.4),
+    0 0 1px rgb(255 255 255 / 0.14),
+    0 9px 16px rgb(0 0 0 / 0.5);
+}
+
+.dark .pf-card-3d:hover .pf-3d-title {
+  text-shadow:
+    0 1px 0 rgb(0 0 0 / 0.6),
+    0 2px 0 rgb(0 0 0 / 0.45),
+    0 0 1px rgb(255 255 255 / 0.16),
+    0 14px 22px rgb(0 0 0 / 0.55);
+}
+
+/* 数值与图标徽标分层悬浮，强化物理纵深 */
+.pf-3d-value {
+  transform: translateZ(18px);
+  transition: transform 0.25s ease-out;
+}
+
+.pf-card-3d:hover .pf-3d-value {
+  transform: translateZ(30px);
+}
+
+.pf-3d-icon {
+  transform: translateZ(30px);
+  transition:
+    transform 0.25s ease-out,
+    box-shadow 0.25s ease-out;
+}
+
+.pf-card-3d:hover .pf-3d-icon {
+  transform: translateZ(44px);
+  box-shadow: 0 10px 22px -6px rgb(0 0 0 / 0.45);
+}
+
+/* ============================================================================
+ * 侧边栏彩色导航图标
+ * 颜色全部取自主题令牌（--pf-primary / --state-*），亮暗主题切换时自动适配。
+ * ========================================================================== */
+.nav-tone-primary {
+  background: color-mix(in srgb, var(--pf-primary) 14%, transparent);
+  color: var(--pf-primary);
+}
+
+.nav-tone-info {
+  background: color-mix(in srgb, var(--state-info) 14%, transparent);
+  color: var(--state-info);
+}
+
+.nav-tone-success {
+  background: color-mix(in srgb, var(--state-success) 14%, transparent);
+  color: var(--state-success);
+}
+
+.nav-tone-warning {
+  background: color-mix(in srgb, var(--state-warning) 16%, transparent);
+  color: var(--state-warning);
+}
+
+.nav-tone-error {
+  background: color-mix(in srgb, var(--state-error) 12%, transparent);
+  color: var(--state-error);
+}
+
+/* 温度刻度滑条：高对比圆形滑块（替代默认绿点），主题令牌自动适配明暗 */
+.pf-range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 1.15rem;
+  width: 1.15rem;
+  border-radius: 9999px;
+  background: var(--pf-card, #ffffff);
+  border: 3px solid var(--pf-primary, #14b8a6);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.25);
+  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+}
+
+.pf-range-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.12);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.3);
+}
+
+.pf-range-slider::-webkit-slider-thumb:active {
+  transform: scale(1.05);
+}
+
+.pf-range-slider::-moz-range-thumb {
+  height: 1.15rem;
+  width: 1.15rem;
+  border-radius: 9999px;
+  background: var(--pf-card, #ffffff);
+  border: 3px solid var(--pf-primary, #14b8a6);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.25);
+  transition: transform 0.15s ease-out;
+}
+
+.pf-range-slider::-moz-range-thumb:hover {
+  transform: scale(1.12);
+}
+
+/* ============================================================================
+ * 状态切换平滑淡入（扫描遮罩等）
+ * 200ms（≤300ms 动效约束），遵循 prefers-reduced-motion。
+ * ========================================================================== */
+@keyframes pf-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.pf-fade-in {
+  animation: pf-fade-in 0.2s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-fade-in {
+    animation: none;
   }
 }

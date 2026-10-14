@@ -9,10 +9,31 @@
 use crate::error::{AppError, AppResult, ErrorCode};
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Emitter};
-use once_cell::sync::OnceCell;
+use once_cell::sync::{Lazy, OnceCell};
+use tokio::sync::broadcast;
 
 /// 全局 AppHandle 引用，用于在非 Tauri 上下文中发送事件。
 static APP_HANDLE: OnceCell<AppHandle> = OnceCell::new();
+
+/// 跨端事件广播总线：所有事件除 Tauri IPC 外同时广播到 HTTP 桥接（SSE），
+/// 保证桌面端与网页端对数据变更的实时同步。
+static EVENT_BUS: Lazy<broadcast::Sender<String>> = Lazy::new(|| {
+    let (tx, _) = broadcast::channel(512);
+    tx
+});
+
+/// 订阅跨端事件广播总线（HTTP 桥接 SSE 使用）。
+pub fn subscribe_bus() -> broadcast::Receiver<String> {
+    EVENT_BUS.subscribe()
+}
+
+/// 将事件写入广播总线（序列化为 {channel, payload} JSON 文本）。
+fn publish_to_bus<T: Serialize>(channel: &str, payload: &T) {
+    if let Ok(value) = serde_json::to_value(payload) {
+        let msg = serde_json::json!({ "channel": channel, "payload": value }).to_string();
+        let _ = EVENT_BUS.send(msg);
+    }
+}
 
 /// 初始化全局 AppHandle。
 pub fn init_app_handle(app: &AppHandle) -> AppResult<()> {
@@ -182,18 +203,32 @@ pub const CHANNEL_VENV_CHANGED: &str = "pyforge://venv/changed";
 pub const CHANNEL_PACKAGE_PROGRESS: &str = "pyforge://package/progress";
 /// AI 流式输出通道。
 pub const CHANNEL_AI_STREAM: &str = "pyforge://ai/stream";
+/// 应用配置变更通道（跨端同步：任一端修改配置后两端刷新）。
+pub const CHANNEL_CONFIG_CHANGED: &str = "pyforge://config/changed";
+/// 镜像源变更通道（跨端同步）。
+pub const CHANNEL_MIRROR_CHANGED: &str = "pyforge://mirror/changed";
+/// 包安装/卸载变更通道（跨端同步）。
+pub const CHANNEL_PACKAGE_CHANGED: &str = "pyforge://package/changed";
+/// Python 默认版本变更通道（跨端同步）。
+pub const CHANNEL_PYTHON_DEFAULT_CHANGED: &str = "pyforge://python/default_changed";
 
 // ============================================================================
 // 事件发布函数
 // ============================================================================
 
-/// 发布任务进度事件。
-pub fn emit_task_progress(event: TaskProgressEvent) -> AppResult<()> {
+/// 内部统一发布：Tauri IPC 事件 + HTTP 桥接广播总线双通道。
+fn emit_internal<T: Serialize + Clone>(channel: &str, payload: &T) -> AppResult<()> {
     let handle = get_handle()?;
     handle
-        .emit(CHANNEL_TASK_PROGRESS, &event)
-        .map_err(|e| AppError::new(ErrorCode::IoError, format!("发送任务进度事件失败: {e}")))?;
+        .emit(channel, payload)
+        .map_err(|e| AppError::new(ErrorCode::IoError, format!("发送事件失败: {e}")))?;
+    publish_to_bus(channel, payload);
     Ok(())
+}
+
+/// 发布任务进度事件。
+pub fn emit_task_progress(event: TaskProgressEvent) -> AppResult<()> {
+    emit_internal(CHANNEL_TASK_PROGRESS, &event)
 }
 
 /// 发布日志事件。
@@ -204,11 +239,7 @@ pub fn emit_log(level: &str, message: &str, target: &str) -> AppResult<()> {
         target: target.to_string(),
         timestamp: current_timestamp(),
     };
-    let handle = get_handle()?;
-    handle
-        .emit(CHANNEL_LOG, &event)
-        .map_err(|e| AppError::new(ErrorCode::IoError, format!("发送日志事件失败: {e}")))?;
-    Ok(())
+    emit_internal(CHANNEL_LOG, &event)
 }
 
 /// 发布系统通知。
@@ -224,20 +255,12 @@ pub fn emit_notification(
         notification_type: notification_type.into(),
         timestamp: current_timestamp(),
     };
-    let handle = get_handle()?;
-    handle
-        .emit(CHANNEL_NOTIFICATION, &event)
-        .map_err(|e| AppError::new(ErrorCode::IoError, format!("发送通知事件失败: {e}")))?;
-    Ok(())
+    emit_internal(CHANNEL_NOTIFICATION, &event)
 }
 
-/// 发布通用事件。
+/// 发布通用事件（Tauri IPC + HTTP 桥接双通道广播）。
 pub fn emit<T: Serialize + Clone>(channel: &str, payload: &T) -> AppResult<()> {
-    let handle = get_handle()?;
-    handle
-        .emit(channel, payload)
-        .map_err(|e| AppError::new(ErrorCode::IoError, format!("发送事件失败: {e}")))?;
-    Ok(())
+    emit_internal(channel, payload)
 }
 
 // ============================================================================

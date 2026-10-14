@@ -63,6 +63,7 @@
     },
     "dialog:allow-open",
     "dialog:allow-save",
+    "shell:allow-open",
     "process:allow-restart",
     {
       "identifier": "http:default",

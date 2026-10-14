@@ -18,8 +18,16 @@ import {
   useErrorNotification,
 } from '@/store/useAppStore';
 import type { ProjectInfo, ProjectScanResult } from '@/types/app-types';
-import { isTauri } from '@/lib/tauri-api';
-import { invoke } from '@tauri-apps/api/core';
+import {
+  CHANNELS,
+  createVenv,
+  detectProject,
+  getConfig,
+  scanProjects,
+  scanPythonVersions,
+  subscribeEvent,
+} from '@/lib/tauri-api';
+import { logUserAction, logUserError } from '@/lib/user-log';
 
 const projectTypeIcons: Record<string, typeof Box> = {
   standard: Box,
@@ -63,47 +71,16 @@ export function Projects() {
   const showError = useErrorNotification();
 
   const loadRecentProjects = useCallback(async () => {
-    if (!isTauri()) {
-      // Mock 数据
-      setProjects([
-        {
-          name: 'my-flask-app',
-          path: '/home/user/projects/my-flask-app',
-          project_type: 'flask',
-          python_version: '3.11',
-          dependencies: [
-            { name: 'flask', version_constraint: '>=2.0', is_dev: false, is_optional: false, source: 'requirements.txt' },
-            { name: 'requests', version_constraint: '>=2.28', is_dev: false, is_optional: false, source: 'requirements.txt' },
-          ],
-          dev_dependencies: [
-            { name: 'pytest', version_constraint: '>=7.0', is_dev: true, is_optional: false, source: 'requirements-dev.txt' },
-          ],
-          dependency_files: ['requirements.txt', 'requirements-dev.txt'],
-          associated_venv: '/home/user/projects/my-flask-app/.venv',
-          description: '一个 Flask Web 应用',
-          version: '1.0.0',
-          authors: ['Developer'],
-          entry_points: [],
-          has_tests: true,
-          has_docker: true,
-          has_ci: true,
-          readme: 'README.md',
-          last_modified: Date.now() / 1000,
-        },
-      ]);
-      return;
-    }
-
     try {
-      const config = await invoke<{ general: { recent_projects: string[] } }>('get_app_config');
-      const recentPaths = config.general?.recent_projects || [];
+      const config = await getConfig();
+      const recentPaths = config?.general?.recent_projects ?? [];
       const loadedProjects: ProjectInfo[] = [];
 
       for (const path of recentPaths) {
         try {
-          const project = await invoke<ProjectInfo | null>('detect_project_command', { path });
+          const project = await detectProject(path);
           if (project) {
-            loadedProjects.push(project);
+            loadedProjects.push(project as unknown as ProjectInfo);
           }
         } catch {
           // 忽略单个项目加载失败
@@ -120,39 +97,37 @@ export function Projects() {
     void loadRecentProjects();
   }, [loadRecentProjects]);
 
+  // 跨端实时同步：配置变更（最近项目列表变化）时自动刷新
+  useEffect(() => {
+    const off = subscribeEvent(CHANNELS.configChanged, () => void loadRecentProjects());
+    return () => {
+      void off.then((fn) => fn());
+    };
+  }, [loadRecentProjects]);
+
   const handleScan = useCallback(async () => {
-    if (!scanPath.trim()) {
+    const root = scanPath.trim();
+    if (!root) {
       showError('扫描路径不能为空', '请输入要扫描的目录路径');
       return;
     }
 
     setIsScanning(true);
+    logUserAction(`扫描项目: 路径=${root}, 深度=3`);
     try {
-      if (!isTauri()) {
-        // Mock 扫描
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-        setScanResult({
-          root_path: scanPath,
-          projects,
-          directories_scanned: 42,
-          scan_time_ms: 1234,
-        });
-        showSuccess('扫描完成', `发现 ${projects.length} 个 Python 项目`);
-      } else {
-        const result = await invoke<ProjectScanResult>('scan_projects_command', {
-          rootPath: scanPath,
-          maxDepth: 3,
-        });
-        setScanResult(result);
-        setProjects(result.projects);
-        showSuccess('扫描完成', `发现 ${result.projects.length} 个 Python 项目，扫描了 ${result.directories_scanned} 个目录`);
-      }
+      const result = await scanProjects(root, 3);
+      setScanResult(result as unknown as ProjectScanResult);
+      setProjects(result.projects as unknown as ProjectInfo[]);
+      logUserAction(`扫描项目: 完成，发现 ${result.projects.length} 个项目，扫描 ${result.directories_scanned} 个目录`);
+      showSuccess('扫描完成', `发现 ${result.projects.length} 个 Python 项目，扫描了 ${result.directories_scanned} 个目录`);
     } catch (err) {
-      showError('扫描失败', err instanceof Error ? err.message : '未知错误');
+      const msg = err instanceof Error ? err.message : '未知错误';
+      logUserError(`扫描项目: 失败 (路径=${root}) - ${msg}`);
+      showError('扫描失败', msg);
     } finally {
       setIsScanning(false);
     }
-  }, [scanPath, projects, showSuccess, showError]);
+  }, [scanPath, showSuccess, showError]);
 
   const handleSelectProject = useCallback(
     (project: ProjectInfo) => {
@@ -165,15 +140,23 @@ export function Projects() {
 
   const handleCreateVenv = useCallback(
     async (project: ProjectInfo) => {
+      logUserAction(`创建项目虚拟环境: 项目=${project.name} (${project.path})`);
       try {
-        if (!isTauri()) {
-          showSuccess('虚拟环境已创建', `为项目 ${project.name} 创建了虚拟环境`);
+        // 使用当前活跃（或首个可用）Python 解释器，在默认根目录创建项目虚拟环境
+        const versions = await scanPythonVersions();
+        const python = versions.find((v) => v.isActive) ?? versions[0];
+        if (!python) {
+          logUserError(`创建项目虚拟环境: ${project.name} 失败 - 无可用 Python`);
+          showError('无可用 Python', '未检测到已安装的 Python，请先在「Python 版本」页安装');
           return;
         }
-        // 需要先选择 Python 版本
-        showSuccess('请选择 Python 版本', '请先在 Python 版本页面选择一个解释器');
+        const venv = await createVenv(`${project.name}-env`, python.path, '');
+        logUserAction(`创建项目虚拟环境: ${project.name} 成功 (venv=${venv.name}, python=${python.version})`);
+        showSuccess('虚拟环境已创建', `${venv.name}（Python ${python.version}）已创建，可在「环境管理」页查看`);
       } catch (err) {
-        showError('创建失败', err instanceof Error ? err.message : '未知错误');
+        const msg = err instanceof Error ? err.message : '未知错误';
+        logUserError(`创建项目虚拟环境: ${project.name} 失败 - ${msg}`);
+        showError('创建失败', msg);
       }
     },
     [showSuccess, showError]

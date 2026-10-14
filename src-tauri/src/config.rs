@@ -46,9 +46,62 @@ pub struct AppConfig {
     #[serde(default)]
     pub logging: LoggingConfig,
 
+    /// 存储路径设置（平台默认值由 paths 模块按「非系统盘优先」规则生成）
+    #[serde(default = "default_paths_config")]
+    pub paths: PathsConfig,
+
     /// UI 设置
     #[serde(default)]
     pub ui: UiConfig,
+}
+
+/// 存储路径设置。
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PathsConfig {
+    /// Python 解释器安装 / 扫描根目录
+    #[serde(default = "default_python_installations_path")]
+    pub python_installations_path: String,
+
+    /// 虚拟环境根目录
+    #[serde(default = "default_paths_venv_root")]
+    pub venv_root: String,
+
+    /// 缓存目录
+    #[serde(default = "default_cache_dir")]
+    pub cache_dir: String,
+}
+
+impl Default for PathsConfig {
+    fn default() -> Self {
+        Self {
+            python_installations_path: default_python_installations_path(),
+            venv_root: default_paths_venv_root(),
+            cache_dir: default_cache_dir(),
+        }
+    }
+}
+
+/// 平台默认路径（委托给 paths 模块，失败时回退用户数据目录）。
+fn default_paths_config() -> PathsConfig {
+    PathsConfig::default()
+}
+
+fn default_python_installations_path() -> String {
+    crate::paths::platform_default_paths()
+        .map(|p| p.python_installations_path)
+        .unwrap_or_else(|_| "~/PyForge/python".to_string())
+}
+
+fn default_paths_venv_root() -> String {
+    crate::paths::platform_default_paths()
+        .map(|p| p.venv_root)
+        .unwrap_or_else(|_| "~/PyForge/envs".to_string())
+}
+
+fn default_cache_dir() -> String {
+    crate::paths::platform_default_paths()
+        .map(|p| p.cache_dir)
+        .unwrap_or_else(|_| "~/PyForge/cache".to_string())
 }
 
 fn default_version() -> String {
@@ -308,15 +361,21 @@ pub struct LoggingConfig {
     /// 是否输出到控制台
     #[serde(default = "default_true")]
     pub console_output: bool,
+
+    /// 自定义日志目录（空 / None 时使用平台默认目录；
+    /// 修改后由迁移命令把旧日志移动到新目录）
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub dir: Option<String>,
 }
 
 impl Default for LoggingConfig {
     fn default() -> Self {
         Self {
             level: "info".to_string(),
-            max_file_size_mb: 10,
-            max_files: 5,
+            max_file_size_mb: 500,
+            max_files: 7,
             console_output: true,
+            dir: None,
         }
     }
 }
@@ -330,7 +389,7 @@ fn default_log_max_size() -> u64 {
 }
 
 fn default_log_max_files() -> u32 {
-    5
+    7
 }
 
 /// UI 设置。
@@ -399,6 +458,7 @@ impl Default for AppConfig {
             package: PackageConfig::default(),
             ai: AiConfig::default(),
             logging: LoggingConfig::default(),
+            paths: PathsConfig::default(),
             ui: UiConfig::default(),
         }
     }
@@ -406,15 +466,46 @@ impl Default for AppConfig {
 
 impl AppConfig {
     /// 获取配置文件路径。
+    ///
+    /// 强制约束用户数据不写系统盘：配置文件优先存放于非系统盘应用数据根
+    /// （`storage_root/pyforge-ai/config.json`）；无法确定存储根时才回退
+    /// 系统配置目录。
     pub fn config_path() -> AppResult<PathBuf> {
+        if let Ok(root) = crate::paths::storage_root() {
+            return Ok(root.join("pyforge-ai").join("config.json"));
+        }
         let config_dir = dirs::config_dir()
             .ok_or_else(|| AppError::new(ErrorCode::ConfigError, "无法确定系统配置目录"))?;
         Ok(config_dir.join("pyforge-ai").join("config.json"))
     }
 
+    /// 历史配置文件路径（系统配置目录），用于一次性自动迁移。
+    fn legacy_config_path() -> Option<PathBuf> {
+        dirs::config_dir().map(|d| d.join("pyforge-ai").join("config.json"))
+    }
+
     /// 从磁盘加载配置，不存在则返回默认配置。
+    ///
+    /// 首次运行于新版存储布局时，自动把系统配置目录中的历史配置
+    /// 完整迁移（复制）到非系统盘应用数据根，保证配置零丢失。
     pub fn load() -> AppResult<Self> {
         let path = Self::config_path()?;
+        if !path.exists() {
+            // 一次性迁移：历史配置在系统盘配置目录 → 非系统盘应用数据根
+            if let Some(legacy) = Self::legacy_config_path() {
+                if legacy != path && legacy.exists() {
+                    if let Some(parent) = path.parent() {
+                        let _ = std::fs::create_dir_all(parent);
+                    }
+                    if std::fs::copy(&legacy, &path).is_ok() {
+                        eprintln!(
+                            "[INFO] 配置文件已迁移至非系统盘: {}",
+                            path.display()
+                        );
+                    }
+                }
+            }
+        }
         if !path.exists() {
             return Ok(Self::default());
         }
@@ -471,6 +562,43 @@ pub fn init_config() -> AppResult<()> {
         AppError::new(ErrorCode::ConfigError, "配置锁获取失败（可能已中毒）")
     })?;
     *guard = Some(config);
+    Ok(())
+}
+
+/// 启动阶段按当前平台自动应用路径规则（任务：平台检测优先）。
+///
+/// 仅当用户从未自定义对应路径（仍等于旧版默认值）时，
+/// 才把默认值升级为「非系统盘优先」的平台规则，避免覆盖用户配置。
+/// 应用后立即持久化，保证后续启动路径规则一致。
+pub fn apply_platform_path_rules() -> AppResult<()> {
+    let platform = crate::paths::platform_default_paths()?;
+    let legacy_venv_root = crate::paths::legacy_venv_root();
+
+    update_config(|config| {
+        // 虚拟环境根目录：仍为旧版默认值（数据目录）时才迁移到平台规则
+        let untouched = match &legacy_venv_root {
+            Some(legacy) => config.venv.default_root == *legacy,
+            None => false,
+        };
+        if untouched {
+            config.venv.default_root = platform.venv_root.clone();
+        }
+        // paths 节：与平台默认值一致时刷新（首次启动为空场景由 serde default 覆盖）
+        if config.paths.venv_root.is_empty() {
+            config.paths.venv_root = platform.venv_root.clone();
+        }
+        if config.paths.cache_dir.is_empty() {
+            config.paths.cache_dir = platform.cache_dir.clone();
+        }
+        if config.paths.python_installations_path.is_empty() {
+            config.paths.python_installations_path = platform.python_installations_path.clone();
+        }
+        // 日志轮转阈值：标准升级为 10MB（旧版默认 500MB 自动迁移，不覆盖用户自定义值
+        // 之外的非 500 配置）
+        if config.logging.max_file_size_mb == 500 {
+            config.logging.max_file_size_mb = 10;
+        }
+    })?;
     Ok(())
 }
 

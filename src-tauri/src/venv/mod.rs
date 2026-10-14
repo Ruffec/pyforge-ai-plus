@@ -96,6 +96,9 @@ fn allowed_roots() -> Vec<PathBuf> {
     if let Some(data_dir) = dirs::data_dir() {
         roots.push(data_dir.join("pyforge-ai"));
     }
+    if let Ok(app_root) = crate::paths::app_data_root() {
+        roots.push(app_root);
+    }
     if let Ok(cwd) = std::env::current_dir() {
         roots.push(cwd.join("venvs"));
     }
@@ -148,6 +151,44 @@ fn python_executable_from_venv(path: &Path) -> PathBuf {
     }
 }
 
+/// 快照存储目录：非系统盘应用数据根（`app_data_root/snapshots`）优先。
+///
+/// 首次访问时把系统盘历史快照目录（data_dir/pyforge-ai/snapshots）一次性
+/// 合并迁入：同名以新目录为准，迁空后移除旧目录，保证快照数据零丢失且
+/// 不再写系统盘。
+fn snapshot_dir() -> Option<PathBuf> {
+    let new_dir = crate::paths::app_data_root().ok()?.join("snapshots");
+    if let Some(data_dir) = dirs::data_dir() {
+        let legacy = data_dir.join("pyforge-ai").join("snapshots");
+        if legacy.is_dir() {
+            let _ = std::fs::create_dir_all(&new_dir);
+            let mut touched = false;
+            for entry in std::fs::read_dir(&legacy)
+                .into_iter()
+                .flatten()
+                .filter_map(|e| e.ok())
+            {
+                let dest = new_dir.join(entry.file_name());
+                if dest.exists() {
+                    let _ = std::fs::remove_file(entry.path());
+                    touched = true;
+                    continue;
+                }
+                if std::fs::rename(entry.path(), &dest).is_ok()
+                    || std::fs::copy(entry.path(), &dest).map(|_| ()).is_ok()
+                {
+                    let _ = std::fs::remove_file(entry.path());
+                    touched = true;
+                }
+            }
+            if touched {
+                let _ = std::fs::remove_dir(&legacy);
+            }
+        }
+    }
+    Some(new_dir)
+}
+
 fn pip_executable_from_venv(path: &Path) -> PathBuf {
     if cfg!(target_os = "windows") {
         path.join("Scripts").join("pip.exe")
@@ -157,6 +198,10 @@ fn pip_executable_from_venv(path: &Path) -> PathBuf {
 }
 
 fn run_command_with_timeout(cmd: &mut Command, timeout: Duration) -> Result<(String, String)> {
+    // 子进程环境加固：临时目录与 pip 下载缓存重定向到非系统盘
+    for (k, v) in crate::write_guard::child_env_vars() {
+        cmd.env(k, v);
+    }
     let mut child = cmd.stdout(Stdio::piped()).stderr(Stdio::piped()).spawn()?;
 
     let stdout = child.stdout.take().expect("piped stdout");
@@ -775,9 +820,8 @@ pub fn create_snapshot(path: &Path, description: Option<String>) -> Result<VenvS
         chrono::Utc::now().format("%Y%m%d-%H%M%S")
     );
 
-    // 保存快照到元数据目录
-    if let Some(data_dir) = dirs::data_dir() {
-        let snapshot_dir = data_dir.join("pyforge-ai").join("snapshots");
+    // 保存快照到元数据目录（非系统盘应用数据根）
+    if let Some(snapshot_dir) = snapshot_dir() {
         std::fs::create_dir_all(&snapshot_dir)?;
         let snapshot_file = snapshot_dir.join(format!("{}.json", snapshot_id));
         let snapshot = VenvSnapshot {
@@ -811,8 +855,7 @@ pub fn create_snapshot(path: &Path, description: Option<String>) -> Result<VenvS
 pub fn list_snapshots() -> Result<Vec<VenvSnapshot>> {
     let mut snapshots = Vec::new();
 
-    if let Some(data_dir) = dirs::data_dir() {
-        let snapshot_dir = data_dir.join("pyforge-ai").join("snapshots");
+    if let Some(snapshot_dir) = snapshot_dir() {
         if snapshot_dir.exists() {
             for entry in std::fs::read_dir(&snapshot_dir)? {
                 let entry = entry?;
@@ -850,8 +893,8 @@ pub fn restore_from_snapshot(snapshot_id: &str, target_venv: &Path) -> Result<St
         ));
     }
 
-    // 写入临时 requirements 文件
-    let temp_req = std::env::temp_dir().join(format!("pyforge-restore-{}.txt", snapshot_id));
+    // 写入临时 requirements 文件（应用专用临时目录，避免写系统盘 %TEMP%）
+    let temp_req = crate::write_guard::app_temp_dir().join(format!("pyforge-restore-{}.txt", snapshot_id));
     std::fs::write(&temp_req, &snapshot.requirements)?;
 
     let result = run_command_with_timeout(
@@ -869,11 +912,8 @@ pub fn restore_from_snapshot(snapshot_id: &str, target_venv: &Path) -> Result<St
 
 /// 删除快照。
 pub fn delete_snapshot(snapshot_id: &str) -> Result<()> {
-    if let Some(data_dir) = dirs::data_dir() {
-        let snapshot_file = data_dir
-            .join("pyforge-ai")
-            .join("snapshots")
-            .join(format!("{}.json", snapshot_id));
+    if let Some(snapshot_dir) = snapshot_dir() {
+        let snapshot_file = snapshot_dir.join(format!("{}.json", snapshot_id));
         if snapshot_file.exists() {
             std::fs::remove_file(&snapshot_file)?;
         }

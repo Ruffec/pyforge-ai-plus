@@ -5,6 +5,8 @@ import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { NotificationContainer } from '@/components/ui/Notification';
 import { TopBar } from '@/components/layout/TopBar';
 import { SidebarNav } from '@/components/layout/SidebarNav';
+import { BridgeBanner } from '@/components/layout/BridgeBanner';
+import { useScrollbarAutoHide } from '@/hooks/useScrollbarAutoHide';
 
 const Dashboard = lazy(() => import('@/pages/Dashboard').then((m) => ({ default: m.Dashboard })));
 const PythonVersions = lazy(() => import('@/pages/PythonVersions').then((m) => ({ default: m.PythonVersions })));
@@ -18,14 +20,17 @@ const SIDEBAR_WIDTH = 240;
 
 function AppContent() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  // 全局细柱滚动条 3 秒自动渐隐
+  useScrollbarAutoHide();
 
   return (
     <div className="min-h-screen bg-pf-background text-pf-foreground">
       <TopBar onMenuToggle={() => setSidebarOpen((prev) => !prev)} menuOpen={sidebarOpen} />
+      <BridgeBanner />
 
       {/* Desktop sidebar */}
       <aside
-        className="fixed bottom-0 left-0 top-14 z-30 hidden lg:block"
+        className="fixed bottom-0 left-0 top-12 z-30 hidden lg:block"
         style={{ width: SIDEBAR_WIDTH }}
       >
         <SidebarNav />
@@ -40,7 +45,7 @@ function AppContent() {
             aria-hidden="true"
           />
           <aside
-            className="fixed bottom-0 left-0 top-14 z-40 w-[240px] lg:hidden"
+            className="fixed bottom-0 left-0 top-12 z-40 w-[240px] lg:hidden"
             style={{ width: SIDEBAR_WIDTH }}
           >
             <SidebarNav onItemClick={() => setSidebarOpen(false)} />
@@ -48,9 +53,9 @@ function AppContent() {
         </>
       )}
 
-      <main className="min-h-screen pt-14 transition-all lg:pl-[240px]">
+      <main className="min-h-screen pt-12 transition-all lg:pl-[240px]">
         <div
-          className="min-h-[calc(100vh-3.5rem)] overflow-auto p-3 sm:p-4"
+          className="min-h-[calc(100vh-3rem)] overflow-auto p-3 sm:p-4"
         >
           <Suspense fallback={<PageLoader />}>
             <Routes>

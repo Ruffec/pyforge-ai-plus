@@ -1,6 +1,6 @@
 [package]
 name = "pyforge-ai"
-version = "0.1.0"
+version = "0.2.0"
 description = "PyForge AI — Tauri 2 desktop application"
 authors = ["PyForge AI"]
 edition = "2021"
@@ -11,6 +11,7 @@ tauri-build = { version = "2", features = [] }
 
 [dependencies]
 tauri = { version = "2", features = [] }
+axum = "0.8"
 tauri-plugin-shell = "2"
 tauri-plugin-fs = "2"
 tauri-plugin-dialog = "2"
@@ -33,6 +34,8 @@ tracing = "0.1"
 tracing-appender = "0.2"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 which = "7"
+rust_xlsxwriter = "0.92.0"
 
 [target.'cfg(target_os = "windows")'.dependencies]
 winreg = "0.52"
+windows-sys = { version = "0.52", features = ["Win32_Foundation", "Win32_UI_WindowsAndMessaging"] }

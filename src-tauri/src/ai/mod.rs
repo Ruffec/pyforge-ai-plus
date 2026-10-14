@@ -31,6 +31,14 @@ fn default_temperature() -> f32 {
     0.7
 }
 
+fn default_max_tokens() -> u32 {
+    4096
+}
+
+fn default_top_p() -> f32 {
+    0.9
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AiConfig {
     pub api_provider: String,
@@ -40,6 +48,10 @@ pub struct AiConfig {
     pub base_url: Option<String>,
     #[serde(default = "default_temperature")]
     pub temperature: f32,
+    #[serde(default = "default_max_tokens")]
+    pub max_tokens: u32,
+    #[serde(default = "default_top_p")]
+    pub top_p: f32,
     pub use_local_llm: bool,
 }
 
@@ -127,6 +139,8 @@ impl AiService {
                     .messages(messages)
                     .response_format(ResponseFormat::JsonObject)
                     .temperature(self.config.temperature)
+                    .max_tokens(self.config.max_tokens)
+                    .top_p(self.config.top_p)
                     .build()?,
             )
             .await?;
@@ -153,6 +167,8 @@ impl AiService {
             .model(self.config.model.clone())
             .messages(openai_messages)
             .temperature(self.config.temperature)
+            .max_tokens(self.config.max_tokens)
+            .top_p(self.config.top_p)
             .stream(true)
             .build()?;
 
@@ -188,6 +204,8 @@ impl AiService {
                     .messages(messages)
                     .response_format(ResponseFormat::JsonObject)
                     .temperature(self.config.temperature)
+                    .max_tokens(self.config.max_tokens)
+                    .top_p(self.config.top_p)
                     .build()?,
             )
             .await?;
@@ -217,6 +235,8 @@ impl AiService {
                     .model(self.config.model.clone())
                     .messages(openai_messages)
                     .temperature(self.config.temperature)
+                    .max_tokens(self.config.max_tokens)
+                    .top_p(self.config.top_p)
                     .build()?,
             )
             .await?;

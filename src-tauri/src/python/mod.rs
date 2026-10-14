@@ -1,9 +1,12 @@
 //! Python 版本管理模块
 //!
 //! 提供 Python 解释器扫描、版本管理、健康检查、环境变量获取等功能。
-//! 所有公共 API 均预留，供未来模块扩展使用。
+//! `installer` 子模块提供一键安装（官方源直下直装）与彻底卸载（文件/注册表/环境变量全清理）。
 
 #![allow(dead_code)]
+
+pub mod installer;
+pub mod msi_residue;
 
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
@@ -21,7 +24,7 @@ use crate::security;
 static SCAN_CACHE: Lazy<Mutex<Option<Vec<PythonInfo>>>> = Lazy::new(|| Mutex::new(None));
 
 static VERSION_REGEX: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r"(?i)python\s+(?P<major>\d+)\.(?P<minor>\d+)(?:\.(?P<patch>\d+))?").unwrap()
+    Regex::new(r"(?i)(?:python\s+)?(?P<major>\d+)\.(?P<minor>\d+)(?:\.(?P<patch>\d+))?").unwrap()
 });
 
 /// Python 安装信息。
@@ -161,7 +164,7 @@ impl PythonScanner {
         candidates
             .into_iter()
             .filter_map(|path| match std::fs::canonicalize(&path) {
-                Ok(canonical) if seen.insert(canonical.clone()) => Some(canonical),
+                Ok(canonical) if seen.insert(canonical.clone()) => Some(normalize_display_path(canonical)),
                 _ => None,
             })
             .collect()
@@ -211,12 +214,28 @@ impl PythonScanner {
         for name in ["python3", "python"] {
             if let Ok(path) = which::which(name) {
                 if let Ok(canonical) = std::fs::canonicalize(path) {
-                    return Some(canonical);
+                    return Some(normalize_display_path(canonical));
                 }
             }
         }
         None
     }
+}
+
+/// 规范化路径用于展示与存储：剥离 Windows 扩展长度前缀。
+///
+/// `std::fs::canonicalize` 在 Windows 上会返回 `\\?\D:\...` 形式的
+/// 扩展长度路径，直接展示会出现「乱码」观感；此处还原为常规
+/// `D:\...` / UNC `\\server\share` 形式，其他平台原样返回。
+pub fn normalize_display_path(path: PathBuf) -> PathBuf {
+    let s = path.as_os_str().to_string_lossy();
+    if let Some(rest) = s.strip_prefix(r"\\?\UNC\") {
+        return PathBuf::from(format!(r"\\{rest}"));
+    }
+    if let Some(rest) = s.strip_prefix(r"\\?\") {
+        return PathBuf::from(rest.to_string());
+    }
+    path
 }
 
 impl Default for PythonScanner {
@@ -280,6 +299,8 @@ pub fn get_python_details(path: &Path) -> Result<PythonInfo, PythonError> {
 
     let id = std::fs::canonicalize(path)
         .unwrap_or_else(|_| path.to_path_buf())
+        .to_path_buf();
+    let id = normalize_display_path(id)
         .to_string_lossy()
         .to_string();
 
@@ -783,6 +804,27 @@ pub async fn fetch_python_org_releases() -> Result<Vec<PythonOrgRelease>, reqwes
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn normalize_display_path_strips_windows_extended_prefix() {
+        assert_eq!(
+            normalize_display_path(PathBuf::from(r"\\?\D:\SoftWare\Python311\python.exe")),
+            PathBuf::from(r"D:\SoftWare\Python311\python.exe")
+        );
+        assert_eq!(
+            normalize_display_path(PathBuf::from(r"\\?\UNC\server\share\python.exe")),
+            PathBuf::from(r"\\server\share\python.exe")
+        );
+        // 常规路径与其他平台路径原样保留
+        assert_eq!(
+            normalize_display_path(PathBuf::from("/usr/local/bin/python3")),
+            PathBuf::from("/usr/local/bin/python3")
+        );
+        assert_eq!(
+            normalize_display_path(PathBuf::from(r"D:\Python\python.exe")),
+            PathBuf::from(r"D:\Python\python.exe")
+        );
+    }
 
     /// 真实调用 python.org 官方 API 的集成测试（依赖网络可用）。
     #[tokio::test]

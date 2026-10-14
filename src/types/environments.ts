@@ -18,7 +18,7 @@ export interface VirtualEnvironment {
   isActive?: boolean;
   /** 磁盘使用百分比，仅用于展示进度条 */
   usagePercent?: number;
-  /** 依赖树 mock 数据 */
+  /** 依赖树（可选，预留扩展） */
   dependencyTree?: DependencyNode[];
 }
 

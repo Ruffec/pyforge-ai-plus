@@ -20,7 +20,6 @@ import {
   Rocket,
   Search,
   Trash2,
-  Upload,
   X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -47,15 +46,20 @@ import {
   TableRow,
 } from '@/components/ui/Table';
 import {
+  CHANNELS,
   createVenv,
+  exportVenv,
   getDependencies,
+  isTauri,
   listVenvs,
   removeVenv,
   scanPythonVersions,
+  subscribeEvent,
 } from '@/lib/tauri-api';
 import type { DependencyNode, EnvironmentStatus, VirtualEnvironment } from '@/types/environments';
 import { ENVIRONMENT_STATUS_LABELS } from '@/types/environments';
 import type { PythonVersion } from '@/types/python-versions';
+import { useSearchParams } from 'react-router-dom';
 
 const FILTER_OPTIONS: { key: 'all' | EnvironmentStatus; label: string }[] = [
   { key: 'all', label: '全部' },
@@ -162,9 +166,9 @@ const DependencyTreeNode: React.FC<{ node: DependencyNode; depth?: number }> = (
 };
 
 interface EnvironmentActionsProps {
-  env: VirtualEnvironment;
   copied: boolean;
-  onActivate: () => void;
+  copiedCmd: boolean;
+  onCopyActivate: () => void;
   onCopyPath: () => void;
   onDelete: () => void;
   onExport: () => void;
@@ -173,32 +177,30 @@ interface EnvironmentActionsProps {
 }
 
 const EnvironmentActions: React.FC<EnvironmentActionsProps> = ({
-  env,
   copied,
-  onActivate,
+  copiedCmd,
+  onCopyActivate,
   onCopyPath,
   onDelete,
   onExport,
   onViewTree,
   className = '',
 }) => {
-  const isCorrupted = env.status === 'corrupted';
   return (
     <div className={`flex flex-wrap items-center gap-x-1 gap-y-1 ${className}`}>
-      <Tooltip content={env.isActive ? '当前已激活' : '激活该环境'}>
+      <Tooltip content="复制该环境的终端激活命令">
         <Button
           variant="ghost"
           size="sm"
           className="whitespace-nowrap text-pf-primary hover:text-pf-primary"
-          disabled={env.isActive || isCorrupted}
-          onClick={onActivate}
+          onClick={onCopyActivate}
         >
-          {env.isActive ? (
+          {copiedCmd ? (
             <Check className="mr-1 h-3 w-3" />
           ) : (
             <Play className="mr-1 h-3 w-3" />
           )}
-          {env.isActive ? '已激活' : '激活'}
+          {copiedCmd ? '已复制命令' : '激活命令'}
         </Button>
       </Tooltip>
       <span className="text-pf-border">|</span>
@@ -208,7 +210,7 @@ const EnvironmentActions: React.FC<EnvironmentActionsProps> = ({
           {copied ? '已复制' : '复制路径'}
         </Button>
       </Tooltip>
-      <Tooltip content="导出环境">
+      <Tooltip content="导出环境依赖为 requirements.txt">
         <Button variant="ghost" size="sm" className="whitespace-nowrap" onClick={onExport}>
           <Download className="mr-1 h-3 w-3" />
           导出
@@ -239,8 +241,9 @@ interface EnvironmentCardProps {
   env: VirtualEnvironment;
   selected: boolean;
   copied: boolean;
+  copiedCmd: boolean;
   onToggleSelect: () => void;
-  onActivate: () => void;
+  onCopyActivate: () => void;
   onCopyPath: () => void;
   onDelete: () => void;
   onExport: () => void;
@@ -251,8 +254,9 @@ const EnvironmentCard: React.FC<EnvironmentCardProps> = ({
   env,
   selected,
   copied,
+  copiedCmd,
   onToggleSelect,
-  onActivate,
+  onCopyActivate,
   onCopyPath,
   onDelete,
   onExport,
@@ -308,9 +312,9 @@ const EnvironmentCard: React.FC<EnvironmentCardProps> = ({
       )}
 
       <EnvironmentActions
-        env={env}
         copied={copied}
-        onActivate={onActivate}
+        copiedCmd={copiedCmd}
+        onCopyActivate={onCopyActivate}
         onCopyPath={onCopyPath}
         onDelete={onDelete}
         onExport={onExport}
@@ -325,8 +329,9 @@ interface EnvironmentListRowProps {
   env: VirtualEnvironment;
   selected: boolean;
   copied: boolean;
+  copiedCmd: boolean;
   onToggleSelect: () => void;
-  onActivate: () => void;
+  onCopyActivate: () => void;
   onCopyPath: () => void;
   onDelete: () => void;
   onExport: () => void;
@@ -337,8 +342,9 @@ const EnvironmentListRow: React.FC<EnvironmentListRowProps> = ({
   env,
   selected,
   copied,
+  copiedCmd,
   onToggleSelect,
-  onActivate,
+  onCopyActivate,
   onCopyPath,
   onDelete,
   onExport,
@@ -376,9 +382,9 @@ const EnvironmentListRow: React.FC<EnvironmentListRowProps> = ({
       </TableCell>
       <TableCell>
         <EnvironmentActions
-          env={env}
           copied={copied}
-          onActivate={onActivate}
+          copiedCmd={copiedCmd}
+          onCopyActivate={onCopyActivate}
           onCopyPath={onCopyPath}
           onDelete={onDelete}
           onExport={onExport}
@@ -390,6 +396,7 @@ const EnvironmentListRow: React.FC<EnvironmentListRowProps> = ({
 };
 
 export const Environments: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [environments, setEnvironments] = useState<VirtualEnvironment[]>([]);
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | EnvironmentStatus>('all');
@@ -399,6 +406,7 @@ export const Environments: React.FC = () => {
   const [treeEnv, setTreeEnv] = useState<VirtualEnvironment | null>(null);
   const [treeLoading, setTreeLoading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [copiedCmdId, setCopiedCmdId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [pythonVersions, setPythonVersions] = useState<PythonVersion[]>([]);
@@ -408,32 +416,56 @@ export const Environments: React.FC = () => {
   const [createLocation, setCreateLocation] = useState('');
   const [inheritGlobal, setInheritGlobal] = useState(false);
 
-  useEffect(() => {
-    let mounted = true;
-    async function load() {
-      try {
-        setLoading(true);
-        setError(null);
-        const [venvs, pythons] = await Promise.all([listVenvs(), scanPythonVersions()]);
-        if (!mounted) return;
-        setEnvironments(venvs);
-        setPythonVersions(pythons);
-        if (pythons[0]) {
-          setCreateVersion(pythons[0].version);
+  const load = async (mounted: { current: boolean }) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const [venvs, pythons] = await Promise.all([listVenvs(), scanPythonVersions()]);
+      if (!mounted.current) return;
+      setEnvironments(venvs);
+      setPythonVersions(pythons);
+      if (pythons[0]) {
+        setCreateVersion(pythons[0].version);
+      }
+      // 支持从 Python 版本页跳转预填：/environments?create=1&python=<path>
+      if (searchParams.get('create') === '1') {
+        const py = searchParams.get('python');
+        if (py) {
+          const matched = pythons.find((v) => v.path === py || v.version === py);
+          setCreateVersion(matched ? matched.version : py);
         }
-      } catch (err) {
-        if (mounted) {
-          setError(err instanceof Error ? err.message : '加载环境数据失败');
-        }
-      } finally {
-        if (mounted) {
-          setLoading(false);
-        }
+        setCreateOpen(true);
+        setSearchParams({}, { replace: true });
+      }
+    } catch (err) {
+      if (mounted.current) {
+        setError(err instanceof Error ? err.message : '加载环境数据失败');
+      }
+    } finally {
+      if (mounted.current) {
+        setLoading(false);
       }
     }
-    load();
+  };
+
+  useEffect(() => {
+    const mounted = { current: true };
+    void load(mounted);
     return () => {
-      mounted = false;
+      mounted.current = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  // 跨端实时同步：任一端创建/删除虚拟环境后自动刷新本页
+  useEffect(() => {
+    const off = subscribeEvent(CHANNELS.venvChanged, () => {
+      listVenvs()
+        .then((venvs) => setEnvironments(venvs))
+        .catch(() => undefined);
+    });
+    return () => {
+      void off.then((fn) => fn());
     };
   }, []);
 
@@ -484,8 +516,22 @@ export const Environments: React.FC = () => {
     setSelectedIds(new Set());
   };
 
-  const handleActivate = (id: string) => {
-    setEnvironments((prev) => prev.map((env) => ({ ...env, isActive: env.id === id })));
+  /** 生成该环境在当前操作系统下的真实终端激活命令 */
+  const buildActivateCommand = (env: VirtualEnvironment): string => {
+    const isWindows = navigator.platform.toLowerCase().includes('win');
+    return isWindows
+      ? `${env.path}\\Scripts\\activate.bat`
+      : `source ${env.path}/bin/activate`;
+  };
+
+  const handleCopyActivateCommand = async (env: VirtualEnvironment) => {
+    try {
+      await navigator.clipboard.writeText(buildActivateCommand(env));
+      setCopiedCmdId(env.id);
+      window.setTimeout(() => setCopiedCmdId(null), 1500);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '复制激活命令失败');
+    }
   };
 
   const handleCopyPath = async (env: VirtualEnvironment) => {
@@ -494,7 +540,7 @@ export const Environments: React.FC = () => {
       setCopiedId(env.id);
       window.setTimeout(() => setCopiedId(null), 1500);
     } catch {
-      // Ignore clipboard errors in mock context
+      // 剪贴板不可用（非安全上下文/权限拒绝）时静默忽略
     }
   };
 
@@ -525,9 +571,36 @@ export const Environments: React.FC = () => {
     }
   };
 
-  const handleExport = (env: VirtualEnvironment) => {
-    // Mock export action
-    window.console.log('Export environment', env.name);
+  /** 将文本保存为本地文件：桌面端走系统另存为对话框，网页端走浏览器下载 */
+  const saveTextFile = async (defaultName: string, content: string) => {
+    if (isTauri()) {
+      const { save } = await import('@tauri-apps/plugin-dialog');
+      const { writeTextFile } = await import('@tauri-apps/plugin-fs');
+      const filePath = await save({
+        defaultPath: defaultName,
+        filters: [{ name: 'requirements', extensions: ['txt'] }],
+      });
+      if (!filePath) return;
+      await writeTextFile(filePath, content);
+    } else {
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = defaultName;
+      anchor.click();
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  /** 真实导出：pip freeze 依赖清单保存为 requirements.txt */
+  const handleExport = async (env: VirtualEnvironment) => {
+    try {
+      const requirements = await exportVenv(env.path);
+      await saveTextFile(`${env.name}-requirements.txt`, requirements);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : `导出环境 ${env.name} 失败`);
+    }
   };
 
   const handleBulkDelete = async () => {
@@ -541,8 +614,22 @@ export const Environments: React.FC = () => {
     }
   };
 
-  const handleBulkExport = () => {
-    window.console.log('Export environments', Array.from(selectedIds));
+  /** 批量导出：合并为单个 requirements 文件（按环境分段标注） */
+  const handleBulkExport = async () => {
+    const toExport = environments.filter((env) => selectedIds.has(env.id));
+    if (toExport.length === 0) return;
+    try {
+      const sections = await Promise.all(
+        toExport.map(async (env) => {
+          const requirements = await exportVenv(env.path);
+          return `# ===== ${env.name} (${env.path}) =====\n${requirements}`;
+        })
+      );
+      await saveTextFile('pyforge-environments-requirements.txt', sections.join('\n\n'));
+      clearSelection();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '批量导出失败');
+    }
   };
 
   const resetCreateForm = () => {
@@ -574,16 +661,12 @@ export const Environments: React.FC = () => {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="pf-text-display text-2xl text-pf-foreground">虚拟环境</h1>
-          <p className="text-sm text-pf-muted-foreground">创建、激活与删除虚拟环境</p>
+          <p className="text-sm text-pf-muted-foreground">创建、导出与删除虚拟环境</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <Button onClick={() => setCreateOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             创建环境
-          </Button>
-          <Button variant="outline">
-            <Upload className="mr-2 h-4 w-4" />
-            导入环境
           </Button>
           <div className="flex items-center rounded-md border border-pf-border bg-pf-card p-1">
             <Button
@@ -663,8 +746,9 @@ export const Environments: React.FC = () => {
                 env={env}
                 selected={selectedIds.has(env.id)}
                 copied={copiedId === env.id}
+                copiedCmd={copiedCmdId === env.id}
                 onToggleSelect={() => toggleSelect(env.id)}
-                onActivate={() => handleActivate(env.id)}
+                onCopyActivate={() => handleCopyActivateCommand(env)}
                 onCopyPath={() => handleCopyPath(env)}
                 onDelete={() => handleDelete(env)}
                 onExport={() => handleExport(env)}
@@ -715,8 +799,9 @@ export const Environments: React.FC = () => {
                       env={env}
                       selected={selectedIds.has(env.id)}
                       copied={copiedId === env.id}
+                      copiedCmd={copiedCmdId === env.id}
                       onToggleSelect={() => toggleSelect(env.id)}
-                      onActivate={() => handleActivate(env.id)}
+                      onCopyActivate={() => handleCopyActivateCommand(env)}
                       onCopyPath={() => handleCopyPath(env)}
                       onDelete={() => handleDelete(env)}
                       onExport={() => handleExport(env)}

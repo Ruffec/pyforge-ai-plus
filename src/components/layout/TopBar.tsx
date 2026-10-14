@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Sun, Moon, Search, Bell, Download, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Tooltip } from '@/components/ui/Tooltip';
+import { useTheme } from '@/hooks/useTheme';
 import { useUpdateStore } from '@/store/useUpdateStore';
 
 export interface TopBarProps {
@@ -19,33 +20,16 @@ export const TopBar: React.FC<TopBarProps> = ({
   const updateProgress = useUpdateStore((s) => s.progress);
   const startupCheck = useUpdateStore((s) => s.startupCheck);
   const installUpdate = useUpdateStore((s) => s.installUpdate);
+  const { resolvedTheme, toggleTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
 
   // 应用启动后静默检查一次更新（仅 Tauri 环境生效，store 内部有去重）
   useEffect(() => {
     void startupCheck();
   }, [startupCheck]);
 
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return document.documentElement.classList.contains('dark');
-    }
-    return true;
-  });
-
-  const toggleTheme = () => {
-    const root = document.documentElement;
-    const newIsDark = !isDark;
-    setIsDark(newIsDark);
-    if (newIsDark) {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-    localStorage.setItem('pyforge-theme', newIsDark ? 'dark' : 'light');
-  };
-
   return (
-    <header className="fixed left-0 right-0 top-0 z-40 flex h-14 items-center justify-between border-b border-pf-border bg-pf-card/80 backdrop-blur-sm px-4">
+    <header className="fixed left-0 right-0 top-0 z-40 flex h-12 items-center justify-between border-b border-pf-border bg-pf-card/80 px-4 backdrop-blur-sm">
       {/* 左侧：移动端菜单按钮 */}
       <div className="flex items-center gap-3">
         {onMenuToggle && (

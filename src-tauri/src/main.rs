@@ -2,16 +2,19 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod ai;
+mod bridge;
 mod config;
 mod error;
 mod events;
 mod logging;
 mod package;
+mod paths;
 mod platform;
 mod project;
 mod python;
 mod security;
 mod venv;
+mod write_guard;
 
 use ai::{AiConfig, AiService, ChatMessage, DeploymentRequest};
 use config::{get_config, update_config, AppConfig};
@@ -24,9 +27,9 @@ use package::{InstalledPackage, PackageInfo, PipMirror};
 use platform::{get_adapter, PlatformAdapter, PlatformInfo};
 use project::{ProjectInfo, ProjectScanResult};
 use python::{get_python_details, scan_python_versions, set_default_python, PythonInfo};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::Arc;
-use tauri::{Emitter, State};
+use tauri::State;
 use venv::{Dependency, VirtualEnvironment};
 
 // ============================================================================
@@ -65,13 +68,19 @@ fn get_app_config() -> AppResult<AppConfig> {
     get_config()
 }
 
-/// 更新应用配置（部分字段）。
+/// 更新应用配置（部分字段），成功后广播配置变更事件（跨端实时同步）。
 #[tauri::command]
 fn update_app_config(patch: serde_json::Value) -> AppResult<AppConfig> {
-    update_config(|config| {
-        if let Ok(patched) = serde_json::from_value::<AppConfig>(patch.clone()) {
-            *config = patched;
-        } else if let Some(obj) = patch.as_object() {
+    let keys: Vec<String> = patch
+        .as_object()
+        .map(|o| o.keys().cloned().collect())
+        .unwrap_or_default();
+    let updated = update_config(|config| {
+        // 注意：禁止用 patch 整体反序列化为 AppConfig 后直接替换——
+        // 所有节均有 serde default，部分补丁（如仅 logging.max_file_size_mb）
+        // 会被默认值填充后覆盖整份配置，悄悄重置未传字段（如 logging.dir）。
+        // 统一走逐节浅合并：补丁未携带的节原样保留。
+        if let Some(obj) = patch.as_object() {
             // 浅合并顶层字段
             for (key, value) in obj {
                 match key.as_str() {
@@ -101,8 +110,22 @@ fn update_app_config(patch: serde_json::Value) -> AppResult<AppConfig> {
                         }
                     }
                     "logging" => {
-                        if let Ok(v) = serde_json::from_value(value.clone()) {
+                        if let Ok(mut v) = serde_json::from_value::<config::LoggingConfig>(value.clone()) {
+                            // 部分补丁未携带 dir 时保留原自定义日志目录，
+                            // 避免整体替换把目录悄悄重置为平台默认
+                            if v.dir.is_none() {
+                                v.dir = config.logging.dir.clone();
+                            }
                             config.logging = v;
+                        }
+                    }
+                    "paths" => {
+                        if let Ok(v) = serde_json::from_value::<config::PathsConfig>(value.clone()) {
+                            // 保持运行时虚拟环境根目录与路径设置一致
+                            if !v.venv_root.trim().is_empty() {
+                                config.venv.default_root = v.venv_root.clone();
+                            }
+                            config.paths = v;
                         }
                     }
                     "ui" => {
@@ -114,13 +137,23 @@ fn update_app_config(patch: serde_json::Value) -> AppResult<AppConfig> {
                 }
             }
         }
-    })
+    })?;
+    tracing::info!(
+        target: "pyforge_ai::config",
+        "配置更新成功: sections={:?}",
+        keys
+    );
+    // 广播配置变更，桌面端与网页端同步刷新
+    let _ = events::emit(events::CHANNEL_CONFIG_CHANGED, &updated);
+    Ok(updated)
 }
 
-/// 重置配置为默认值。
+/// 重置配置为默认值，成功后广播配置变更事件。
 #[tauri::command]
 fn reset_app_config() -> AppResult<AppConfig> {
-    config::reset_config()
+    let updated = config::reset_config()?;
+    let _ = events::emit(events::CHANNEL_CONFIG_CHANGED, &updated);
+    Ok(updated)
 }
 
 // ============================================================================
@@ -143,6 +176,68 @@ fn clear_logs() -> AppResult<()> {
 #[tauri::command]
 fn get_log_file_path() -> AppResult<String> {
     Ok(logging::current_log_file()?.to_string_lossy().to_string())
+}
+
+/// 前端用户交互/异常日志埋点：写入统一日志文件（桌面与网页双端共用）。
+///
+/// tracing 的 target: 指令要求编译期字面量（进 callsite 静态元数据），
+/// 前端动态模块名因此以 `module` 结构化字段传递，由日志格式化层
+/// 提升为「模块名称」字段展示（见 logging::TextFieldCollector）。
+#[tauri::command]
+fn frontend_log_command(
+    level: String,
+    message: String,
+    target: Option<String>,
+) -> AppResult<()> {
+    let module = target.unwrap_or_else(|| "pyforge_ai::frontend".to_string());
+    // IPC/RPC 系统边界校验：截断超长埋点消息，防止大 payload 进入日志管线
+    // （格式化层另有 4KB 截断兜底，此处提前拦截可避免大 payload 流转非阻塞队列）
+    let message = logging::truncate_chars(&message, logging::MAX_LOG_MESSAGE_CHARS * 2);
+    match level.to_lowercase().as_str() {
+        "error" => tracing::error!(target: "pyforge_ai::frontend", module = module.as_str(), "{message}"),
+        "warn" | "warning" => tracing::warn!(target: "pyforge_ai::frontend", module = module.as_str(), "{message}"),
+        "debug" => tracing::debug!(target: "pyforge_ai::frontend", module = module.as_str(), "{message}"),
+        _ => tracing::info!(target: "pyforge_ai::frontend", module = module.as_str(), "{message}"),
+    }
+    Ok(())
+}
+
+/// 设置日志目录并自动迁移旧日志文件（进度结果返回给前端展示）。
+#[tauri::command]
+fn set_log_dir(new_dir: String) -> AppResult<logging::LogMigrationResult> {
+    let result = logging::migrate_logs_to(&new_dir)?;
+    // 日志目录写入配置文件，广播变更以便两端同步
+    let _ = update_config(|config| {
+        config.logging.dir = Some(new_dir.clone());
+    });
+    let _ = events::emit(events::CHANNEL_CONFIG_CHANGED, &serde_json::json!({"logging": {"dir": new_dir}}));
+    Ok(result)
+}
+
+/// 获取当前平台的默认路径规则（非系统盘优先，前端设置页展示用）。
+#[tauri::command]
+fn get_platform_default_paths() -> AppResult<paths::PlatformPaths> {
+    paths::platform_default_paths()
+}
+
+/// 获取系统盘写入违规记录列表。
+#[tauri::command]
+fn get_violations() -> Vec<write_guard::ViolationEvent> {
+    write_guard::list_violations()
+}
+
+/// 导出违规记录为标准 Excel 文档，返回文件完整路径。
+#[tauri::command]
+fn export_violations_excel() -> AppResult<String> {
+    let path = write_guard::export_excel()?;
+    Ok(path.to_string_lossy().to_string())
+}
+
+/// 获取违规记录文件夹路径（与日志目录同层级）。
+#[tauri::command]
+fn get_violations_dir() -> AppResult<String> {
+    let dir = logging::violations_dir()?;
+    Ok(dir.to_string_lossy().to_string())
 }
 
 // ============================================================================
@@ -174,10 +269,20 @@ fn cleanup_tasks_command(keep_recent: Option<usize>) -> AppResult<usize> {
 /// 扫描本地所有可识别的 Python 安装。
 #[tauri::command]
 fn scan_python_versions_command(force_refresh: Option<bool>) -> Vec<PythonInfo> {
+    tracing::info!(
+        target: "pyforge_ai::python",
+        "扫描本地 Python 版本: force_refresh={:?}",
+        force_refresh
+    );
     if force_refresh.unwrap_or(false) {
         python::clear_scan_cache();
     }
     let versions = scan_python_versions();
+    tracing::info!(
+        target: "pyforge_ai::python",
+        "扫描完成: {} 个版本",
+        versions.len()
+    );
     // 发送扫描完成事件
     let _ = events::emit(events::CHANNEL_PYTHON_SCANNED, &versions);
     versions
@@ -186,8 +291,13 @@ fn scan_python_versions_command(force_refresh: Option<bool>) -> Vec<PythonInfo> 
 /// 将指定路径的 Python 设为默认版本。
 #[tauri::command]
 fn set_default_python_command(path: String) -> AppResult<()> {
+    tracing::info!(target: "pyforge_ai::python", "设置默认 Python: {path}");
     let path = PathBuf::from(path);
     set_default_python(&path)?;
+    let _ = events::emit(
+        events::CHANNEL_PYTHON_DEFAULT_CHANGED,
+        &serde_json::json!({"path": path.display().to_string()}),
+    );
     events::emit_notification(
         "Python 默认版本已更新",
         &format!("已设置默认 Python: {}", path.display()),
@@ -214,6 +324,48 @@ fn clear_python_scan_cache() -> AppResult<()> {
 #[tauri::command]
 async fn fetch_python_org_releases_command() -> AppResult<Vec<python::PythonOrgRelease>> {
     Ok(python::fetch_python_org_releases().await?)
+}
+
+/// 一键安装指定 Python 版本：官方源下载 + 静默安装（支持自定义目录/架构/PATH 写入）。
+#[tauri::command]
+async fn install_python_command(
+    version: String,
+    arch: Option<String>,
+    install_dir: Option<String>,
+    all_users: Option<bool>,
+    prepend_path: Option<bool>,
+) -> AppResult<python::installer::InstallResult> {
+    let opts = python::installer::InstallOptions {
+        version,
+        arch,
+        install_dir,
+        all_users,
+        prepend_path,
+    };
+    python::installer::install_python(opts).await.map_err(Into::into)
+}
+
+/// 彻底卸载指定 Python：官方卸载器优先 + 文件/注册表/环境变量残留清理。
+#[tauri::command]
+async fn uninstall_python_version_command(
+    path: String,
+    remove_env: Option<bool>,
+    remove_registry: Option<bool>,
+    force: Option<bool>,
+) -> AppResult<python::installer::UninstallReport> {
+    let opts = python::installer::UninstallOptions {
+        path,
+        remove_env: remove_env.unwrap_or(true),
+        remove_registry: remove_registry.unwrap_or(true),
+        force: force.unwrap_or(false),
+    };
+    python::installer::uninstall_python(opts).await.map_err(Into::into)
+}
+
+/// 校验自定义安装目录的合法性、可写性与安全性。
+#[tauri::command]
+fn validate_install_dir_command(path: String) -> AppResult<python::installer::DirValidation> {
+    Ok(python::installer::validate_install_dir(Path::new(&path)))
 }
 
 // ============================================================================
@@ -288,7 +440,9 @@ fn get_dependencies_command(path: String) -> AppResult<Vec<Dependency>> {
 fn clone_venv_command(source: String, target: String) -> AppResult<VirtualEnvironment> {
     let src = PathBuf::from(source);
     let dst = PathBuf::from(target);
-    venv::clone_venv(&src, &dst).map_err(Into::into)
+    let env = venv::clone_venv(&src, &dst).map_err(AppError::from)?;
+    let _ = events::emit(events::CHANNEL_VENV_CHANGED, &serde_json::json!({"action": "cloned", "env": env}));
+    Ok(env)
 }
 
 /// 导出虚拟环境依赖（requirements.txt 格式）。
@@ -321,22 +475,28 @@ fn get_current_mirror() -> Option<PipMirror> {
 
 #[tauri::command]
 async fn set_mirror_command(url: String) -> AppResult<()> {
+    tracing::info!(target: "pyforge_ai::mirror", "切换镜像源: {url}");
     package::set_mirror(&url).map_err(|e| AppError::from_any(e.as_ref()))?;
+    let _ = events::emit(events::CHANNEL_MIRROR_CHANGED, &serde_json::json!({"url": url}));
     events::emit_notification("镜像源已切换", &format!("当前镜像源: {}", url), "success")?;
     Ok(())
 }
 
 #[tauri::command]
 async fn test_mirror_speed_command(url: String) -> AppResult<u64> {
+    tracing::info!(target: "pyforge_ai::mirror", "镜像测速开始: {url}");
     let mirror = PipMirror {
         id: "custom".to_string(),
         name: "Custom".to_string(),
         url,
         latency_ms: 0,
     };
-    package::test_mirror_speed(&mirror)
-        .await
-        .map_err(Into::into)
+    let result = package::test_mirror_speed(&mirror).await;
+    match &result {
+        Ok(ms) => tracing::info!(target: "pyforge_ai::mirror", "镜像测速完成: {} → {} ms", mirror.url, ms),
+        Err(e) => tracing::error!(target: "pyforge_ai::mirror", "镜像测速失败: {} — {:?}", mirror.url, e),
+    }
+    result.map_err(Into::into)
 }
 
 /// 批量测试所有镜像源速度。
@@ -404,6 +564,10 @@ async fn install_package_command(
                 "package_install",
                 format!("包 {} 安装成功", package_name),
             ))?;
+            let _ = events::emit(
+                events::CHANNEL_PACKAGE_CHANGED,
+                &serde_json::json!({"action": "install", "venv_path": venv_path, "package": package_name}),
+            );
             Ok(output)
         }
         Err(e) => {
@@ -438,11 +602,50 @@ async fn uninstall_package_command(
                 "package_uninstall",
                 format!("包 {} 卸载成功", package_name),
             ))?;
+            let _ = events::emit(
+                events::CHANNEL_PACKAGE_CHANGED,
+                &serde_json::json!({"action": "uninstall", "venv_path": venv_path, "package": package_name}),
+            );
             Ok(output)
         }
         Err(e) => {
             let err_msg = e.to_string();
             update_task(TaskProgressEvent::failed(&task_id, "package_uninstall", &err_msg))?;
+            Err(AppError::from_any(e.as_ref()))
+        }
+    }
+}
+
+/// 升级指定 Python 环境中的 pip 自身。
+#[tauri::command]
+async fn upgrade_pip_command(python_path: String) -> AppResult<String> {
+    let task_id = format!("pip-upgrade-{}", uuid_v4());
+    register_task(&task_id, "pip_upgrade")?;
+
+    update_task(TaskProgressEvent::started(
+        &task_id,
+        "pip_upgrade",
+        format!("开始升级 pip: {}", python_path),
+    ))?;
+
+    let result = package::upgrade_pip(std::path::Path::new(&python_path)).await;
+
+    match result {
+        Ok(output) => {
+            update_task(TaskProgressEvent::completed(
+                &task_id,
+                "pip_upgrade",
+                "pip 升级成功",
+            ))?;
+            let _ = events::emit(
+                events::CHANNEL_PACKAGE_CHANGED,
+                &serde_json::json!({"action": "upgrade_pip", "python_path": python_path}),
+            );
+            Ok(output)
+        }
+        Err(e) => {
+            let err_msg = e.to_string();
+            update_task(TaskProgressEvent::failed(&task_id, "pip_upgrade", &err_msg))?;
             Err(AppError::from_any(e.as_ref()))
         }
     }
@@ -476,6 +679,10 @@ async fn install_from_requirements_command(
                 "package_batch_install",
                 "批量安装完成",
             ))?;
+            let _ = events::emit(
+                events::CHANNEL_PACKAGE_CHANGED,
+                &serde_json::json!({"action": "batch_install", "venv_path": venv_path}),
+            );
             Ok(output)
         }
         Err(e) => {
@@ -490,7 +697,16 @@ async fn install_from_requirements_command(
 #[tauri::command]
 async fn upgrade_all_packages_command(venv_path: String) -> AppResult<String> {
     let result = package::upgrade_all_packages(std::path::Path::new(&venv_path)).await;
-    result.map_err(|e| AppError::from_any(e.as_ref()))
+    match result {
+        Ok(output) => {
+            let _ = events::emit(
+                events::CHANNEL_PACKAGE_CHANGED,
+                &serde_json::json!({"action": "upgrade_all", "venv_path": venv_path}),
+            );
+            Ok(output)
+        }
+        Err(e) => Err(AppError::from_any(e.as_ref())),
+    }
 }
 
 /// 检查指定包是否已安装在虚拟环境中。
@@ -542,7 +758,7 @@ async fn chat_message(messages: Vec<ChatMessage>, config: AiConfig) -> AppResult
 async fn stream_chat_command(
     messages: Vec<ChatMessage>,
     config: AiConfig,
-    app: tauri::AppHandle,
+    _app: tauri::AppHandle,
 ) -> AppResult<String> {
     use futures::StreamExt;
 
@@ -550,9 +766,9 @@ async fn stream_chat_command(
     let service = AiService::new(config)?;
 
     // 发送开始事件
-    let _ = app.emit(
+    let _ = events::emit(
         CHANNEL_AI_STREAM,
-        serde_json::json!({
+        &serde_json::json!({
             "type": "start",
             "task_id": task_id,
             "content": ""
@@ -568,9 +784,9 @@ async fn stream_chat_command(
                 match chunk {
                     Ok(content) => {
                         full_content.push_str(&content);
-                        let _ = app.emit(
+                        let _ = events::emit(
                             CHANNEL_AI_STREAM,
-                            serde_json::json!({
+                            &serde_json::json!({
                                 "type": "chunk",
                                 "task_id": task_id,
                                 "content": content
@@ -579,9 +795,9 @@ async fn stream_chat_command(
                     }
                     Err(e) => {
                         let err_msg = e.to_string();
-                        let _ = app.emit(
+                        let _ = events::emit(
                             CHANNEL_AI_STREAM,
-                            serde_json::json!({
+                            &serde_json::json!({
                                 "type": "error",
                                 "task_id": task_id,
                                 "content": err_msg
@@ -593,9 +809,9 @@ async fn stream_chat_command(
             }
 
             // 发送完成事件
-            let _ = app.emit(
+            let _ = events::emit(
                 CHANNEL_AI_STREAM,
-                serde_json::json!({
+                &serde_json::json!({
                     "type": "done",
                     "task_id": task_id,
                     "content": full_content
@@ -606,9 +822,9 @@ async fn stream_chat_command(
         }
         Err(e) => {
             let err_msg = e.to_string();
-            let _ = app.emit(
+            let _ = events::emit(
                 CHANNEL_AI_STREAM,
-                serde_json::json!({
+                &serde_json::json!({
                     "type": "error",
                     "task_id": task_id,
                     "content": err_msg
@@ -783,7 +999,7 @@ fn create_project_venv_command(
     project::create_project_venv(&project, &python, venv_name.as_deref()).map_err(Into::into)
 }
 
-/// 为项目安装依赖。
+/// 为项目安装依赖，完成后广播包变更事件（跨端同步）。
 #[tauri::command]
 async fn install_project_dependencies_command(
     project_path: String,
@@ -791,7 +1007,12 @@ async fn install_project_dependencies_command(
 ) -> AppResult<String> {
     let project = PathBuf::from(project_path);
     let venv = PathBuf::from(venv_path);
-    project::install_project_dependencies(&project, &venv).await
+    let output = project::install_project_dependencies(&project, &venv).await?;
+    let _ = events::emit(
+        events::CHANNEL_PACKAGE_CHANGED,
+        &serde_json::json!({"action": "project_deps", "venv_path": venv.display().to_string()}),
+    );
+    Ok(output)
 }
 
 /// 导出项目依赖为 requirements.txt 格式。
@@ -805,7 +1026,7 @@ fn export_project_requirements_command(project_path: String) -> AppResult<String
 // 辅助函数
 // ============================================================================
 
-fn uuid_v4() -> String {
+pub(crate) fn uuid_v4() -> String {
     use std::time::{SystemTime, UNIX_EPOCH};
     let nanos = SystemTime::now()
         .duration_since(UNIX_EPOCH)
@@ -826,14 +1047,33 @@ fn uuid_v4() -> String {
 // ============================================================================
 
 fn main() {
+    // WebView2 用户数据目录重定向到非系统盘（默认写 %LOCALAPPDATA%，违反
+    // 「运行期文件不得写系统盘」约束；必须在 WebView 创建前设置）
+    if let Ok(root) = paths::storage_root() {
+        let data_dir = root.join("pyforge-ai").join("webview-data");
+        if std::fs::create_dir_all(&data_dir).is_ok() {
+            std::env::set_var("WEBVIEW2_USER_DATA_FOLDER", &data_dir);
+        }
+    }
+
     // 初始化配置
     if let Err(e) = config::init_config() {
         eprintln!("[WARN] 配置初始化失败: {}", e);
     }
 
+    // 启动阶段优先执行平台检测，按平台规则自动配置非系统盘路径
+    if let Err(e) = config::apply_platform_path_rules() {
+        eprintln!("[WARN] 平台路径规则应用失败: {}", e);
+    }
+
     // 初始化日志
     if let Err(e) = logging::init_logging() {
         eprintln!("[WARN] 日志初始化失败: {}", e);
+    }
+
+    // 初始化系统盘写入监控与违规记录（审计线程 + Excel 自动导出）
+    if let Err(e) = write_guard::init() {
+        eprintln!("[WARN] 系统盘写入监控初始化失败: {}", e);
     }
 
     let adapter: Arc<dyn PlatformAdapter> = Arc::from(get_adapter());
@@ -853,6 +1093,10 @@ fn main() {
                 eprintln!("[WARN] 事件系统初始化失败: {}", e);
             }
 
+            // 启动 HTTP 桥接服务：网页端通过它与桌面端共享同一真实数据源，
+            // 并经 SSE 事件流实现两端数据变更的实时双向同步
+            bridge::start_bridge(handle.clone());
+
             app_info!(target: "pyforge_ai", "PyForge AI 启动完成，版本: {}", env!("CARGO_PKG_VERSION"));
 
             Ok(())
@@ -870,6 +1114,14 @@ fn main() {
             read_recent_logs,
             clear_logs,
             get_log_file_path,
+            set_log_dir,
+            frontend_log_command,
+            // 系统盘写入违规记录
+            get_violations,
+            export_violations_excel,
+            get_violations_dir,
+            // 平台路径
+            get_platform_default_paths,
             // 任务
             list_tasks_command,
             get_task_command,
@@ -886,6 +1138,9 @@ fn main() {
             get_python_stdlib_modules,
             check_package_compatibility,
             fetch_python_org_releases_command,
+            install_python_command,
+            uninstall_python_version_command,
+            validate_install_dir_command,
             // 虚拟环境
             list_venvs,
             create_venv_command,
@@ -912,6 +1167,7 @@ fn main() {
             list_installed_packages_command,
             install_package_command,
             uninstall_package_command,
+            upgrade_pip_command,
             install_from_requirements_command,
             upgrade_all_packages_command,
             is_package_installed_command,

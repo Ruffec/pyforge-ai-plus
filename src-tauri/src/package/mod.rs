@@ -231,8 +231,9 @@ pub fn set_mirror(mirror_url: &str) -> Result<(), Box<dyn std::error::Error + Se
 }
 
 pub async fn test_mirror_speed(mirror: &PipMirror) -> Result<u64, reqwest::Error> {
+    // 延迟检测超时阈值 3000ms：超时即视为不可用节点，前端排至国内源末尾
     let client = reqwest::Client::builder()
-        .timeout(Duration::from_secs(10))
+        .timeout(Duration::from_millis(3000))
         .build()?;
 
     let start = Instant::now();
@@ -288,10 +289,27 @@ struct PipListEntry {
 pub async fn list_installed_packages(
     python_path: &Path,
 ) -> Result<Vec<InstalledPackage>, Box<dyn std::error::Error + Send + Sync>> {
-    let output = tokio::process::Command::new(python_path)
-        .args(["-m", "pip", "list", "--format=json", "--outdated"])
-        .output()
-        .await?;
+    // 纯本地查询：禁用 --outdated（会逐包联网查新版本，网络/代理不佳时可达数分钟），
+    // 也不做 pip 自身版本检查；最新版本信息由用户升级流程按需获取
+    let child = harden_env(tokio::process::Command::new(python_path))
+        .args([
+            "-m",
+            "pip",
+            "list",
+            "--format=json",
+            "--disable-pip-version-check",
+        ])
+        .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped())
+        .spawn()?;
+
+    // 30 秒兜底超时：防止异常环境（pip 锁死、代理劫持）导致页面无限加载
+    let output = match tokio::time::timeout(Duration::from_secs(30), child.wait_with_output())
+        .await
+    {
+        Ok(result) => result?,
+        Err(_) => return Err("pip list 执行超时（30 秒）".into()),
+    };
 
     if !output.status.success() {
         let stderr = String::from_utf8_lossy(&output.stderr);
@@ -305,7 +323,8 @@ pub async fn list_installed_packages(
         .map(|entry| InstalledPackage {
             name: entry.name,
             version: entry.version,
-            latest_version: entry.latest_version.unwrap_or_default(),
+            // 本地查询无法得知远端最新版本；前端对空值显示 "-" 且不误报更新
+            latest_version: String::new(),
             size: 0,
         })
         .collect())
@@ -322,6 +341,15 @@ fn venv_python_path(venv_path: &Path) -> PathBuf {
     } else {
         venv_path.join("bin").join("python")
     }
+}
+
+/// 子进程环境加固：临时目录与 pip 下载缓存重定向到非系统盘，
+/// 防止 pip 构建临时文件 / 下载缓存落入系统盘 %TEMP% 与默认缓存目录。
+fn harden_env(mut cmd: tokio::process::Command) -> tokio::process::Command {
+    for (k, v) in crate::write_guard::child_env_vars() {
+        cmd.env(k, v);
+    }
+    cmd
 }
 
 /// 在指定虚拟环境中安装单个包。
@@ -364,7 +392,7 @@ pub async fn install_package(
 
     args.push(&package_spec);
 
-    let output = tokio::process::Command::new(&python)
+    let output = harden_env(tokio::process::Command::new(&python))
         .args(&args)
         .output()
         .await?;
@@ -395,7 +423,7 @@ pub async fn uninstall_package(
         return Err("包名无效".into());
     }
 
-    let output = tokio::process::Command::new(&python)
+    let output = harden_env(tokio::process::Command::new(&python))
         .args(["-m", "pip", "uninstall", "-y", &sanitized_name])
         .output()
         .await?;
@@ -427,8 +455,8 @@ pub async fn install_from_requirements(
         return Err("requirements 内容为空".into());
     }
 
-    // 写入临时 requirements 文件
-    let temp_dir = std::env::temp_dir();
+    // 写入临时 requirements 文件（应用专用临时目录，避免写系统盘 %TEMP%）
+    let temp_dir = crate::write_guard::app_temp_dir();
     let req_file = temp_dir.join(format!("pyforge-requirements-{}.txt", std::process::id()));
     {
         let mut file = std::fs::File::create(&req_file)?;
@@ -452,7 +480,7 @@ pub async fn install_from_requirements(
         args.push(url.as_str());
     }
 
-    let output = tokio::process::Command::new(&python)
+    let output = harden_env(tokio::process::Command::new(&python))
         .args(&args)
         .output()
         .await?;
@@ -481,7 +509,7 @@ pub async fn upgrade_all_packages(
     }
 
     // 先获取过时包列表
-    let outdated_output = tokio::process::Command::new(&python)
+    let outdated_output = harden_env(tokio::process::Command::new(&python))
         .args(["-m", "pip", "list", "--outdated", "--format=json"])
         .output()
         .await?;
@@ -496,7 +524,7 @@ pub async fn upgrade_all_packages(
     let mut args = vec!["-m", "pip", "install", "--upgrade"];
     args.extend(package_names.iter().copied());
 
-    let output = tokio::process::Command::new(&python)
+    let output = harden_env(tokio::process::Command::new(&python))
         .args(&args)
         .output()
         .await?;
@@ -509,6 +537,51 @@ pub async fn upgrade_all_packages(
     }
 
     crate::app_info!(target: "pyforge_ai::package", "批量升级完成，共 {} 个包", outdated.len());
+    Ok(stdout)
+}
+
+/// 升级指定 Python 环境中的 pip 自身。
+/// `python_path` 可以是 Python 可执行文件路径，也可以是虚拟环境根目录。
+pub async fn upgrade_pip(
+    python_path: &Path,
+) -> Result<String, Box<dyn std::error::Error + Send + Sync>> {
+    let python = if python_path.is_file() {
+        python_path.to_path_buf()
+    } else if python_path.exists() {
+        venv_python_path(python_path)
+    } else {
+        return Err(format!("未找到 Python: {}", python_path.display()).into());
+    };
+
+    let mut args = vec!["-m", "pip", "install", "--upgrade", "--no-input", "pip"];
+
+    // 从配置读取镜像源
+    let mirror_url = if let Ok(config) = crate::config::get_config() {
+        get_default_mirrors()
+            .into_iter()
+            .find(|m| m.id == config.package.default_mirror)
+            .map(|m| m.url)
+    } else {
+        None
+    };
+    if let Some(ref url) = mirror_url {
+        args.push("-i");
+        args.push(url.as_str());
+    }
+
+    let output = harden_env(tokio::process::Command::new(&python))
+        .args(&args)
+        .output()
+        .await?;
+
+    let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+    let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+
+    if !output.status.success() {
+        return Err(format!("pip 升级失败: {}\n{}", stderr, stdout).into());
+    }
+
+    crate::app_info!(target: "pyforge_ai::package", "pip 升级成功: {}", python.display());
     Ok(stdout)
 }
 
@@ -529,7 +602,7 @@ pub async fn is_package_installed(
         return Err(format!("虚拟环境中未找到 Python: {}", python.display()).into());
     }
 
-    let output = tokio::process::Command::new(&python)
+    let output = harden_env(tokio::process::Command::new(&python))
         .args(["-m", "pip", "show", package_name])
         .output()
         .await?;

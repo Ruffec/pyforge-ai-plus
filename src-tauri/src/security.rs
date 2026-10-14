@@ -201,8 +201,21 @@ pub async fn stream_command(
 }
 
 /// Validates that `url` uses an allowed scheme.
+///
+/// Scheme is parsed per RFC 3986 (`scheme ":"`, first char must be an ASCII
+/// letter), so schemes without an authority component such as
+/// `javascript:alert(1)` are still identified correctly instead of being
+/// reported as "missing".
 pub fn validate_url_scheme(url: &str, allowed_schemes: &[&str]) -> Result<()> {
-    let scheme = url.split_once("://").map(|(s, _)| s.to_lowercase());
+    let scheme = url
+        .split_once(':')
+        .map(|(s, _)| s.to_lowercase())
+        .filter(|s| {
+            !s.is_empty()
+                && s.chars()
+                    .next()
+                    .is_some_and(|c| c.is_ascii_alphabetic())
+        });
     match scheme {
         Some(s) if allowed_schemes.iter().any(|&a| a.eq_ignore_ascii_case(&s)) => Ok(()),
         Some(s) => Err(SecurityError::InvalidUrlScheme(s)),

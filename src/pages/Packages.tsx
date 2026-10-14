@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Activity,
   AlertCircle,
@@ -15,6 +15,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { Pagination } from '@/components/ui/Pagination';
 import { Select, SelectItem } from '@/components/ui/Select';
 import {
   Dialog,
@@ -33,16 +34,29 @@ import {
   TableRow,
 } from '@/components/ui/Table';
 import {
+  measureDomesticMirrorSpeeds,
+  measureMirrorSpeed,
+  sortMirrors,
+  isOfficialMirror,
+} from '@/lib/mirror-registry';
+import {
+  CHANNELS,
   getMirrors,
+  installPackage,
   listInstalledPackages,
   listVenvs,
-  quickPackages,
   scanPythonVersions,
   searchPackage,
   setMirror,
+  subscribeEvent,
   testMirrorSpeed,
+  uninstallPackage,
+  upgradeAllPackages,
 } from '@/lib/tauri-api';
+import type { VirtualEnvironment } from '@/types/environments';
 import type { Package, PipMirror } from '@/types/packages';
+import { usePrefsStore } from '@/store/useAppStore';
+import { logUserAction, logUserError } from '@/lib/user-log';
 
 function formatLatency(latencyMs?: number): { text: string; color: string } {
   if (latencyMs === undefined) return { text: '超时', color: 'text-error' };
@@ -65,28 +79,61 @@ export const Packages: React.FC = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
+  // 目标环境（真实虚拟环境列表，value 为环境路径）
   const [targetEnv, setTargetEnv] = useState('');
-  const [targetEnvs, setTargetEnvs] = useState<string[]>([]);
+  const [targetEnvs, setTargetEnvs] = useState<VirtualEnvironment[]>([]);
   const [installInput, setInstallInput] = useState('');
   const [isInstalling, setIsInstalling] = useState(false);
-  const [terminalLines, setTerminalLines] = useState<string[]>([
-    '$ pip config get global.index-url',
-    'https://pypi.tuna.tsinghua.edu.cn',
-    '$ pip list | wc -l',
-    '248',
-  ]);
+  const [terminalLines, setTerminalLines] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [testingIds, setTestingIds] = useState<Set<string>>(new Set());
   const [applyLoading, setApplyLoading] = useState(false);
   const [installedPackages, setInstalledPackages] = useState<Package[]>([]);
+  // 已安装包扫描来源（当前活跃 Python 环境），安装/升级/卸载操作均作用于此环境
+  const [activeEnvPath, setActiveEnvPath] = useState('');
+  const [speedTestingAll, setSpeedTestingAll] = useState(false);
   const terminalRef = useRef<HTMLDivElement>(null);
 
-  const activeMirror = useMemo(() => mirrors.find((m) => m.isActive) ?? mirrors[0], [mirrors]);
-  const sortedMirrors = useMemo(
-    () => [...mirrors].sort((a, b) => (a.latencyMs ?? Infinity) - (b.latencyMs ?? Infinity)),
-    [mirrors]
+  // 已安装包统一分页（与全局每页条数偏好联动，默认 10）
+  const pageSize = usePrefsStore((s) => s.pageSize);
+  const setPageSize = usePrefsStore((s) => s.setPageSize);
+  const [installedPkgPage, setInstalledPkgPage] = useState(1);
+  const pagedInstalledPackages = useMemo(
+    () =>
+      installedPackages.slice(
+        (installedPkgPage - 1) * pageSize,
+        installedPkgPage * pageSize
+      ),
+    [installedPackages, installedPkgPage, pageSize]
   );
+  const installedPkgTotalPages = Math.max(
+    1,
+    Math.ceil(installedPackages.length / pageSize)
+  );
+
+  useEffect(() => {
+    setInstalledPkgPage((prev) => Math.min(prev, installedPkgTotalPages));
+  }, [installedPkgTotalPages]);
+
+  const activeMirror = useMemo(() => mirrors.find((m) => m.isActive) ?? mirrors[0], [mirrors]);
+  // 官方源保持固定顺序置末尾；国内源按延迟升序、超时排末尾
+  const sortedMirrors = useMemo(() => sortMirrors(mirrors), [mirrors]);
+
+  /** 并发测速所有国内镜像源（3000ms 超时），官方源不参与 */
+  const runDomesticSpeedTests = async (list: PipMirror[]) => {
+    setSpeedTestingAll(true);
+    try {
+      const results = await measureDomesticMirrorSpeeds(list, testMirrorSpeed);
+      setMirrors((prev) =>
+        prev.map((m) =>
+          results.has(m.id) ? { ...m, latencyMs: results.get(m.id) } : m
+        )
+      );
+    } finally {
+      setSpeedTestingAll(false);
+    }
+  };
 
   const addTerminalLine = (line: string) => {
     setTerminalLines((prev) => [...prev, line]);
@@ -94,6 +141,21 @@ export const Packages: React.FC = () => {
       terminalRef.current?.scrollTo({ top: terminalRef.current.scrollHeight, behavior: 'smooth' });
     }, 0);
   };
+
+  /** 已安装包刷新（当前活跃 Python 环境的真实包列表） */
+  const reloadInstalled = useCallback(
+    async (pythonPath: string) => {
+      const target = pythonPath || activeEnvPath;
+      if (!target) return;
+      try {
+        const installed = await listInstalledPackages(target);
+        setInstalledPackages(installed);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : '刷新已安装包失败');
+      }
+    },
+    [activeEnvPath]
+  );
 
   useEffect(() => {
     let mounted = true;
@@ -111,15 +173,24 @@ export const Packages: React.FC = () => {
         // Prefer active Python; fallback to first available path for installed package scan.
         const pythonPath =
           pythons.find((p) => p.isActive)?.path ?? pythons[0]?.path ?? '';
-        const installed = await listInstalledPackages(pythonPath);
+        const installed = pythonPath ? await listInstalledPackages(pythonPath) : [];
         if (!mounted) return;
 
         setMirrors(mirrorData);
         setInstalledPackages(installed);
-        setTargetEnvs(venvs.map((env) => env.name));
+        setActiveEnvPath(pythonPath);
+        setTargetEnvs(venvs);
         if (venvs[0]) {
-          setTargetEnv(venvs[0].name);
+          setTargetEnv(venvs[0].path);
         }
+        // 终端初始输出：来自真实后端的当前镜像源与真实包数量
+        const currentUrl = mirrorData.find((m) => m.isActive)?.url ?? 'https://pypi.org/simple';
+        addTerminalLine('$ pip config get global.index-url');
+        addTerminalLine(currentUrl);
+        addTerminalLine(`$ pip list | wc -l`);
+        addTerminalLine(String(installed.length));
+        // 启动加载即对国内镜像源自动测速并按延迟排序
+        void runDomesticSpeedTests(mirrorData);
       } catch (err) {
         if (mounted) {
           setError(err instanceof Error ? err.message : '加载包与镜像源数据失败');
@@ -136,10 +207,22 @@ export const Packages: React.FC = () => {
     };
   }, []);
 
+  // 跨端实时同步：任一端切换镜像源 / 安装卸载包后自动刷新本页
+  useEffect(() => {
+    const offs = [
+      subscribeEvent(CHANNELS.mirrorChanged, () => void refreshMirrors()),
+      subscribeEvent(CHANNELS.packageChanged, () => void reloadInstalled(activeEnvPath)),
+    ];
+    return () => offs.forEach((p) => void p.then((fn) => fn()));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeEnvPath]);
+
+  /** 手动刷新：重新拉取镜像源列表并自动测速排序 */
   const refreshMirrors = async () => {
     try {
       const data = await getMirrors();
       setMirrors(data);
+      void runDomesticSpeedTests(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : '刷新镜像源失败');
     }
@@ -149,13 +232,18 @@ export const Packages: React.FC = () => {
     const mirror = mirrors.find((m) => m.id === id);
     if (!mirror) return;
     setTestingIds((prev) => new Set(prev).add(id));
+    logUserAction(`镜像源测速: ${mirror.name} (${mirror.url})`);
     try {
-      const latency = await testMirrorSpeed(mirror.url);
+      // 单源测速同样遵循 3000ms 超时阈值，超时显示「超时」并排至末尾
+      const latency = await measureMirrorSpeed(mirror, testMirrorSpeed);
+      logUserAction(`镜像源测速: ${mirror.name} 完成，延迟=${latency ?? '超时'}ms`);
       setMirrors((prev) =>
         prev.map((m) => (m.id === id ? { ...m, latencyMs: latency } : m))
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : `测试 ${mirror.name} 速度失败`);
+      const msg = err instanceof Error ? err.message : `测试 ${mirror.name} 速度失败`;
+      logUserError(`镜像源测速: ${mirror.name} 失败 - ${msg}`);
+      setError(msg);
     } finally {
       setTestingIds((prev) => {
         const next = new Set(prev);
@@ -166,20 +254,7 @@ export const Packages: React.FC = () => {
   };
 
   const handleRetestAll = async () => {
-    await Promise.all(
-      mirrors.map(async (mirror) => {
-        try {
-          const latency = await testMirrorSpeed(mirror.url);
-          setMirrors((prev) =>
-            prev.map((m) => (m.id === mirror.id ? { ...m, latencyMs: latency } : m))
-          );
-        } catch {
-          setMirrors((prev) =>
-            prev.map((m) => (m.id === mirror.id ? { ...m, latencyMs: undefined } : m))
-          );
-        }
-      })
-    );
+    await runDomesticSpeedTests(mirrors);
   };
 
   const handleSetActive = (id: string) => {
@@ -189,13 +264,17 @@ export const Packages: React.FC = () => {
   const handleApplyMirror = async () => {
     if (!activeMirror) return;
     setApplyLoading(true);
+    logUserAction(`切换镜像源: ${activeMirror.name} (${activeMirror.url})`);
     try {
       await setMirror(activeMirror.url);
       addTerminalLine(`$ pip config set global.index-url ${activeMirror.url}`);
       addTerminalLine(`已切换至 ${activeMirror.name} 镜像源`);
+      logUserAction(`切换镜像源: ${activeMirror.name} 成功`);
       await refreshMirrors();
     } catch (err) {
-      setError(err instanceof Error ? err.message : '应用镜像源失败');
+      const msg = err instanceof Error ? err.message : '应用镜像源失败';
+      logUserError(`切换镜像源: ${activeMirror.name} 失败 - ${msg}`);
+      setError(msg);
     } finally {
       setApplyLoading(false);
     }
@@ -230,6 +309,12 @@ export const Packages: React.FC = () => {
     }
   };
 
+  /** 常用包快捷入口：由真实已安装包列表派生 */
+  const quickPackageChips = useMemo(
+    () => installedPackages.slice(0, 6).map((p) => p.name),
+    [installedPackages]
+  );
+
   const togglePackageSelection = (name: string) => {
     setSelectedPackages((prev) =>
       prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
@@ -242,45 +327,91 @@ export const Packages: React.FC = () => {
     setDialogOpen(true);
   };
 
-  const handleInstall = () => {
-    const names = installInput.trim();
-    if (!names) return;
+  /** 安装包：调用后端真实 pip 安装（目标为所选虚拟环境），终端输出真实 pip 日志 */
+  const handleInstall = async () => {
+    const names = installInput.trim().split(/\s+/).filter(Boolean);
+    if (names.length === 0) return;
+    if (!targetEnv) {
+      setError('未选择目标虚拟环境，请先在「环境管理」页创建');
+      return;
+    }
     setDialogOpen(false);
     setIsInstalling(true);
-    addTerminalLine(`$ pip install ${names}`);
+    addTerminalLine(`$ pip install ${names.join(' ')}`);
     if (activeMirror) {
       addTerminalLine(`Looking in indexes: ${activeMirror.url}`);
     }
-
-    const steps = [
-      'Collecting packages...',
-      'Downloading packages...',
-      'Installing collected packages...',
-      `Successfully installed ${names}`,
-    ];
-
-    steps.forEach((step, index) => {
-      setTimeout(() => {
-        addTerminalLine(step);
-        if (index === steps.length - 1) {
-          setIsInstalling(false);
-          setSelectedPackages([]);
-        }
-      }, (index + 1) * 800);
-    });
+    let ok = 0;
+    for (const name of names) {
+      try {
+        const output = await installPackage(targetEnv, name);
+        const trimmed = output.trim();
+        if (trimmed) addTerminalLine(trimmed);
+        ok += 1;
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        addTerminalLine(`✗ 安装 ${name} 失败：${msg}`);
+        setError(`安装 ${name} 失败：${msg}`);
+      }
+    }
+    addTerminalLine(`✓ 执行完成：${ok}/${names.length} 个包安装成功`);
+    setIsInstalling(false);
+    setSelectedPackages([]);
+    await reloadInstalled(activeEnvPath);
   };
 
-  const handleUpgrade = (pkg: Package) => {
+  /** 升级包：安装最新版本（后端真实执行） */
+  const handleUpgrade = async (pkg: Package) => {
     addTerminalLine(`$ pip install --upgrade ${pkg.name}`);
-    addTerminalLine(` upgrading ${pkg.name} ${pkg.version} -> ${pkg.latestVersion ?? pkg.version}`);
-    addTerminalLine(`Successfully installed ${pkg.name}-${pkg.latestVersion ?? pkg.version}`);
+    try {
+      const output = await installPackage(activeEnvPath, pkg.name, pkg.latestVersion);
+      const trimmed = output.trim();
+      if (trimmed) addTerminalLine(trimmed);
+      addTerminalLine(`✓ ${pkg.name} 已升级至 ${pkg.latestVersion ?? '最新版本'}`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      addTerminalLine(`✗ 升级 ${pkg.name} 失败：${msg}`);
+      setError(`升级 ${pkg.name} 失败：${msg}`);
+    }
+    await reloadInstalled(activeEnvPath);
   };
 
-  const handleUninstall = (pkg: Package) => {
+  /** 卸载包：后端真实执行 pip uninstall */
+  const handleUninstall = async (pkg: Package) => {
     addTerminalLine(`$ pip uninstall -y ${pkg.name}`);
-    addTerminalLine(`Found existing installation: ${pkg.name} ${pkg.version}`);
-    addTerminalLine(`Uninstalling ${pkg.name}-${pkg.version}`);
-    addTerminalLine(`Successfully uninstalled ${pkg.name}-${pkg.version}`);
+    try {
+      const output = await uninstallPackage(activeEnvPath, pkg.name);
+      const trimmed = output.trim();
+      if (trimmed) addTerminalLine(trimmed);
+      addTerminalLine(`✓ 已卸载 ${pkg.name} ${pkg.version}`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      addTerminalLine(`✗ 卸载 ${pkg.name} 失败：${msg}`);
+      setError(`卸载 ${pkg.name} 失败：${msg}`);
+    }
+    await reloadInstalled(activeEnvPath);
+  };
+
+  /** 一键更新所有过时包：后端真实执行 */
+  const handleUpgradeAll = async () => {
+    if (!activeEnvPath) {
+      setError('未检测到可用的 Python 环境');
+      return;
+    }
+    setIsInstalling(true);
+    addTerminalLine('$ pip install --upgrade <所有过时包>');
+    try {
+      const output = await upgradeAllPackages(activeEnvPath);
+      const trimmed = output.trim();
+      if (trimmed) addTerminalLine(trimmed);
+      addTerminalLine('✓ 过时包更新完成');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      addTerminalLine(`✗ 批量更新失败：${msg}`);
+      setError(`批量更新失败：${msg}`);
+    }
+    setIsInstalling(false);
+    await reloadInstalled(activeEnvPath);
   };
 
   return (
@@ -309,11 +440,22 @@ export const Packages: React.FC = () => {
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
         {/* Left panel: mirror sources */}
         <section className="flex w-full flex-col gap-5 lg:w-[40%] lg:flex-shrink-0">
-          {/* Mirror config card */}
+          {/* 镜像源统一功能容器：配置 + 速度测试整合在同一卡片内 */}
           <Card className="p-5">
             <div className="mb-4 flex items-center gap-2">
               <Globe className="h-[18px] w-[18px] text-primary" />
               <h3 className="pf-text-heading text-base font-semibold">镜像源配置</h3>
+              <span className="flex-1" />
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 gap-1.5 text-xs text-muted-foreground hover:text-primary"
+                onClick={() => void refreshMirrors()}
+                disabled={speedTestingAll}
+              >
+                <RefreshCw className={`h-3 w-3 ${speedTestingAll ? 'animate-spin' : ''}`} />
+                刷新测速
+              </Button>
             </div>
 
             {/* Current source banner */}
@@ -332,11 +474,12 @@ export const Packages: React.FC = () => {
               </div>
             )}
 
-            {/* Mirror list */}
+            {/* Mirror list：国内源按延迟升序、超时置末尾；官方源保持固定顺序置后 */}
             <div className="space-y-0">
-              {mirrors.map((mirror) => {
+              {sortedMirrors.map((mirror) => {
                 const latency = formatLatency(mirror.latencyMs);
-                const isTesting = testingIds.has(mirror.id);
+                const isTesting = testingIds.has(mirror.id) || (speedTestingAll && isOfficialMirror(mirror) === false);
+                const official = isOfficialMirror(mirror);
                 return (
                   <div
                     key={mirror.id}
@@ -353,7 +496,14 @@ export const Packages: React.FC = () => {
                       {mirror.isActive && <span className="h-2 w-2 rounded-full bg-primary" />}
                     </button>
                     <div className="min-w-0 flex-1">
-                      <div className="text-sm font-medium text-foreground">{mirror.name}</div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm font-medium text-foreground">{mirror.name}</span>
+                        {official && (
+                          <Badge variant="outline" className="shrink-0 px-1 py-0 text-[9px] text-muted-foreground">
+                            官方·不排序
+                          </Badge>
+                        )}
+                      </div>
                       <div className="truncate font-mono text-xs text-muted-foreground">
                         {mirror.url}
                       </div>
@@ -363,15 +513,17 @@ export const Packages: React.FC = () => {
                     >
                       {isTesting ? <Loader2 className="mx-auto h-3 w-3 animate-spin" /> : latency.text}
                     </span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-7 px-2 text-xs text-muted-foreground hover:text-primary"
-                      onClick={() => handleTestSpeed(mirror.id)}
-                      disabled={isTesting}
-                    >
-                      测试
-                    </Button>
+                    {!official && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 px-2 text-xs text-muted-foreground hover:text-primary"
+                        onClick={() => handleTestSpeed(mirror.id)}
+                        disabled={isTesting}
+                      >
+                        测试
+                      </Button>
+                    )}
                   </div>
                 );
               })}
@@ -381,40 +533,41 @@ export const Packages: React.FC = () => {
               {applyLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               应用镜像源
             </Button>
-          </Card>
 
-          {/* Speed test card */}
-          <Card className="p-4">
-            <div className="mb-4 flex items-center gap-2">
-              <Activity className="h-[18px] w-[18px] text-primary" />
-              <h3 className="pf-text-heading text-sm font-semibold">速度测试</h3>
-            </div>
-            <div className="space-y-3">
-              {sortedMirrors.slice(0, 5).map((mirror) => (
-                <div key={`speed-${mirror.id}`} className="flex items-center gap-2.5">
-                  <span className="w-16 flex-shrink-0 text-xs text-foreground">{mirror.name}</span>
-                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
-                    <div
-                      className="h-full rounded-full bg-primary"
-                      style={{ width: getSpeedBarWidth(mirror.latencyMs) }}
-                    />
+            {/* 分区内标题：速度测试（与上方配置区以分隔线衔接） */}
+            <div className="mt-5 border-t border-border pt-4">
+              <div className="mb-3 flex items-center gap-2">
+                <Activity className="h-[18px] w-[18px] text-primary" />
+                <h4 className="pf-text-heading text-sm font-semibold">速度测试</h4>
+                <span className="text-xs text-muted-foreground">Top 5 延迟对比</span>
+              </div>
+              <div className="space-y-3">
+                {sortedMirrors.slice(0, 5).map((mirror) => (
+                  <div key={`speed-${mirror.id}`} className="flex items-center gap-2.5">
+                    <span className="w-16 flex-shrink-0 text-xs text-foreground">{mirror.name}</span>
+                    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
+                      <div
+                        className="h-full rounded-full bg-primary transition-[width] duration-300"
+                        style={{ width: getSpeedBarWidth(mirror.latencyMs) }}
+                      />
+                    </div>
+                    <span className="w-11 flex-shrink-0 text-right font-mono text-xs text-muted-foreground">
+                      {formatLatency(mirror.latencyMs).text}
+                    </span>
                   </div>
-                  <span className="w-11 flex-shrink-0 text-right font-mono text-xs text-muted-foreground">
-                    {formatLatency(mirror.latencyMs).text}
-                  </span>
-                </div>
-              ))}
+                ))}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-3 gap-1.5 text-xs"
+                onClick={handleRetestAll}
+                disabled={testingIds.size > 0 || speedTestingAll}
+              >
+                <RefreshCw className={`h-3 w-3 ${speedTestingAll ? 'animate-spin' : ''}`} />
+                {speedTestingAll ? '测速中...' : '重新测试'}
+              </Button>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="mt-3 gap-1.5 text-xs"
-              onClick={handleRetestAll}
-              disabled={testingIds.size > 0}
-            >
-              <RefreshCw className="h-3 w-3" />
-              重新测试
-            </Button>
           </Card>
         </section>
 
@@ -443,7 +596,7 @@ export const Packages: React.FC = () => {
             </div>
 
             <div className="mb-3 flex flex-wrap gap-2">
-              {quickPackages.map((name) => (
+              {quickPackageChips.map((name) => (
                 <button
                   key={name}
                   type="button"
@@ -502,8 +655,8 @@ export const Packages: React.FC = () => {
                 className="min-w-[140px] appearance-none text-sm"
               >
                 {targetEnvs.map((env) => (
-                  <SelectItem key={env} value={env}>
-                    {env}
+                  <SelectItem key={env.path} value={env.path}>
+                    {env.name}
                   </SelectItem>
                 ))}
               </Select>
@@ -516,8 +669,14 @@ export const Packages: React.FC = () => {
               <h3 className="pf-text-heading text-sm font-semibold">已安装包</h3>
               <span className="font-mono text-sm font-semibold text-primary">{installedPackages.length}</span>
               <span className="flex-1" />
-              <Button variant="ghost" size="sm" className="h-7 text-xs text-primary hover:text-primary">
-                更新全部
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 text-xs text-primary hover:text-primary"
+                onClick={() => void handleUpgradeAll()}
+                disabled={isInstalling || !activeEnvPath}
+              >
+                {isInstalling ? '更新中...' : '更新全部'}
               </Button>
             </div>
             <Table>
@@ -539,7 +698,7 @@ export const Packages: React.FC = () => {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  installedPackages.map((pkg) => {
+                  pagedInstalledPackages.map((pkg) => {
                     const hasUpdate = pkg.latestVersion && pkg.latestVersion !== pkg.version;
                     return (
                       <TableRow key={pkg.id}>
@@ -582,27 +741,19 @@ export const Packages: React.FC = () => {
                 )}
               </TableBody>
             </Table>
-            <div className="flex items-center justify-between border-t border-border p-3">
-              <span className="text-xs text-muted-foreground">
-                显示 {installedPackages.length} / {installedPackages.length} 个包
-              </span>
-              <div className="flex items-center gap-1">
-                {['‹', '1', '2', '3', '…', '31', '›'].map((page, index) => (
-                  <button
-                    key={`${page}-${index}`}
-                    type="button"
-                    disabled={page === '…'}
-                    className={`flex h-6 min-w-[26px] items-center justify-center rounded-sm px-1.5 text-xs ${
-                      page === '1'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'text-muted-foreground hover:bg-muted disabled:cursor-default disabled:hover:bg-transparent'
-                    }`}
-                  >
-                    {page}
-                  </button>
-                ))}
-              </div>
-            </div>
+            {installedPackages.length > 0 && (
+              <Pagination
+                className="border-t border-border p-3"
+                page={installedPkgPage}
+                pageSize={pageSize}
+                total={installedPackages.length}
+                onPageChange={setInstalledPkgPage}
+                onPageSizeChange={(size) => {
+                  setPageSize(size);
+                  setInstalledPkgPage(1);
+                }}
+              />
+            )}
           </Card>
         </section>
       </div>
@@ -671,8 +822,8 @@ export const Packages: React.FC = () => {
                 onChange={(e) => setTargetEnv(e.target.value)}
               >
                 {targetEnvs.map((env) => (
-                  <SelectItem key={env} value={env}>
-                    {env}
+                  <SelectItem key={env.path} value={env.path}>
+                    {env.name}
                   </SelectItem>
                 ))}
               </Select>
@@ -682,8 +833,8 @@ export const Packages: React.FC = () => {
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
               取消
             </Button>
-            <Button onClick={handleInstall} disabled={!installInput.trim()}>
-              安装
+            <Button onClick={() => void handleInstall()} disabled={!installInput.trim() || !targetEnv || isInstalling}>
+              {isInstalling ? '安装中...' : '安装'}
             </Button>
           </DialogFooter>
         </DialogContent>

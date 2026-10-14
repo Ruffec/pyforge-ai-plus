@@ -1,11 +1,14 @@
 /**
  * 错误边界组件
  *
- * 捕获 React 渲染错误，展示友好的错误页面，并提供重试功能。
+ * 捕获 React 渲染错误，展示符合桌面应用设计规范的错误页面，并提供重试功能。
+ * 样式全部取自应用设计令牌（pf-* / state-*），跟随亮暗主题自动适配，
+ * 不使用浏览器默认控件样式与网页端特有措辞。
  */
 
 import React from 'react';
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
+import { AlertTriangle, RotateCcw, RefreshCw } from 'lucide-react';
+import { Button } from './Button';
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
@@ -57,6 +60,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
     this.props.onReset?.();
   };
 
+  /** 重新加载应用（WebView 环境下等价于重启渲染进程，桌面端标准恢复手段） */
   handleReload = () => {
     window.location.reload();
   };
@@ -68,44 +72,36 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
       }
 
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
-          <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-8">
+        <div className="flex min-h-screen items-center justify-center bg-pf-background p-4">
+          <div className="w-full max-w-md rounded-xl border border-pf-border bg-pf-card p-8 shadow-lg">
             <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-4">
-                <AlertTriangle className="w-8 h-8 text-red-500" />
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-state-error/10">
+                <AlertTriangle className="h-8 w-8 text-state-error" />
               </div>
 
-              <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">
-                页面出现错误
-              </h2>
+              <h2 className="mb-2 text-xl font-bold text-pf-foreground">应用运行出错</h2>
 
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-                应用在渲染过程中遇到了意外错误。您可以尝试重试或刷新页面。
+              <p className="mb-6 text-sm text-pf-muted-foreground">
+                应用在运行过程中遇到了意外错误，可以尝试重试，或重新加载应用。
               </p>
 
               {this.state.error && (
-                <div className="w-full bg-gray-50 dark:bg-gray-900 rounded-lg p-3 mb-6 text-left">
-                  <p className="text-xs font-mono text-red-600 dark:text-red-400 break-words">
+                <div className="mb-6 w-full rounded-lg bg-pf-muted/50 p-3 text-left">
+                  <p className="break-words font-mono text-xs text-state-error">
                     {this.state.error.message}
                   </p>
                 </div>
               )}
 
-              <div className="flex gap-3 w-full">
-                <button
-                  onClick={this.handleReset}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
-                >
-                  <RefreshCw className="w-4 h-4" />
+              <div className="flex w-full gap-3">
+                <Button onClick={this.handleReset} className="flex-1">
+                  <RotateCcw className="mr-2 h-4 w-4" />
                   重试
-                </button>
-                <button
-                  onClick={this.handleReload}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors"
-                >
-                  <Home className="w-4 h-4" />
-                  刷新页面
-                </button>
+                </Button>
+                <Button variant="outline" onClick={this.handleReload} className="flex-1">
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  重新加载
+                </Button>
               </div>
             </div>
           </div>
