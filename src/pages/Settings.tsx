@@ -1177,7 +1177,7 @@ export const Settings: React.FC = () => {
                       variant="outline"
                       onClick={() => {
                         // 打开仓库 LICENSE（真实开源许可证文件）
-                        const url = 'https://github.com/Ruffec/pyforge-ai-plus/blob/master/LICENSE';
+                        const url = 'https://gitee.com/luffec/pyforge-ai-plus/blob/master/LICENSE';
                         if (isTauri()) {
                           shellOpen(url).catch(() => window.open(url, '_blank'));
                         } else {

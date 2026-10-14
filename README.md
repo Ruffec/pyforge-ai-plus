@@ -1,10 +1,12 @@
 # PyForge AI — 跨平台 Python 生态环境管理工具
 
-[![Release](https://img.shields.io/github/v/release/Ruffec/pyforge-ai-plus?style=flat-square&logo=github)](https://github.com/Ruffec/pyforge-ai-plus/releases/latest)
+[![Release](https://img.shields.io/gitee/v/release/luffec/pyforge-ai-plus?style=flat-square&logo=gitee)](https://gitee.com/luffec/pyforge-ai-plus/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](./LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey?style=flat-square)](#分环境安装与配置)
 
 > 企业级 Python 生态环境一站式管理桌面应用，基于 **Tauri 2.0 + Rust + React** 构建。
+
+> **仓库迁移公告**：本项目主仓库已迁移至 Gitee（`https://gitee.com/luffec/pyforge-ai-plus`），后续开发、版本管理、Issue 与 PR 统一在 Gitee 进行。GitHub 原仓库已归档为只读，过渡期继续提供历史版本签名产物下载与自动更新源。
 
 ---
 
@@ -121,7 +123,7 @@ PyForge AI 是**工具型桌面应用**，没有独立数据库服务：用户�
 
 ```bash
 # 1. 克隆仓库
-git clone https://github.com/Ruffec/pyforge-ai-plus.git
+git clone https://gitee.com/luffec/pyforge-ai-plus.git
 cd pyforge-ai-plus
 
 # 2. 安装 Node 依赖（Rust 依赖在首次运行时自动拉取）

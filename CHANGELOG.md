@@ -56,5 +56,5 @@
 - 自动更新：tauri-plugin-updater 配置、GitHub Actions 四平台构建与发布流水线、更新签名密钥脚本。
 - 测试：Vitest 前端单元测试、Playwright E2E 基础设施、Rust 核心模块单元测试。
 
-[0.2.0]: https://github.com/Ruffec/pyforge-ai-plus/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/Ruffec/pyforge-ai-plus/releases/tag/v0.1.0
+[0.2.0]: https://gitee.com/luffec/pyforge-ai-plus/compare/v0.1.0...v0.2.0
+[0.1.0]: https://gitee.com/luffec/pyforge-ai-plus/releases/tag/v0.1.0
