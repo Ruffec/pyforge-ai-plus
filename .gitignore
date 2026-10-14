@@ -38,6 +38,8 @@ src-tauri/updates/
 
 # ===== Generated design artifacts（设计管线生成产物） =====
 design/
+# 例外：构建必需的设计令牌源码（src/index.css @import 引用，CI 构建不可缺失）
+!design/colors_and_type.css
 stats.html
 
 # ===== Logs（运行时日志，任意位置） =====
