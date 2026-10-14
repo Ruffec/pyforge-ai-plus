@@ -42,6 +42,11 @@ const tsBaseConfig = {
     // TypeScript validates module resolution; keep import rules for style.
     'import/no-unresolved': 'off',
     'import/named': 'off',
+
+    // 生产日志防线：前端禁止调试性 console 输出（log/debug/info/table/trace），
+    // 异常上报统一走 tauri-api.ts 的 logToFrontend 埋点；console.warn/error 仅
+    // 允许在 catch 降级路径使用（日志系统不可达时的最后兜底）。
+    'no-console': ['warn', { allow: ['warn', 'error'] }],
   },
 };
 
