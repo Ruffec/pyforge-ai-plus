@@ -41,7 +41,7 @@ PyForge AI 是一款面向 Windows、macOS 与 Linux 的跨平台桌面工具，
 | 后端核心 | [Tauri 2.0](https://tauri.app/) + [Rust](https://www.rust-lang.org/) | 桌面应用框架与系统级业务逻辑 |
 | 日志 | [tracing](https://tracing.rs/) + tracing-appender | 结构化日志、非阻塞写入、按大小轮转 |
 | HTTP 桥接 | [axum](https://github.com/tokio-rs/axum) | RPC 转发与 SSE 事件总线 |
-| Excel 导出 | [umya-spreadsheet](https://github.com/MathNya/umya-spreadsheet) | 违规审计报告纯 Rust 生成 |
+| Excel 导出 | [rust_xlsxwriter](https://github.com/jmcnamara/rust_xlsxwriter) | 违规审计报告纯 Rust 生成 |
 | 前端 UI | [React 18](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) | 组件化界面与类型安全 |
 | 样式系统 | [Tailwind CSS 4](https://tailwindcss.com/) | 原子化 CSS 与设计系统变量 |
 | 构建工具 | [Vite 6](https://vitejs.dev/) | 前端开发与生产构建 |
@@ -52,25 +52,55 @@ PyForge AI 是一款面向 Windows、macOS 与 Linux 的跨平台桌面工具，
 
 ## 架构概览与数据持久化
 
-```text
-┌─────────────────────────── 桌面窗口（WebView） ───────────────────────────┐
-│  React 页面 → invokeCommand() 双通道自适应                                  │
-│    ├─ Tauri IPC（桌面模式）                                                │
-│    └─ fetch → HTTP 桥接 127.0.0.1:21880（浏览器模式）                       │
-│         ├─ POST /api/rpc    转发同款 Tauri 命令                             │
-│         ├─ GET  /api/events SSE 事件总线                                    │
-│         └─ GET  /api/health 健康探针                                       │
-└──────────────────────────────────┬───────────────────────────────────────┘
-                                   │ Rust 业务层（python / venv / package / ai / logging / write_guard）
-                                   ▼
-┌────────────────────────── 数据持久化（非系统盘优先） ──────────────────────┐
-│  <存储根>/PyForge/pyforge-ai/config.json       应用配置（原子写入 + 深合并）│
-│  <日志目录>/pyforge-ai.log[.N]                 结构化日志（10MB 轮转）      │
-│  <违规目录>/violations.jsonl                   系统盘写入违规审计          │
-│  <违规目录>/pyforge-violations.xlsx            审计报告导出                │
-│  业务数据源：本机 Python 安装（实时扫描）· PyPI 镜像（实时拉取）·            │
-│             AI 服务商 API（实时调用）——均为真实数据源，无 mock 数据          │
-└───────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph FE["前端展示层（WebView / 浏览器）"]
+        PAGES["页面组件<br/>Dashboard · PythonVersions · Environments<br/>Packages · Projects · AiDeploy · Settings"]
+        API["lib/tauri-api.ts<br/>invokeCommand 双通道自适应"]
+        PAGES --> API
+    end
+
+    subgraph CH["通信通道"]
+        IPC["Tauri IPC<br/>（桌面窗口）"]
+        BRIDGE["bridge.rs HTTP 桥接<br/>127.0.0.1:21880"]
+    end
+
+    subgraph CORE["Rust 业务层"]
+        CMD["业务命令层<br/>python · venv · package · ai · config"]
+        LOG["logging.rs<br/>结构化日志 · 轮转 · 迁移"]
+        WG["write_guard.rs<br/>系统盘写入监控"]
+        EVT["events.rs<br/>事件总线（双通道广播）"]
+    end
+
+    subgraph DS["真实数据源（实时调用）"]
+        PY["本机 Python 安装"]
+        PYPI["PyPI 镜像源"]
+        AISVC["AI 服务商 API"]
+    end
+
+    subgraph STORE["持久化存储（非系统盘优先）"]
+        CFG["config.json<br/>应用配置 · 原子写入"]
+        LOGF["pyforge-ai.log[.N]<br/>10MB 轮转归档"]
+        VJ["violations.jsonl<br/>违规审计记录"]
+        VX["pyforge-violations.xlsx<br/>审计报告导出"]
+    end
+
+    API -->|"桌面模式"| IPC
+    API -->|"浏览器模式 POST /api/rpc"| BRIDGE
+    IPC --> CMD
+    BRIDGE -->|"转发同款命令"| CMD
+    CMD --> LOG
+    CMD --> WG
+    CMD <--> EVT
+    CMD -->|"实时调用"| PY
+    CMD -->|"实时调用"| PYPI
+    CMD -->|"实时调用"| AISVC
+    LOG -->|"非阻塞写入"| LOGF
+    WG -->|"去重累加"| VJ
+    WG -->|"一键导出"| VX
+    CMD -->|"读写 · 原子替换"| CFG
+    EVT -.->|"配置/扫描等事件广播<br/>IPC + SSE 双端同步"| PAGES
+    BRIDGE -.->|"/api/health 探针"| API
 ```
 
 PyForge AI 是**工具型桌面应用**，没有独立数据库服务：用户业务数据（应用配置、审计记录、日志）以 JSON / JSONL / 文本文件形式持久化到指定存储目录（默认非系统盘存储根，可在设置页自定义），环境与包数据通过实时调用本机 Python 与 PyPI 镜像获取。配置写入采用「写临时文件 + 原子替换」策略，保证断电/崩溃场景下配置文件不损坏。
