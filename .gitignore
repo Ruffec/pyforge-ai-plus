@@ -37,7 +37,8 @@ docs/
 src-tauri/updates/
 
 # ===== Generated design artifacts（设计管线生成产物） =====
-design/
+# 注意：必须用 /* 而非 /——目录级排除会让子文件例外规则失效
+design/*
 # 例外：构建必需的设计令牌源码（src/index.css @import 引用，CI 构建不可缺失）
 !design/colors_and_type.css
 stats.html
